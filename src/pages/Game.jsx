@@ -269,8 +269,44 @@ export default function Game() {
         <div className="flex flex-col lg:flex-row gap-4">
           {/* Board */}
           <div className="flex-1">
+            <GameBoard
+              towers={towersRef.current}
+              enemies={enemiesRef.current}
+              projectiles={projectilesRef.current}
+              selectedTowerType={selectedTowerType}
+              towerMap={towerMapRef.current}
+              onCellClick={handleCellClick}
+              selectedTowerId={selectedTowerId}
+            />
+            {selectedTowerType && (
+              <p className="text-center text-xs text-red-900/60 mt-2 tracking-wide">
+                Click on a valid tile to place your {TOWER_TYPES[selectedTowerType].name}
+              </p>
+            )}
+          </div>
 
-            <div className="rounded-xl p-4 border border-red-950/40" style={{ background: 'rgba(10,4,4,0.9)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.02)' }}>
+          {/* Side Panel */}
+          <div className="w-full lg:w-56 shrink-0">
+            <div className="rounded-xl p-4 border border-red-950/40" style={{ background: 'rgba(10,4,4,0.9)' }}>
+              <TowerPanel
+                selectedTower={selectedTowerType}
+                onSelect={(type) => {
+                  setSelectedTowerType(type);
+                  setSelectedTowerId(null);
+                }}
+                gold={gold}
+              />
+              <TowerInfoPanel
+                tower={getSelectedTower()}
+                gold={gold}
+                onUpgrade={handleUpgrade}
+                onSell={handleSell}
+              />
+              <WaveButton
+                waveActive={waveActive}
+                onStartWave={startWave}
+                wave={wave}
+              />
               <div className="mt-4 text-[10px] text-stone-700 space-y-1">
                 <p>• Click tower then click board to place</p>
                 <p>• Click placed towers to upgrade/sell</p>
