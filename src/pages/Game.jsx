@@ -239,19 +239,23 @@ export default function Game() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-stone-950 via-stone-900 to-stone-950">
+    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, #0d0505 0%, #0a0303 40%, #0d0606 100%)' }}>
       {/* Header */}
-      <div className="border-b border-stone-800/60 bg-stone-950/80 backdrop-blur-sm">
+      <div className="border-b border-red-950/60 backdrop-blur-sm" style={{ background: 'rgba(8,3,3,0.95)', boxShadow: '0 1px 0 rgba(120,20,20,0.2)' }}>
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-amber-900/40 border border-amber-700/40 flex items-center justify-center">
-              <Shield className="w-5 h-5 text-amber-400" />
+            <div className="w-9 h-9 rounded-lg bg-red-950/80 border border-red-900/50 flex items-center justify-center"
+              style={{ boxShadow: '0 0 12px rgba(153,27,27,0.3)' }}
+            >
+              <Shield className="w-5 h-5 text-red-600" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-amber-100 font-serif tracking-wide">
-                Kingdom&apos;s Last Stand
+              <h1 className="text-lg font-black text-red-100 tracking-[0.2em] uppercase"
+                style={{ fontFamily: "'Cinzel Decorative', serif", textShadow: '0 0 20px rgba(200,40,40,0.4)' }}
+              >
+                Kingdom's Last Stand
               </h1>
-              <p className="text-[10px] text-stone-500 uppercase tracking-widest">
+              <p className="text-[10px] text-red-900/80 uppercase tracking-[0.3em]">
                 Medieval Tower Defense
               </p>
             </div>
@@ -265,45 +269,9 @@ export default function Game() {
         <div className="flex flex-col lg:flex-row gap-4">
           {/* Board */}
           <div className="flex-1">
-            <GameBoard
-              towers={towersRef.current}
-              enemies={enemiesRef.current}
-              projectiles={projectilesRef.current}
-              selectedTowerType={selectedTowerType}
-              towerMap={towerMapRef.current}
-              onCellClick={handleCellClick}
-              selectedTowerId={selectedTowerId}
-            />
-            {selectedTowerType && (
-              <p className="text-center text-xs text-amber-400/60 mt-2 font-serif">
-                Click on a green tile to place your {TOWER_TYPES[selectedTowerType].name}
-              </p>
-            )}
-          </div>
 
-          {/* Side Panel */}
-          <div className="w-full lg:w-56 shrink-0">
-            <div className="bg-stone-900/80 border border-stone-700/40 rounded-xl p-4">
-              <TowerPanel
-                selectedTower={selectedTowerType}
-                onSelect={(type) => {
-                  setSelectedTowerType(type);
-                  setSelectedTowerId(null);
-                }}
-                gold={gold}
-              />
-              <TowerInfoPanel
-                tower={getSelectedTower()}
-                gold={gold}
-                onUpgrade={handleUpgrade}
-                onSell={handleSell}
-              />
-              <WaveButton
-                waveActive={waveActive}
-                onStartWave={startWave}
-                wave={wave}
-              />
-              <div className="mt-4 text-[10px] text-stone-600 space-y-1">
+            <div className="rounded-xl p-4 border border-red-950/40" style={{ background: 'rgba(10,4,4,0.9)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.02)' }}>
+              <div className="mt-4 text-[10px] text-stone-700 space-y-1">
                 <p>• Click tower then click board to place</p>
                 <p>• Click placed towers to upgrade/sell</p>
                 <p>• Bonus gold each wave cleared</p>

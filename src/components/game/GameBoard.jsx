@@ -7,36 +7,36 @@ const BOARD_W = GRID_COLS * CELL_SIZE;
 const BOARD_H = GRID_ROWS * CELL_SIZE;
 
 function drawGrid(ctx) {
-  // Background
-  ctx.fillStyle = "#1a1a12";
+  // Background — near black with crimson tint
+  ctx.fillStyle = "#0c0505";
   ctx.fillRect(0, 0, BOARD_W, BOARD_H);
 
-  // Grass tiles
+  // Dark ground tiles
   for (let x = 0; x < GRID_COLS; x++) {
     for (let y = 0; y < GRID_ROWS; y++) {
       const isPath = PATH_SET.has(`${x},${y}`);
       if (!isPath) {
-        const shade = ((x + y) % 2 === 0) ? "#1f2a14" : "#222e16";
+        const shade = ((x + y) % 2 === 0) ? "#111010" : "#130e0e";
         ctx.fillStyle = shade;
         ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
       }
     }
   }
 
-  // Path
+  // Blood-stained dirt path
   PATH.forEach(([x, y], i) => {
-    const shade = i % 2 === 0 ? "#3d3522" : "#3a3220";
+    const shade = i % 2 === 0 ? "#1e1410" : "#1a1210";
     ctx.fillStyle = shade;
     ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
 
-    // Path border effect
-    ctx.strokeStyle = "#2a2418";
+    // Subtle red border
+    ctx.strokeStyle = "rgba(80,20,20,0.4)";
     ctx.lineWidth = 1;
     ctx.strokeRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
   });
 
-  // Grid lines (subtle)
-  ctx.strokeStyle = "rgba(255,255,255,0.03)";
+  // Grid lines (very subtle crimson tint)
+  ctx.strokeStyle = "rgba(80,20,20,0.06)";
   ctx.lineWidth = 0.5;
   for (let x = 0; x <= GRID_COLS; x++) {
     ctx.beginPath();
@@ -69,7 +69,7 @@ function drawTowers(ctx, towers, selectedTowerId) {
     ctx.arc(x, y, CELL_SIZE * 0.38, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.strokeStyle = tower.id === selectedTowerId ? "#fbbf24" : "rgba(139, 115, 85, 0.6)";
+    ctx.strokeStyle = tower.id === selectedTowerId ? "#dc2626" : "rgba(100, 60, 60, 0.5)";
     ctx.lineWidth = tower.id === selectedTowerId ? 2 : 1;
     ctx.beginPath();
     ctx.arc(x, y, CELL_SIZE * 0.38, 0, Math.PI * 2);
@@ -90,11 +90,13 @@ function drawTowers(ctx, towers, selectedTowerId) {
 
     // Range circle if selected
     if (tower.id === selectedTowerId) {
-      ctx.strokeStyle = "rgba(251, 191, 36, 0.2)";
+      ctx.strokeStyle = "rgba(220, 38, 38, 0.25)";
       ctx.lineWidth = 1;
+      ctx.setLineDash([4, 4]);
       ctx.beginPath();
       ctx.arc(x, y, tower.range, 0, Math.PI * 2);
       ctx.stroke();
+      ctx.setLineDash([]);
     }
   });
 }
@@ -157,16 +159,18 @@ function drawHoverPreview(ctx, hoverCell, selectedTowerType) {
   const base = TOWER_TYPES[selectedTowerType];
 
   // Range preview
-  ctx.strokeStyle = valid ? "rgba(34, 197, 94, 0.2)" : "rgba(239, 68, 68, 0.2)";
+  ctx.strokeStyle = valid ? "rgba(180, 160, 100, 0.2)" : "rgba(200, 30, 30, 0.25)";
   ctx.lineWidth = 1;
+  ctx.setLineDash([4, 4]);
   ctx.beginPath();
   ctx.arc(cx, cy, base.range * CELL_SIZE, 0, Math.PI * 2);
   ctx.stroke();
+  ctx.setLineDash([]);
 
   // Cell highlight
-  ctx.fillStyle = valid ? "rgba(34, 197, 94, 0.15)" : "rgba(239, 68, 68, 0.15)";
+  ctx.fillStyle = valid ? "rgba(150, 120, 60, 0.12)" : "rgba(180, 20, 20, 0.12)";
   ctx.fillRect(gx * CELL_SIZE, gy * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-  ctx.strokeStyle = valid ? "rgba(34, 197, 94, 0.5)" : "rgba(239, 68, 68, 0.5)";
+  ctx.strokeStyle = valid ? "rgba(180, 150, 80, 0.5)" : "rgba(180, 30, 30, 0.5)";
   ctx.lineWidth = 1.5;
   ctx.strokeRect(gx * CELL_SIZE, gy * CELL_SIZE, CELL_SIZE, CELL_SIZE);
 
