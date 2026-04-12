@@ -24,6 +24,8 @@ export const TOWER_TYPES = {
     emoji: "🏹",
     description: "Fast attack, medium range",
     upgradeCost: 40,
+    // Combo synergy: boosts own fire rate when near another archer
+    comboType: "speed",
   },
   cannon: {
     name: "Cannon Tower",
@@ -35,6 +37,7 @@ export const TOWER_TYPES = {
     emoji: "💣",
     description: "High damage, slow fire",
     upgradeCost: 75,
+    comboType: "heavy",
   },
   mage: {
     name: "Mage Tower",
@@ -46,6 +49,7 @@ export const TOWER_TYPES = {
     emoji: "🔮",
     description: "Long range, magic damage",
     upgradeCost: 60,
+    comboType: "magic",
   },
   frost: {
     name: "Frost Tower",
@@ -57,6 +61,7 @@ export const TOWER_TYPES = {
     emoji: "❄️",
     description: "Slows enemies",
     upgradeCost: 50,
+    comboType: "support",
   },
 };
 

@@ -10,6 +10,7 @@ import TowerPanel from "../components/game/TowerPanel";
 import TowerInfoPanel from "../components/game/TowerInfoPanel";
 import WaveButton from "../components/game/WaveButton";
 import GameOverModal from "../components/game/GameOverModal";
+import ComboDisplay from "../components/game/ComboDisplay";
 import { Shield } from "lucide-react";
 
 const INITIAL_GOLD = 150;
@@ -24,6 +25,11 @@ export default function Game() {
   const [gameOver, setGameOver] = useState(false);
   const [selectedTowerType, setSelectedTowerType] = useState(null);
   const [selectedTowerId, setSelectedTowerId] = useState(null);
+  const [combo, setCombo] = useState(0);
+  const comboTimerRef = useRef(null);
+  const COMBO_WINDOW = 3000; // ms between kills to maintain combo
+
+  const comboMultiplier = combo < 5 ? 1 : combo < 10 ? 2 : combo < 20 ? 3 : 5;
 
   const towersRef = useRef([]);
   const enemiesRef = useRef([]);
@@ -171,6 +177,7 @@ export default function Game() {
       // Move projectiles
       let goldEarned = 0;
       let scoreEarned = 0;
+      let killCount = 0;
       let newProjectiles = [];
       projectilesRef.current.forEach(proj => {
         const result = moveProjectile(proj, enemiesRef.current);
@@ -184,6 +191,7 @@ export default function Game() {
             if (target.hp <= 0) {
               goldEarned += target.reward;
               scoreEarned += target.reward * 2;
+              killCount++;
               enemiesRef.current = enemiesRef.current.filter(e => e.id !== target.id);
             }
           }
@@ -193,8 +201,17 @@ export default function Game() {
       });
       projectilesRef.current = newProjectiles;
 
-      if (goldEarned > 0) setGold(prev => prev + goldEarned);
-      if (scoreEarned > 0) setScore(prev => prev + scoreEarned);
+      if (goldEarned > 0) {
+        setCombo(prev => {
+          const next = prev + killCount;
+          if (comboTimerRef.current) clearTimeout(comboTimerRef.current);
+          comboTimerRef.current = setTimeout(() => setCombo(0), COMBO_WINDOW);
+          const mult = next < 5 ? 1 : next < 10 ? 2 : next < 20 ? 3 : 5;
+          setGold(g => g + goldEarned * mult);
+          return next;
+        });
+      }
+      if (scoreEarned > 0) setScore(prev => prev + scoreEarned * (combo < 5 ? 1 : combo < 10 ? 2 : combo < 20 ? 3 : 5));
 
       // Check wave complete
       if (waveQueueRef.current.length === 0 && enemiesRef.current.length === 0) {
@@ -235,6 +252,8 @@ export default function Game() {
     setGameOver(false);
     setSelectedTowerType(null);
     setSelectedTowerId(null);
+    setCombo(0);
+    if (comboTimerRef.current) clearTimeout(comboTimerRef.current);
     lastTimeRef.current = 0;
   };
 
@@ -316,6 +335,8 @@ export default function Game() {
           </div>
         </div>
       </div>
+
+      <ComboDisplay combo={combo} multiplier={comboMultiplier} />
 
       {gameOver && (
         <GameOverModal score={score} wave={wave} onRestart={handleRestart} />
