@@ -2,7 +2,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import {
   TOWER_TYPES, PATH_SET, CELL_SIZE,
   generateWaves, createEnemy, createTower, createProjectile,
-  distanceBetween, moveEnemy, moveProjectile,
+  distanceBetween, moveEnemy, moveProjectile, generateBossInfo,
 } from "../lib/gameEngine";
 import GameBoard from "../components/game/GameBoard";
 import GameHUD from "../components/game/GameHUD";
@@ -12,6 +12,7 @@ import WaveButton from "../components/game/WaveButton";
 import GameOverModal from "../components/game/GameOverModal";
 import ComboDisplay from "../components/game/ComboDisplay";
 import ComboSuggestions from "../components/game/ComboSuggestions";
+import BossArrivalModal from "../components/game/BossArrivalModal";
 import { Shield } from "lucide-react";
 
 const INITIAL_GOLD = 150;
@@ -27,6 +28,7 @@ export default function Game() {
   const [selectedTowerType, setSelectedTowerType] = useState(null);
   const [selectedTowerId, setSelectedTowerId] = useState(null);
   const [combo, setCombo] = useState(0);
+  const [bossArrival, setBossArrival] = useState(null);
   const comboTimerRef = useRef(null);
   const COMBO_WINDOW = 3000; // ms between kills to maintain combo
 
@@ -125,6 +127,9 @@ export default function Game() {
         if (waveTimerRef.current >= nextEnemy.delay) {
           const enemy = createEnemy(nextEnemy.type, nextEnemy.hpMultiplier);
           enemiesRef.current = [...enemiesRef.current, enemy];
+          if (nextEnemy.isBoss) {
+            setBossArrival(generateBossInfo(nextEnemy.type));
+          }
           waveQueueRef.current = waveQueueRef.current.slice(1);
         }
       }
@@ -340,6 +345,8 @@ export default function Game() {
       </div>
 
       <ComboDisplay combo={combo} multiplier={comboMultiplier} />
+
+      <BossArrivalModal boss={bossArrival} onDismiss={() => setBossArrival(null)} />
 
       {gameOver && (
         <GameOverModal score={score} wave={wave} onRestart={handleRestart} />

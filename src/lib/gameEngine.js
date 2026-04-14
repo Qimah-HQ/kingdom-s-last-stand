@@ -138,11 +138,61 @@ export const ENEMY_TYPES = {
   knight: { hp: 120, speed: 0.8, reward: 25, emoji: "🛡️", name: "Knight" },
   horseman: { hp: 80, speed: 1.8, reward: 20, emoji: "🐴", name: "Horseman" },
   king: { hp: 300, speed: 0.6, reward: 100, emoji: "👑", name: "King" },
+  // Stage bosses
+  boss_meadow:  { hp: 600,  speed: 0.7, reward: 200, emoji: "🌲", name: "Forest Warden",   isBoss: true },
+  boss_dungeon: { hp: 1000, speed: 0.55, reward: 350, emoji: "🧟", name: "Dungeon Wraith",  isBoss: true },
+  boss_volcano: { hp: 1800, speed: 0.5, reward: 600, emoji: "🔥", name: "Flame Colossus",  isBoss: true },
+  boss_abyss:   { hp: 3000, speed: 0.45, reward: 1000, emoji: "💀", name: "Void Sovereign", isBoss: true },
 };
+
+// Stage boss waves: the final wave of each stage triggers a boss
+export const STAGE_BOSS_WAVES = { 5: "boss_meadow", 12: "boss_dungeon", 20: "boss_volcano", 30: "boss_abyss" };
+
+const BOSS_NAME_PARTS = {
+  prefix: ["Lord", "Dread", "Dark", "Iron", "Blood", "Cursed", "Shadow", "Grim", "Wicked", "Fell"],
+  meadow:  ["Briar", "Thorn", "Grove", "Root", "Verdant", "Fen", "Wilder", "Bough"],
+  dungeon: ["Crypt", "Bone", "Rotten", "Hollow", "Murk", "Bile", "Dusk", "Vile"],
+  volcano: ["Ember", "Char", "Sear", "Cinder", "Scorch", "Forge", "Blaze", "Ash"],
+  abyss:   ["Void", "Null", "Abysm", "Ruin", "Doom", "Nether", "Oblivion", "Rift"],
+  suffix:  ["the Undying", "of Ruin", "the Betrayer", "the Eternal", "Bloodfang", "Deathbringer", "the Merciless", "Soulreaper"],
+};
+
+const BOSS_TAUNT = {
+  boss_meadow:  ["Your walls crumble like leaves in autumn.", "The forest reclaims what is mine.", "No arrow can pierce my bark."],
+  boss_dungeon: ["The darkness obeys only me.", "Your torches will not save you.", "I have waited centuries for this."],
+  boss_volcano: ["I am born of the mountain's wrath.", "Your kingdom will burn like kindling.", "The earth itself is my weapon."],
+  boss_abyss:   ["Nothing escapes the void.", "Your very hope is fuel for me.", "I am inevitable."],
+};
+
+const BOSS_GLOW = {
+  boss_meadow: "#22c55e",
+  boss_dungeon: "#6366f1",
+  boss_volcano: "#f97316",
+  boss_abyss: "#a855f7",
+};
+
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+export function generateBossInfo(bossType) {
+  const stageKey = bossType.replace("boss_", "");
+  const nameParts = BOSS_NAME_PARTS[stageKey] || BOSS_NAME_PARTS.abyss;
+  const name = `${pick(BOSS_NAME_PARTS.prefix)} ${pick(nameParts)} ${pick(BOSS_NAME_PARTS.suffix)}`;
+  const taunt = pick(BOSS_TAUNT[bossType]);
+  const glowColor = BOSS_GLOW[bossType] || "#ef4444";
+  const stageLabel = {
+    boss_meadow: "🌿 The Meadow",
+    boss_dungeon: "🪨 The Dark Dungeon",
+    boss_volcano: "🌋 Volcanic Wastes",
+    boss_abyss: "💀 The Abyss",
+  }[bossType] || "Stage Boss";
+  const emoji = ENEMY_TYPES[bossType]?.emoji || "👹";
+  return { name, taunt, glowColor, stageLabel, emoji, bossType };
+}
 
 export function generateWaves(waveNumber) {
   const enemies = [];
   const base = Math.min(waveNumber, 20);
+  const isBossWave = !!STAGE_BOSS_WAVES[waveNumber];
 
   if (waveNumber <= 3) {
     for (let i = 0; i < 3 + waveNumber * 2; i++) {
@@ -162,9 +212,15 @@ export function generateWaves(waveNumber) {
       const types = ["soldier", "knight", "horseman"];
       enemies.push({ type: types[i % types.length], delay: i * 500 });
     }
-    if (waveNumber % 5 === 0) {
+    if (waveNumber % 5 === 0 && !isBossWave) {
       enemies.push({ type: "king", delay: (base + 5) * 500 + 1000 });
     }
+  }
+
+  // Spawn stage boss at the end of the wave
+  if (isBossWave) {
+    const lastDelay = enemies.length > 0 ? enemies[enemies.length - 1].delay + 1500 : 1500;
+    enemies.push({ type: STAGE_BOSS_WAVES[waveNumber], delay: lastDelay, isBoss: true });
   }
 
   // Scale HP with wave number
