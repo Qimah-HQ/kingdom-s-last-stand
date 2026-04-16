@@ -3,6 +3,7 @@ import {
   TOWER_TYPES, PATH_SET, CELL_SIZE,
   generateWaves, createEnemy, createTower, createProjectile,
   distanceBetween, moveEnemy, moveProjectile, generateBossInfo,
+  findMergePair, mergeTowers,
 } from "../lib/gameEngine";
 import GameBoard from "../components/game/GameBoard";
 import GameHUD from "../components/game/GameHUD";
@@ -29,6 +30,7 @@ export default function Game() {
   const [selectedTowerId, setSelectedTowerId] = useState(null);
   const [combo, setCombo] = useState(0);
   const [bossArrival, setBossArrival] = useState(null);
+  const [mergeFlash, setMergeFlash] = useState(false);
   const comboTimerRef = useRef(null);
   const COMBO_WINDOW = 3000; // ms between kills to maintain combo
 
@@ -74,8 +76,27 @@ export default function Game() {
     setGold(prev => {
       if (prev < cost) return prev;
       const tower = createTower(selectedTowerType, gx, gy);
-      towersRef.current = [...towersRef.current, tower];
+      const newTowers = [...towersRef.current, tower];
       towerMapRef.current.set(key, tower.id);
+
+      // Check for archer+cannon merge
+      const pair = findMergePair(newTowers);
+      if (pair) {
+        const [archer, cannon] = pair;
+        const ballista = mergeTowers(archer, cannon);
+        // Remove archer and cannon, add ballista
+        const merged = newTowers.filter(t => t.id !== archer.id && t.id !== cannon.id);
+        merged.push(ballista);
+        towerMapRef.current.delete(`${archer.gridX},${archer.gridY}`);
+        towerMapRef.current.delete(`${cannon.gridX},${cannon.gridY}`);
+        towerMapRef.current.set(`${ballista.gridX},${ballista.gridY}`, ballista.id);
+        towersRef.current = merged;
+        setMergeFlash(true);
+        setTimeout(() => setMergeFlash(false), 1500);
+      } else {
+        towersRef.current = newTowers;
+      }
+
       forceRender(n => n + 1);
       return prev - cost;
     });
@@ -344,6 +365,11 @@ export default function Game() {
         </div>
       </div>
 
+      {mergeFlash && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-6 py-3 rounded-xl border border-amber-600/70 bg-amber-950/90 text-amber-300 font-bold tracking-widest uppercase text-sm shadow-2xl shadow-amber-900/60 animate-bounce">
+          🎯 Siege Ballista Forged! Archer + Cannon merged!
+        </div>
+      )}
       <ComboDisplay combo={combo} multiplier={comboMultiplier} />
 
       <BossArrivalModal boss={bossArrival} onDismiss={() => setBossArrival(null)} />

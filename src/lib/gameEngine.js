@@ -91,7 +91,6 @@ export const TOWER_TYPES = {
     emoji: "🏹",
     description: "Fast attack, medium range",
     upgradeCost: 40,
-    // Combo synergy: boosts own fire rate when near another archer
     comboType: "speed",
   },
   cannon: {
@@ -105,6 +104,19 @@ export const TOWER_TYPES = {
     description: "High damage, slow fire",
     upgradeCost: 75,
     comboType: "heavy",
+  },
+  ballista: {
+    name: "Siege Ballista",
+    cost: 0, // created by merging, not purchased
+    damage: 45,
+    range: 4,
+    fireRate: 600,
+    color: "#b45309",
+    emoji: "🎯",
+    description: "Archer + Cannon merge. Fast & devastating",
+    upgradeCost: 100,
+    comboType: "siege",
+    isMerged: true,
   },
   mage: {
     name: "Mage Tower",
@@ -279,6 +291,46 @@ export function createProjectile(tower, enemy) {
     damage: tower.damage,
     towerType: tower.type,
     color: tower.color,
+  };
+}
+
+// Check if two grid positions are adjacent (including diagonals)
+export function areAdjacent(t1, t2) {
+  return Math.abs(t1.gridX - t2.gridX) <= 1 && Math.abs(t1.gridY - t2.gridY) <= 1
+    && !(t1.gridX === t2.gridX && t1.gridY === t2.gridY);
+}
+
+// Returns the IDs of an archer+cannon pair that should merge, or null
+export function findMergePair(towers) {
+  for (const t1 of towers) {
+    if (t1.type !== "archer" && t1.type !== "cannon") continue;
+    for (const t2 of towers) {
+      if (t2.id === t1.id) continue;
+      if (t1.type === "archer" && t2.type === "cannon" && areAdjacent(t1, t2)) {
+        return [t1, t2];
+      }
+    }
+  }
+  return null;
+}
+
+// Merge an archer+cannon pair into a ballista at the cannon's position
+export function mergeTowers(archer, cannon) {
+  const base = TOWER_TYPES.ballista;
+  return {
+    id: Math.random().toString(36).substr(2, 9),
+    type: "ballista",
+    gridX: cannon.gridX,
+    gridY: cannon.gridY,
+    x: cannon.x,
+    y: cannon.y,
+    damage: base.damage,
+    range: base.range * CELL_SIZE,
+    fireRate: base.fireRate,
+    lastFire: 0,
+    level: 1,
+    color: base.color,
+    emoji: base.emoji,
   };
 }
 

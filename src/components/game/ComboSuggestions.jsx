@@ -4,12 +4,12 @@ import { ChevronDown, ChevronUp, Lightbulb } from "lucide-react";
 const COMBOS = [
   {
     towers: ["🏹", "💣"],
-    name: "Explosive Arrows",
-    desc: "Archer + Cannon — rapid fire with heavy impact. Archers weaken armor, cannon finishes off clusters.",
-    bonus: "+burst damage",
-    color: "text-orange-400",
-    border: "border-orange-900/40",
-    bg: "bg-orange-950/20",
+    name: "⚡ MERGE → 🎯 Siege Ballista",
+    desc: "Place Archer adjacent to Cannon — they fuse into a Siege Ballista! Fast fire + massive damage in one tower.",
+    bonus: "MERGE!",
+    color: "text-amber-300",
+    border: "border-amber-600/60",
+    bg: "bg-amber-950/30",
   },
   {
     towers: ["❄️", "🏹"],

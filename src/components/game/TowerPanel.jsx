@@ -7,7 +7,7 @@ export default function TowerPanel({ selectedTower, onSelect, gold }) {
       <h3 className="text-xs uppercase tracking-widest text-red-800/80 font-semibold mb-1 tracking-[0.2em]">
         Towers
       </h3>
-      {Object.entries(TOWER_TYPES).map(([key, tower]) => {
+      {Object.entries(TOWER_TYPES).filter(([, t]) => !t.isMerged).map(([key, tower]) => {
         const canAfford = gold >= tower.cost;
         const isSelected = selectedTower === key;
 
