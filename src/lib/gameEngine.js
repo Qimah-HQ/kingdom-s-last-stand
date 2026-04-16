@@ -229,29 +229,33 @@ export function generateBossInfo(bossType) {
 
 export function generateWaves(waveNumber) {
   const enemies = [];
-  const base = Math.min(waveNumber, 20);
   const isBossWave = !!STAGE_BOSS_WAVES[waveNumber];
 
+  // Spawn interval shrinks with wave — min 250ms at high waves
+  const spawnInterval = Math.max(250, 800 - waveNumber * 22);
+  // Enemy count grows with wave
+  const count = Math.min(4 + Math.floor(waveNumber * 1.6), 40);
+
   if (waveNumber <= 3) {
-    for (let i = 0; i < 3 + waveNumber * 2; i++) {
-      enemies.push({ type: "peasant", delay: i * 800 });
+    for (let i = 0; i < count; i++) {
+      enemies.push({ type: "peasant", delay: i * spawnInterval });
     }
   } else if (waveNumber <= 6) {
-    for (let i = 0; i < 4 + waveNumber; i++) {
-      enemies.push({ type: i % 3 === 0 ? "soldier" : "peasant", delay: i * 700 });
+    for (let i = 0; i < count; i++) {
+      enemies.push({ type: i % 3 === 0 ? "soldier" : "peasant", delay: i * spawnInterval });
     }
   } else if (waveNumber <= 10) {
-    for (let i = 0; i < 5 + waveNumber; i++) {
-      const types = ["peasant", "soldier", "knight", "horseman"];
-      enemies.push({ type: types[i % types.length], delay: i * 600 });
+    const types = ["peasant", "soldier", "knight", "horseman"];
+    for (let i = 0; i < count; i++) {
+      enemies.push({ type: types[i % types.length], delay: i * spawnInterval });
     }
   } else {
-    for (let i = 0; i < base + 5; i++) {
-      const types = ["soldier", "knight", "horseman"];
-      enemies.push({ type: types[i % types.length], delay: i * 500 });
+    const types = ["soldier", "knight", "horseman"];
+    for (let i = 0; i < count; i++) {
+      enemies.push({ type: types[i % types.length], delay: i * spawnInterval });
     }
     if (waveNumber % 5 === 0 && !isBossWave) {
-      enemies.push({ type: "king", delay: (base + 5) * 500 + 1000 });
+      enemies.push({ type: "king", delay: count * spawnInterval + 1000 });
     }
   }
 
@@ -261,24 +265,86 @@ export function generateWaves(waveNumber) {
     enemies.push({ type: STAGE_BOSS_WAVES[waveNumber], delay: lastDelay, isBoss: true });
   }
 
-  // Scale HP with wave number
-  const hpMultiplier = 1 + (waveNumber - 1) * 0.15;
-  return enemies.map(e => ({
+  // HP scales faster at higher waves
+  const hpMultiplier = 1 + (waveNumber - 1) * 0.18;
+
+  return enemies.map((e, i) => ({
     ...e,
     hpMultiplier,
+    // Don't apply modifiers to bosses; roll per-enemy
+    modifier: e.isBoss ? null : rollModifier(waveNumber),
   }));
 }
 
-export function createEnemy(type, hpMultiplier = 1) {
+// Special modifiers applied to enemies in later waves
+export const ENEMY_MODIFIERS = {
+  shielded: {
+    label: "Shielded",
+    emoji: "🛡",
+    hpMult: 2.2,
+    speedMult: 0.85,
+    rewardMult: 2,
+    damageReduction: 0.4, // absorbs 40% of each hit
+    color: "#60a5fa",
+  },
+  fast: {
+    label: "Fast",
+    emoji: "💨",
+    hpMult: 0.7,
+    speedMult: 2.2,
+    rewardMult: 1.5,
+    damageReduction: 0,
+    color: "#facc15",
+  },
+  armored: {
+    label: "Armored",
+    emoji: "⚙️",
+    hpMult: 3.0,
+    speedMult: 0.7,
+    rewardMult: 2.5,
+    damageReduction: 0.55,
+    color: "#94a3b8",
+  },
+  berserker: {
+    label: "Berserker",
+    emoji: "🔥",
+    hpMult: 1.4,
+    speedMult: 1.8,
+    rewardMult: 2,
+    damageReduction: 0,
+    color: "#f97316",
+  },
+};
+
+// Pick a random modifier for a wave, or null if wave too early
+function rollModifier(waveNumber) {
+  if (waveNumber < 5) return null;
+  const pool = [];
+  if (waveNumber >= 5)  pool.push("fast");
+  if (waveNumber >= 8)  pool.push("shielded");
+  if (waveNumber >= 12) pool.push("armored");
+  if (waveNumber >= 15) pool.push("berserker");
+  // ~50% chance of getting a modifier
+  if (Math.random() < 0.5) return null;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+export function createEnemy(type, hpMultiplier = 1, modifier = null) {
   const base = ENEMY_TYPES[type];
+  const mod = modifier ? ENEMY_MODIFIERS[modifier] : null;
+  const hp = Math.floor(base.hp * hpMultiplier * (mod?.hpMult ?? 1));
   return {
     id: Math.random().toString(36).substr(2, 9),
     type,
-    hp: Math.floor(base.hp * hpMultiplier),
-    maxHp: Math.floor(base.hp * hpMultiplier),
-    speed: base.speed,
-    reward: base.reward,
+    modifier,
+    hp,
+    maxHp: hp,
+    speed: base.speed * (mod?.speedMult ?? 1),
+    reward: Math.floor(base.reward * (mod?.rewardMult ?? 1)),
+    damageReduction: mod?.damageReduction ?? 0,
     emoji: base.emoji,
+    modEmoji: mod?.emoji ?? null,
+    modColor: mod?.color ?? null,
     pathIndex: 0,
     x: PATH[0][0] * CELL_SIZE + CELL_SIZE / 2,
     y: PATH[0][1] * CELL_SIZE + CELL_SIZE / 2,

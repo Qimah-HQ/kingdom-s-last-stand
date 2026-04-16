@@ -145,7 +145,7 @@ export default function Game() {
         waveTimerRef.current += dt * 1000;
         const nextEnemy = waveQueueRef.current[0];
         if (waveTimerRef.current >= nextEnemy.delay) {
-          const enemy = createEnemy(nextEnemy.type, nextEnemy.hpMultiplier);
+          const enemy = createEnemy(nextEnemy.type, nextEnemy.hpMultiplier, nextEnemy.modifier);
           enemiesRef.current = [...enemiesRef.current, enemy];
           if (nextEnemy.isBoss) {
             setBossArrival(generateBossInfo(nextEnemy.type));
@@ -210,7 +210,8 @@ export default function Game() {
         if (result.hit) {
           const target = enemiesRef.current.find(e => e.id === result.targetId);
           if (target) {
-            target.hp -= proj.damage;
+            const dmg = Math.floor(proj.damage * (1 - (target.damageReduction ?? 0)));
+            target.hp -= dmg;
             if (proj.towerType === "frost") {
               target.slowTimer = 2000;
             }

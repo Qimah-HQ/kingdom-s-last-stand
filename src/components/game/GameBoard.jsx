@@ -99,7 +99,20 @@ function drawTowers(ctx, towers, selectedTowerId) {
 
 function drawEnemies(ctx, enemies) {
   enemies.forEach(enemy => {
-    const { x, y, hp, maxHp, emoji } = enemy;
+    const { x, y, hp, maxHp, emoji, modEmoji, modColor } = enemy;
+
+    // Modifier glow ring
+    if (modColor) {
+      ctx.save();
+      ctx.strokeStyle = modColor;
+      ctx.lineWidth = 2;
+      ctx.globalAlpha = 0.7;
+      ctx.beginPath();
+      ctx.arc(x, y, CELL_SIZE * 0.34, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+      ctx.restore();
+    }
 
     // Shadow
     ctx.fillStyle = "rgba(0,0,0,0.3)";
@@ -113,16 +126,25 @@ function drawEnemies(ctx, enemies) {
     ctx.textBaseline = "middle";
     ctx.fillText(emoji, x, y);
 
+    // Modifier badge (top-right corner)
+    if (modEmoji) {
+      ctx.font = `${CELL_SIZE * 0.28}px serif`;
+      ctx.fillText(modEmoji, x + CELL_SIZE * 0.22, y - CELL_SIZE * 0.22);
+    }
+
     // HP bar
-    const barW = CELL_SIZE * 0.6;
+    const barW = CELL_SIZE * 0.7;
     const barH = 3;
     const barX = x - barW / 2;
-    const barY = y - CELL_SIZE * 0.35;
+    const barY = y - CELL_SIZE * 0.4;
     const hpPercent = hp / maxHp;
 
     ctx.fillStyle = "rgba(0,0,0,0.6)";
     ctx.fillRect(barX - 1, barY - 1, barW + 2, barH + 2);
-    ctx.fillStyle = hpPercent > 0.5 ? "#22c55e" : hpPercent > 0.25 ? "#eab308" : "#ef4444";
+    // Modifier affects HP bar colour
+    ctx.fillStyle = modColor && hpPercent > 0.25
+      ? modColor
+      : hpPercent > 0.5 ? "#22c55e" : hpPercent > 0.25 ? "#eab308" : "#ef4444";
     ctx.fillRect(barX, barY, barW * hpPercent, barH);
   });
 }
