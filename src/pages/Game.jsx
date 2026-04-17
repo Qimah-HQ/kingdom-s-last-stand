@@ -14,6 +14,8 @@ import GameOverModal from "../components/game/GameOverModal";
 import ComboDisplay from "../components/game/ComboDisplay";
 import ComboSuggestions from "../components/game/ComboSuggestions";
 import BossArrivalModal from "../components/game/BossArrivalModal";
+import WaveSuccessBanner from "../components/game/WaveSuccessBanner";
+import { playKillSound, playDamageSound, playWaveSuccessSound } from "../lib/sounds";
 import { Shield } from "lucide-react";
 
 const INITIAL_GOLD = 150;
@@ -31,6 +33,7 @@ export default function Game() {
   const [combo, setCombo] = useState(0);
   const [bossArrival, setBossArrival] = useState(null);
   const [mergeFlash, setMergeFlash] = useState(false);
+  const [waveSuccess, setWaveSuccess] = useState(false);
   const comboTimerRef = useRef(null);
   const COMBO_WINDOW = 3000; // ms between kills to maintain combo
 
@@ -168,6 +171,7 @@ export default function Game() {
       enemiesRef.current = newEnemies;
 
       if (livesLost > 0) {
+        playDamageSound();
         setLives(prev => {
           const newLives = prev - livesLost;
           if (newLives <= 0) {
@@ -219,6 +223,7 @@ export default function Game() {
               goldEarned += target.reward;
               scoreEarned += target.reward * 2;
               killCount++;
+              playKillSound();
               enemiesRef.current = enemiesRef.current.filter(e => e.id !== target.id);
             }
           }
@@ -246,6 +251,8 @@ export default function Game() {
           if (prev) {
             setWave(w => w + 1);
             setGold(g => g + 25); // Wave completion bonus
+            playWaveSuccessSound();
+            setWaveSuccess(s => !s); // toggle to always re-trigger
             return false;
           }
           return prev;
@@ -373,6 +380,7 @@ export default function Game() {
       <ComboDisplay combo={combo} multiplier={comboMultiplier} />
 
       <BossArrivalModal boss={bossArrival} onDismiss={() => setBossArrival(null)} />
+      <WaveSuccessBanner wave={wave} show={waveSuccess} />
 
       {gameOver && (
         <GameOverModal score={score} wave={wave} onRestart={handleRestart} />
