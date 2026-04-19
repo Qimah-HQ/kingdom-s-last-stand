@@ -68,6 +68,34 @@ const COMBOS = [
     border: "border-purple-600/60",
     bg: "bg-purple-950/30",
   },
+  // New cannon merges
+  {
+    towers: ["💣", "💥"],
+    name: "⚡ MERGE → 💣💥 Siege Mortar",
+    desc: "Cannon + Mortar → long-range devastating barrage.",
+    bonus: "MERGE",
+    color: "text-orange-300",
+    border: "border-orange-600/60",
+    bg: "bg-orange-950/30",
+  },
+  {
+    towers: ["💣", "🔫"],
+    name: "⚡ MERGE → ⚡🔫 Hyper Railgun",
+    desc: "Cannon + Railgun → extreme-range precision sniper.",
+    bonus: "MERGE",
+    color: "text-sky-300",
+    border: "border-sky-600/60",
+    bg: "bg-sky-950/30",
+  },
+  {
+    towers: ["💣", "🪖"],
+    name: "⚡ MERGE → 🪖⚡ Gatling Flak",
+    desc: "Cannon + Flak → insane fire rate machine gun.",
+    bonus: "MERGE",
+    color: "text-slate-300",
+    border: "border-slate-600/60",
+    bg: "bg-slate-950/30",
+  },
   // Frost tree
   {
     towers: ["❄️", "❄️"],
