@@ -19,6 +19,7 @@ import RoyalRewardModal from "../components/game/RoyalRewardModal";
 import DarkLordModal from "../components/game/DarkLordModal";
 import VictoryModal from "../components/game/VictoryModal";
 import PerkShop from "../components/game/PerkShop";
+import IntroStoryModal from "../components/game/IntroStoryModal";
 import { playKillSound, playDamageSound, playWaveSuccessSound } from "../lib/sounds";
 
 
@@ -59,6 +60,7 @@ export default function Game() {
   const [victory, setVictory] = useState(false);
   const [perkShop, setPerkShop] = useState(false);
   const [perksOwned, setPerksOwned] = useState({});
+  const [showIntro, setShowIntro] = useState(true);
   // Persistent multipliers from perks
   const perkMultRef = useRef({ goldBonus: 1, damageBonus: 1, fireRateBonus: 1, projSpeedBonus: 1 });
   const comboTimerRef = useRef(null);
@@ -484,8 +486,9 @@ export default function Game() {
     setRoyalReward(false);
     setDarkLordDefeated(false);
     setVictory(false);
-    setPerkShop(false);
-    setPerksOwned({});
+      setPerkShop(false);
+      setPerksOwned({});
+      setShowIntro(true);
     perkMultRef.current = { goldBonus: 1, damageBonus: 1, fireRateBonus: 1, projSpeedBonus: 1 };
     if (comboTimerRef.current) clearTimeout(comboTimerRef.current);
     lastTimeRef.current = 0;
@@ -641,6 +644,8 @@ export default function Game() {
       {gameOver && (
         <GameOverModal score={score} wave={wave} onRestart={handleRestart} />
       )}
+
+      <IntroStoryModal show={showIntro} onBegin={() => setShowIntro(false)} />
     </div>
   );
 }
