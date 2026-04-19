@@ -77,16 +77,18 @@ const LAND_SCENES = {
     title: "The Shadow Falls",
     land: "💀 Land 5: The Shadow Realm",
     boss: "💀 Shadow Sovereign",
-    bg: "linear-gradient(160deg, #0a0010 0%, #15002a 50%, #200040 100%)",
-    border: "#5a0090",
-    glow: "#a855f7",
-    particles: ["💀", "⚔️", "👑", "✨", "🌟"],
-    narrator: "Lord Aldric",
+    bg: "linear-gradient(160deg, #0a0010 0%, #180530 50%, #220050 100%)",
+    border: "#7a20c0",
+    glow: "#e879f9",
+    particles: ["👑", "✨", "🌟", "💜", "🕊️"],
     lines: [
-      "The Shadow Sovereign falls! Eldenmoor stands victorious!",
-      "A blinding light tears through the darkness as the realm is purged.",
-      "From every corner of the kingdom, bells ring out in celebration!",
-      "Lord Aldric raises his sword to the sky — ELDENMOOR SHALL NEVER FALL!",
+      { speaker: "Lord Aldric", emoji: "⚔️", text: "The Shadow Sovereign falls! Eldenmoor stands victorious!", color: "#c084fc" },
+      { speaker: "Lord Aldric", emoji: "⚔️", text: "A blinding light tears through the darkness... and then — silence.", color: "#c084fc" },
+      { speaker: "Queen Seraphine", emoji: "👸", text: "Lord Aldric... you came back.", color: "#f9a8d4" },
+      { speaker: "Lord Aldric", emoji: "⚔️", text: "My Queen — I swore I would. Eldenmoor is safe. The shadow is broken.", color: "#c084fc" },
+      { speaker: "Queen Seraphine", emoji: "👸", text: "I watched from the tower every single wave. I never stopped believing in you.", color: "#f9a8d4" },
+      { speaker: "Lord Aldric", emoji: "⚔️", text: "Then this victory belongs to you, my Queen. Always.", color: "#c084fc" },
+      { speaker: "Queen Seraphine", emoji: "👸", text: "Rise, Champion of Eldenmoor. Rise, and let the kingdom celebrate your name FOREVER.", color: "#f9a8d4" },
     ],
     reward: 2000,
     rewardLabel: "Eternal Glory",
@@ -102,6 +104,12 @@ export default function LandCompleteModal({ landNumber, show, onContinue }) {
 
   const scene = LAND_SCENES[landNumber];
 
+  // Helper: get line text whether it's a string or object
+  const getLineText = (line) => (typeof line === "object" ? line.text : line);
+  const getLineSpeaker = (line) => (typeof line === "object" ? line.speaker : scene?.narrator);
+  const getLineEmoji = (line) => (typeof line === "object" ? line.emoji : "⚔");
+  const getLineColor = (line) => (typeof line === "object" ? line.color : scene?.glow);
+
   useEffect(() => {
     if (show && scene) {
       setVisible(true);
@@ -111,12 +119,13 @@ export default function LandCompleteModal({ landNumber, show, onContinue }) {
       // Speech
       if (window.speechSynthesis) {
         window.speechSynthesis.cancel();
+        const lastLine = scene.lines[scene.lines.length - 1];
         const shout = scene.isFinal
-          ? "VICTORY! Eldenmoor stands! The Shadow has fallen forever!"
-          : scene.lines[scene.lines.length - 1];
+          ? "Rise, Champion of Eldenmoor. Rise, and let the kingdom celebrate your name forever!"
+          : getLineText(lastLine);
         const utt = new SpeechSynthesisUtterance(shout);
-        utt.rate = scene.isFinal ? 0.65 : 0.75;
-        utt.pitch = 0.4;
+        utt.rate = scene.isFinal ? 0.60 : 0.75;
+        utt.pitch = scene.isFinal ? 0.7 : 0.4;
         utt.volume = 1;
         const voices = window.speechSynthesis.getVoices();
         const v = voices.find(v => v.lang === "en-GB") || voices.find(v => v.lang.startsWith("en"));
@@ -131,7 +140,7 @@ export default function LandCompleteModal({ landNumber, show, onContinue }) {
   // Typewriter
   useEffect(() => {
     if (!visible || !scene) return;
-    const line = scene.lines[lineIndex] || "";
+    const line = getLineText(scene.lines[lineIndex] || "");
     if (typed.length < line.length) {
       const t = setTimeout(() => setTyped(line.slice(0, typed.length + 1)), 28);
       return () => clearTimeout(t);
@@ -140,7 +149,7 @@ export default function LandCompleteModal({ landNumber, show, onContinue }) {
 
   const advanceLine = () => {
     if (!scene) return;
-    const line = scene.lines[lineIndex] || "";
+    const line = getLineText(scene.lines[lineIndex] || "");
     if (typed.length < line.length) {
       setTyped(line);
       return;
@@ -224,14 +233,14 @@ export default function LandCompleteModal({ landNumber, show, onContinue }) {
           style={{ background: "rgba(0,0,0,0.55)", border: `1px solid ${scene.border}`, minHeight: 90 }}
           onClick={advanceLine}>
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-lg">⚔</span>
-            <span className="text-xs font-black uppercase tracking-widest" style={{ color: scene.glow }}>
-              {scene.narrator}
+            <span className="text-lg">{getLineEmoji(scene.lines[lineIndex])}</span>
+            <span className="text-xs font-black uppercase tracking-widest" style={{ color: getLineColor(scene.lines[lineIndex]) }}>
+              {getLineSpeaker(scene.lines[lineIndex])}
             </span>
           </div>
           <p className="text-sm leading-relaxed text-white" style={{ minHeight: 48 }}>
             {typed}
-            <span className="animate-pulse" style={{ color: scene.glow }}>▌</span>
+            <span className="animate-pulse" style={{ color: getLineColor(scene.lines[lineIndex]) }}>▌</span>
           </p>
           <div className="flex items-center justify-between mt-3">
             <div className="flex gap-1">
