@@ -80,6 +80,103 @@ export const PATH = [
 
 export const PATH_SET = new Set(PATH.map(([x, y]) => `${x},${y}`));
 
+// Tower level-up abilities: keyed by tower type, each level (2-5) unlocks one ability
+export const TOWER_ABILITIES = {
+  archer: {
+    2: { id: "multishot",   label: "Multi-Shot",      desc: "Fires at 2 enemies simultaneously",    icon: "🎯" },
+    3: { id: "rangeup",     label: "+Range",           desc: "Range increased by 25%",               icon: "📡" },
+    4: { id: "poison",      label: "Poison Arrow",     desc: "Arrows apply 3s poison DoT",           icon: "☠️" },
+    5: { id: "rapidfire",   label: "Rapid Fire",       desc: "Fire rate increased by 40%",           icon: "⚡" },
+  },
+  cannon: {
+    2: { id: "splash",      label: "Explosive Shell",  desc: "Shots deal 50% splash damage nearby",  icon: "💥" },
+    3: { id: "rangeup",     label: "+Range",           desc: "Range increased by 20%",               icon: "📡" },
+    4: { id: "armorbreak",  label: "Armor Break",      desc: "Ignores 30% of enemy armor",           icon: "🔨" },
+    5: { id: "barrage",     label: "Barrage",          desc: "Every 5th shot fires 3 shells at once",icon: "🔥" },
+  },
+  trebuchet: {
+    2: { id: "rangeup",     label: "+Range",           desc: "Range increased by 30%",               icon: "📡" },
+    3: { id: "splash",      label: "Boulder Splash",   desc: "Boulders deal 60% splash AoE damage",  icon: "💥" },
+    4: { id: "slowfield",   label: "Slow Field",       desc: "Impact creates a 2s slow zone",        icon: "🌀" },
+    5: { id: "siege",       label: "Siege Mode",       desc: "Damage +60%, fire rate –20%",          icon: "🏰" },
+  },
+  catapult: {
+    2: { id: "splash",      label: "Rock Shower",      desc: "Rocks deal 40% splash to nearby foes", icon: "💥" },
+    3: { id: "burn",        label: "Flaming Rock",     desc: "Rocks apply 3s burn DoT",              icon: "🔥" },
+    4: { id: "rangeup",     label: "+Range",           desc: "Range increased by 25%",               icon: "📡" },
+    5: { id: "heavystrike", label: "Heavy Strike",     desc: "50% chance to stun enemy for 1s",      icon: "⚒️" },
+  },
+  crossbow: {
+    2: { id: "rapidfire",   label: "Swift Reload",     desc: "Fire rate increased by 30%",           icon: "⚡" },
+    3: { id: "pierce",      label: "Piercing Bolt",    desc: "Bolts pierce through first enemy",     icon: "🏹" },
+    4: { id: "poison",      label: "Poison Tip",       desc: "Bolts apply 3s poison DoT",            icon: "☠️" },
+    5: { id: "rangeup",     label: "+Range",           desc: "Range increased by 35%",               icon: "📡" },
+  },
+  mage: {
+    2: { id: "splash",      label: "Arcane Burst",     desc: "Spells deal 45% splash damage",        icon: "💥" },
+    3: { id: "slow",        label: "Arcane Slow",      desc: "All spells slow enemies by 2s",        icon: "🌀" },
+    4: { id: "rangeup",     label: "+Range",           desc: "Range increased by 25%",               icon: "📡" },
+    5: { id: "chain",       label: "Chain Lightning",  desc: "Each hit chains to 1 nearby enemy",    icon: "⚡" },
+  },
+  frost: {
+    2: { id: "slowfield",   label: "Frost Field",      desc: "Slows all nearby enemies passively",   icon: "🌀" },
+    3: { id: "rangeup",     label: "+Range",           desc: "Range increased by 30%",               icon: "📡" },
+    4: { id: "freeze",      label: "Deep Freeze",      desc: "Fully stops enemies for 1.5s on hit",  icon: "🧊" },
+    5: { id: "blizzard",    label: "Blizzard Aura",    desc: "AoE slow field around tower always",   icon: "❄️" },
+  },
+  // Merged towers get abilities too
+  ballista: {
+    2: { id: "pierce",      label: "Piercing Shot",    desc: "Bolts pierce through first target",    icon: "🏹" },
+    3: { id: "rangeup",     label: "+Range",           desc: "Range increased by 25%",               icon: "📡" },
+    4: { id: "rapidfire",   label: "Rapid Salvo",      desc: "Fire rate increased by 35%",           icon: "⚡" },
+    5: { id: "splash",      label: "Explosive Tip",    desc: "Shots deal 50% splash damage",         icon: "💥" },
+  },
+  warcannon: {
+    2: { id: "splash",      label: "Massive Shell",    desc: "Shots deal 70% splash damage",         icon: "💥" },
+    3: { id: "armorbreak",  label: "Armor Break",      desc: "Ignores 40% of enemy armor",           icon: "🔨" },
+    4: { id: "rangeup",     label: "+Range",           desc: "Range increased by 20%",               icon: "📡" },
+    5: { id: "barrage",     label: "War Barrage",      desc: "Every 5th shot fires 4 shells",        icon: "🔥" },
+  },
+  doomcannon: {
+    2: { id: "splash",      label: "Doom Blast",       desc: "Shots deal 80% splash damage",         icon: "💥" },
+    3: { id: "armorbreak",  label: "Total Penetration",desc: "Ignores 60% of enemy armor",           icon: "🔨" },
+    4: { id: "burn",        label: "Hellfire",         desc: "Shots apply 4s burn DoT",              icon: "🔥" },
+    5: { id: "barrage",     label: "Apocalypse",       desc: "Every 5th shot fires 5 shells at once",icon: "☄️" },
+  },
+  siegeEngine: {
+    2: { id: "splash",      label: "Siege Blast",      desc: "Shots deal 65% splash AoE",            icon: "💥" },
+    3: { id: "rangeup",     label: "+Range",           desc: "Range increased by 30%",               icon: "📡" },
+    4: { id: "slowfield",   label: "Quake",            desc: "Impacts slow all nearby enemies",      icon: "🌀" },
+    5: { id: "siege",       label: "Total Siege",      desc: "Damage +80%, fire rate –10%",          icon: "🏰" },
+  },
+  warMachine: {
+    2: { id: "splash",      label: "Stone Barrage",    desc: "Shots deal 55% splash AoE",            icon: "💥" },
+    3: { id: "burn",        label: "Fire Pots",        desc: "Shots apply 3s burn DoT",              icon: "🔥" },
+    4: { id: "armorbreak",  label: "Armor Crush",      desc: "Ignores 35% of enemy armor",           icon: "🔨" },
+    5: { id: "rangeup",     label: "+Range",           desc: "Range increased by 30%",               icon: "📡" },
+  },
+  arrowStorm: {
+    2: { id: "multishot",   label: "Storm Volley",     desc: "Fires at 3 enemies simultaneously",    icon: "🎯" },
+    3: { id: "poison",      label: "Venom Storm",      desc: "All arrows apply 3s poison DoT",       icon: "☠️" },
+    4: { id: "rapidfire",   label: "Gale Force",       desc: "Fire rate increased by 50%",           icon: "⚡" },
+    5: { id: "rangeup",     label: "+Range",           desc: "Range increased by 35%",               icon: "📡" },
+  },
+};
+
+// Get all unlocked abilities for a tower at its current level
+export function getUnlockedAbilities(tower) {
+  const abilities = TOWER_ABILITIES[tower.type] || {};
+  return Object.entries(abilities)
+    .filter(([lvl]) => tower.level >= parseInt(lvl))
+    .map(([lvl, ab]) => ({ ...ab, level: parseInt(lvl) }));
+}
+
+// Check if a tower has a specific ability unlocked
+export function towerHasAbility(tower, abilityId) {
+  const unlocked = getUnlockedAbilities(tower);
+  return unlocked.some(a => a.id === abilityId);
+}
+
 export const TOWER_TYPES = {
   archer: {
     name: "Archer Tower",
@@ -530,8 +627,8 @@ export function createTower(type, gridX, gridY) {
   };
 }
 
-export function createProjectile(tower, enemy) {
-  return {
+export function createProjectile(tower, enemy, overrideDamage = null) {
+  const proj = {
     id: Math.random().toString(36).substr(2, 9),
     x: tower.x,
     y: tower.y,
@@ -539,10 +636,48 @@ export function createProjectile(tower, enemy) {
     targetX: enemy.x,
     targetY: enemy.y,
     speed: 5,
-    damage: tower.damage,
+    damage: overrideDamage ?? tower.damage,
     towerType: tower.type,
     color: tower.color,
   };
+
+  // Embed ability flags based on unlocked abilities
+  if (towerHasAbility(tower, "splash")) {
+    const splashPct = { cannon: 0.5, trebuchet: 0.6, catapult: 0.4, warcannon: 0.7, doomcannon: 0.8, siegeEngine: 0.65, warMachine: 0.55, ballista: 0.5 }[tower.type] ?? 0.45;
+    proj.splashRadius = CELL_SIZE * 1.5;
+    proj.splashDamage = Math.floor(proj.damage * splashPct);
+  }
+  if (towerHasAbility(tower, "burn")) {
+    proj.burnDuration = tower.type === "doomcannon" ? 4000 : 3000;
+  }
+  if (towerHasAbility(tower, "poison")) {
+    proj.poisonDuration = 3000;
+  }
+  if (towerHasAbility(tower, "armorbreak")) {
+    proj.armorBreak = { cannon: 0.3, warcannon: 0.4, doomcannon: 0.6, warMachine: 0.35 }[tower.type] ?? 0.3;
+  }
+  if (towerHasAbility(tower, "slowfield")) {
+    proj.slowField = true;
+    proj.appliesSlow = true;
+  }
+  if (towerHasAbility(tower, "slow")) {
+    proj.appliesSlow = true;
+  }
+  if (towerHasAbility(tower, "freeze")) {
+    proj.appliesFreeze = true;
+    proj.freezeDuration = 1500;
+  }
+  if (towerHasAbility(tower, "blizzard")) {
+    proj.appliesSlow = true;
+  }
+  if (towerHasAbility(tower, "chain")) {
+    proj.chain = true;
+  }
+  if (TOWER_TYPES[tower.type]?.appliesSlow) {
+    proj.appliesSlow = true;
+  }
+
+  return proj;
 }
 
 // Check if two grid positions are adjacent (including diagonals)
@@ -625,7 +760,7 @@ export function moveEnemy(enemy, dt) {
   const dy = targetY - enemy.y;
   const dist = Math.sqrt(dx * dx + dy * dy);
 
-  const speedMod = enemy.slowTimer > 0 ? 0.4 : 1;
+  const speedMod = (enemy.frozenTimer ?? 0) > 0 ? 0 : (enemy.slowTimer > 0 ? 0.4 : 1);
   const moveSpeed = enemy.speed * speedMod * dt * 60;
 
   if (dist < moveSpeed) {
@@ -638,9 +773,8 @@ export function moveEnemy(enemy, dt) {
     enemy.y += (dy / dist) * moveSpeed;
   }
 
-  if (enemy.slowTimer > 0) {
-    enemy.slowTimer -= dt * 1000;
-  }
+  if (enemy.slowTimer > 0) enemy.slowTimer -= dt * 1000;
+  if ((enemy.frozenTimer ?? 0) > 0) enemy.frozenTimer -= dt * 1000;
 
   return false;
 }

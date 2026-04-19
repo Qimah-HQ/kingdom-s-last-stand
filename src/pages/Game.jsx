@@ -3,7 +3,7 @@ import {
   TOWER_TYPES, PATH_SET, CELL_SIZE,
   generateWaves, createEnemy, createTower, createProjectile,
   distanceBetween, moveEnemy, moveProjectile, generateBossInfo,
-  findMergePair, mergeTowers,
+  findMergePair, mergeTowers, towerHasAbility,
 } from "../lib/gameEngine";
 import GameBoard from "../components/game/GameBoard";
 import GameHUD from "../components/game/GameHUD";
@@ -133,9 +133,26 @@ export default function Game() {
     setGold(prev => {
       if (prev < cost || tower.level >= 5) return prev;
       tower.level += 1;
+
+      // Base stat scaling
       tower.damage = Math.floor(base.damage * (1 + (tower.level - 1) * 0.4));
       tower.range = base.range * CELL_SIZE * (1 + (tower.level - 1) * 0.1);
       tower.fireRate = Math.max(200, base.fireRate * (1 - (tower.level - 1) * 0.08));
+
+      // Apply ability bonuses unlocked at this new level
+      if (towerHasAbility(tower, "rangeup")) {
+        const rangeBonus = { trebuchet: 0.30, frost: 0.30, crossbow: 0.35, arrowStorm: 0.35, siegeEngine: 0.30, warMachine: 0.30 }[tower.type] ?? 0.25;
+        tower.range *= (1 + rangeBonus);
+      }
+      if (towerHasAbility(tower, "rapidfire")) {
+        const rfBonus = { crossbow: 0.30, arrowStorm: 0.50, ballista: 0.35 }[tower.type] ?? 0.40;
+        tower.fireRate = Math.max(150, tower.fireRate * (1 - rfBonus));
+      }
+      if (towerHasAbility(tower, "siege")) {
+        tower.damage = Math.floor(tower.damage * (tower.type === "siegeEngine" ? 1.8 : 1.6));
+        tower.fireRate = Math.floor(tower.fireRate * (tower.type === "siegeEngine" ? 0.90 : 0.80));
+      }
+
       forceRender(n => n + 1);
       return prev - cost;
     });
@@ -209,22 +226,33 @@ export default function Game() {
       towersRef.current.forEach(tower => {
         if (now - tower.lastFire < tower.fireRate) return;
 
-        // Find closest enemy in range
-        let closest = null;
-        let closestDist = Infinity;
-        enemiesRef.current.forEach(enemy => {
-          const d = distanceBetween(tower, enemy);
-          if (d <= tower.range && d < closestDist) {
-            closest = enemy;
-            closestDist = d;
-          }
-        });
+        // Find enemies in range, sorted by path progress
+        const inRange = enemiesRef.current
+          .filter(e => distanceBetween(tower, e) <= tower.range)
+          .sort((a, b) => b.pathIndex - a.pathIndex);
 
-        if (closest) {
-          tower.lastFire = now;
-          const proj = createProjectile(tower, closest);
-          projectilesRef.current = [...projectilesRef.current, proj];
+        if (inRange.length === 0) return;
+
+        tower.lastFire = now;
+        tower.shotCount = (tower.shotCount ?? 0) + 1;
+
+        const newProjs = [];
+
+        // Multi-shot: fire at multiple enemies
+        const multiCount = towerHasAbility(tower, "multishot")
+          ? (tower.type === "arrowStorm" ? 3 : 2)
+          : 1;
+        const targets = inRange.slice(0, multiCount);
+        targets.forEach(t => newProjs.push(createProjectile(tower, t)));
+
+        // Barrage: every 5th shot fires extra shells at random enemies in range
+        if (towerHasAbility(tower, "barrage") && tower.shotCount % 5 === 0) {
+          const extraCount = { doomcannon: 4, warcannon: 3, cannon: 2 }[tower.type] ?? 2;
+          const extras = [...inRange].sort(() => Math.random() - 0.5).slice(0, extraCount);
+          extras.forEach(t => newProjs.push(createProjectile(tower, t, Math.floor(tower.damage * 0.7))));
         }
+
+        projectilesRef.current = [...projectilesRef.current, ...newProjs];
       });
 
       // Move projectiles
@@ -237,11 +265,82 @@ export default function Game() {
         if (result.hit) {
           const target = enemiesRef.current.find(e => e.id === result.targetId);
           if (target) {
-            const dmg = Math.floor(proj.damage * (1 - (target.damageReduction ?? 0)));
+            // Armor break: reduce effective armor
+            const armorReduction = proj.armorBreak ?? 0;
+            const effectiveDR = Math.max(0, (target.damageReduction ?? 0) - armorReduction);
+            const dmg = Math.floor(proj.damage * (1 - effectiveDR));
             target.hp -= dmg;
-            if (proj.towerType === "frost" || TOWER_TYPES[proj.towerType]?.appliesSlow) {
-              target.slowTimer = 2000;
+
+            // Slow / freeze effects
+            if (proj.towerType === "frost" || TOWER_TYPES[proj.towerType]?.appliesSlow || proj.appliesSlow) {
+              target.slowTimer = proj.freezeDuration ?? 2000;
             }
+            if (proj.appliesFreeze) {
+              target.slowTimer = 1500;
+              target.frozenTimer = 1500; // full stop
+            }
+
+            // Burn / poison DoT
+            if (proj.burnDuration) {
+              target.burnTimer = proj.burnDuration;
+              target.burnDmg = Math.max(1, Math.floor(proj.damage * 0.12));
+            }
+            if (proj.poisonDuration) {
+              target.poisonTimer = proj.poisonDuration;
+              target.poisonDmg = Math.max(1, Math.floor(proj.damage * 0.08));
+            }
+
+            // Slow field on impact (trebuchet L4, siegeEngine L4)
+            if (proj.slowField) {
+              const splashR = CELL_SIZE * 1.8;
+              enemiesRef.current.forEach(e => {
+                if (e.id !== target.id && Math.sqrt((e.x - target.x) ** 2 + (e.y - target.y) ** 2) <= splashR) {
+                  e.slowTimer = 2000;
+                }
+              });
+            }
+
+            // AoE Splash damage
+            if (proj.splashRadius && proj.splashDamage) {
+              enemiesRef.current.forEach(e => {
+                if (e.id !== target.id) {
+                  const d = Math.sqrt((e.x - target.x) ** 2 + (e.y - target.y) ** 2);
+                  if (d <= proj.splashRadius) {
+                    const splashDmg = Math.floor(proj.splashDamage * (1 - Math.max(0, (e.damageReduction ?? 0) - armorReduction)));
+                    e.hp -= splashDmg;
+                    if (proj.burnDuration) { e.burnTimer = proj.burnDuration; e.burnDmg = Math.max(1, Math.floor(proj.splashDamage * 0.1)); }
+                    if (proj.appliesSlow) e.slowTimer = 2000;
+                    if (e.hp <= 0) {
+                      goldEarned += e.reward;
+                      scoreEarned += e.reward * 2;
+                      killCount++;
+                      playKillSound();
+                    }
+                  }
+                }
+              });
+              enemiesRef.current = enemiesRef.current.filter(e => e.hp > 0);
+            }
+
+            // Chain lightning (mage L5): jump to nearest other enemy
+            if (proj.chain) {
+              let nearest = null, nearestD = Infinity;
+              enemiesRef.current.forEach(e => {
+                if (e.id !== target.id) {
+                  const d = Math.sqrt((e.x - target.x) ** 2 + (e.y - target.y) ** 2);
+                  if (d < nearestD && d < CELL_SIZE * 3) { nearest = e; nearestD = d; }
+                }
+              });
+              if (nearest) {
+                const chainDmg = Math.floor(proj.damage * 0.6 * (1 - (nearest.damageReduction ?? 0)));
+                nearest.hp -= chainDmg;
+                if (nearest.hp <= 0) {
+                  goldEarned += nearest.reward; scoreEarned += nearest.reward * 2; killCount++; playKillSound();
+                  enemiesRef.current = enemiesRef.current.filter(e => e.id !== nearest.id);
+                }
+              }
+            }
+
             if (target.hp <= 0) {
               goldEarned += target.reward;
               scoreEarned += target.reward * 2;
@@ -255,6 +354,25 @@ export default function Game() {
         }
       });
       projectilesRef.current = newProjectiles;
+
+      // Apply DoT (burn & poison) and frozen timers
+      enemiesRef.current.forEach(enemy => {
+        if (enemy.burnTimer > 0) {
+          enemy.burnTimer -= dt * 1000;
+          enemy.hp -= (enemy.burnDmg ?? 1) * dt * 3;
+        }
+        if (enemy.poisonTimer > 0) {
+          enemy.poisonTimer -= dt * 1000;
+          enemy.hp -= (enemy.poisonDmg ?? 1) * dt * 2;
+        }
+        if (enemy.frozenTimer > 0) {
+          enemy.frozenTimer -= dt * 1000;
+        }
+      });
+      // Remove enemies killed by DoT
+      const dotKilled = enemiesRef.current.filter(e => e.hp <= 0);
+      dotKilled.forEach(e => { goldEarned += e.reward; scoreEarned += e.reward * 2; killCount++; });
+      if (dotKilled.length > 0) enemiesRef.current = enemiesRef.current.filter(e => e.hp > 0);
 
       if (goldEarned > 0) {
         setCombo(prev => {
