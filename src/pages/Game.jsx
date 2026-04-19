@@ -16,6 +16,7 @@ import ComboSuggestions from "../components/game/ComboSuggestions";
 import BossArrivalModal from "../components/game/BossArrivalModal";
 import WaveSuccessBanner from "../components/game/WaveSuccessBanner";
 import RoyalRewardModal from "../components/game/RoyalRewardModal";
+import DarkLordModal from "../components/game/DarkLordModal";
 import { playKillSound, playDamageSound, playWaveSuccessSound } from "../lib/sounds";
 import { Shield } from "lucide-react";
 
@@ -36,6 +37,7 @@ export default function Game() {
   const [mergeFlash, setMergeFlash] = useState(false);
   const [waveSuccess, setWaveSuccess] = useState(false);
   const [royalReward, setRoyalReward] = useState(false);
+  const [darkLordDefeated, setDarkLordDefeated] = useState(false);
   const comboTimerRef = useRef(null);
   const COMBO_WINDOW = 3000; // ms between kills to maintain combo
 
@@ -255,6 +257,8 @@ export default function Game() {
               const next = w + 1;
               // After meadow stage (wave 5), show royal reward
               if (w === 5) setTimeout(() => setRoyalReward(true), 800);
+              // After dark fortress stage (wave 10), show Dark Lord defeated scene
+              if (w === 10) setTimeout(() => setDarkLordDefeated(true), 800);
               return next;
             });
             setGold(g => g + 25); // Wave completion bonus
@@ -294,6 +298,8 @@ export default function Game() {
     setSelectedTowerType(null);
     setSelectedTowerId(null);
     setCombo(0);
+    setRoyalReward(false);
+    setDarkLordDefeated(false);
     if (comboTimerRef.current) clearTimeout(comboTimerRef.current);
     lastTimeRef.current = 0;
   };
@@ -388,6 +394,13 @@ export default function Game() {
 
       <BossArrivalModal boss={bossArrival} onDismiss={() => setBossArrival(null)} />
       <WaveSuccessBanner wave={wave} show={waveSuccess} />
+      <DarkLordModal
+        show={darkLordDefeated}
+        onContinue={() => {
+          setDarkLordDefeated(false);
+          setGold(g => g + 500); // King's royal treasury reward
+        }}
+      />
       <RoyalRewardModal
         show={royalReward}
         wave={wave}
