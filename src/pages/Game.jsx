@@ -19,7 +19,7 @@ import RoyalRewardModal from "../components/game/RoyalRewardModal";
 import DarkLordModal from "../components/game/DarkLordModal";
 import VictoryModal from "../components/game/VictoryModal";
 import { playKillSound, playDamageSound, playWaveSuccessSound } from "../lib/sounds";
-import { Shield } from "lucide-react";
+
 
 const INITIAL_GOLD = 150;
 const INITIAL_LIVES = 20;
@@ -326,24 +326,37 @@ export default function Game() {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, #0d0505 0%, #0a0303 40%, #0d0606 100%)' }}>
-      {/* Header */}
-      <div className="border-b border-red-950/60 backdrop-blur-sm" style={{ background: 'rgba(8,3,3,0.95)', boxShadow: '0 1px 0 rgba(120,20,20,0.2)' }}>
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, #0d0a1a 0%, #08051a 40%, #0d0a1f 100%)' }}>
+      {/* Header — Clash Royale royal banner style */}
+      <div style={{
+        background: 'linear-gradient(180deg, #1a0f3a 0%, #0f0a2a 100%)',
+        borderBottom: '3px solid #4a2d8a',
+        boxShadow: '0 4px 0 #06030f, 0 0 30px rgba(100,60,200,0.2)',
+      }}>
+        <div className="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-red-950/80 border border-red-900/50 flex items-center justify-center"
-              style={{ boxShadow: '0 0 12px rgba(153,27,27,0.3)' }}
-            >
-              <Shield className="w-5 h-5 text-red-600" />
+            {/* Crown icon */}
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center text-2xl flex-shrink-0"
+              style={{
+                background: 'linear-gradient(160deg, #7c3aed, #4c1d95)',
+                border: '2px solid #a78bfa',
+                boxShadow: '0 3px 0 #1e0a4a, 0 0 16px rgba(139,92,246,0.4)',
+              }}>
+              👑
             </div>
             <div>
-              <h1 className="text-lg font-black text-red-100 tracking-[0.2em] uppercase"
-                style={{ fontFamily: "'Cinzel Decorative', serif", textShadow: '0 0 20px rgba(200,40,40,0.4)' }}
-              >
+              <h1 className="text-base font-black uppercase tracking-[0.15em]"
+                style={{
+                  fontFamily: "'Cinzel Decorative', serif",
+                  background: 'linear-gradient(135deg, #e9d5ff, #ffd60a, #e9d5ff)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  filter: 'drop-shadow(0 0 8px rgba(199,125,255,0.5))',
+                }}>
                 Kingdom's Last Stand
               </h1>
-              <p className="text-[10px] text-red-900/80 uppercase tracking-[0.3em]">
-                Medieval Tower Defense
+              <p className="text-[9px] font-bold uppercase tracking-[0.3em]" style={{ color: '#7c5fa0' }}>
+                ⚔ Medieval Tower Defense ⚔
               </p>
             </div>
           </div>
@@ -375,7 +388,11 @@ export default function Game() {
 
           {/* Side Panel */}
           <div className="w-full lg:w-56 shrink-0">
-            <div className="rounded-xl p-4 border border-red-950/40" style={{ background: 'rgba(10,4,4,0.9)' }}>
+            <div className="rounded-2xl p-4" style={{
+              background: 'linear-gradient(160deg, #1a1535, #100e22)',
+              border: '2px solid rgba(100,60,180,0.5)',
+              boxShadow: '0 6px 0 #05030f, 0 0 30px rgba(100,60,200,0.12)',
+            }}>
               <TowerPanel
                 selectedTower={selectedTowerType}
                 onSelect={(type) => {
@@ -396,10 +413,11 @@ export default function Game() {
                 wave={wave}
               />
               <ComboSuggestions />
-              <div className="mt-4 text-[10px] text-stone-700 space-y-1">
-                <p>• Click tower then click board to place</p>
-                <p>• Click placed towers to upgrade/sell</p>
-                <p>• Bonus gold each wave cleared</p>
+              <div className="mt-4 rounded-xl px-3 py-2 space-y-1 text-[9px] font-semibold"
+                style={{ background: 'rgba(100,60,180,0.08)', border: '1px solid rgba(100,60,180,0.2)', color: '#5a4880' }}>
+                <p>⚔ Select tower → click board to place</p>
+                <p>🔧 Tap a tower to upgrade or sell</p>
+                <p>💰 Bonus gold after each wave</p>
               </div>
             </div>
           </div>
@@ -407,8 +425,15 @@ export default function Game() {
       </div>
 
       {mergeFlash && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-6 py-3 rounded-xl border border-amber-600/70 bg-amber-950/90 text-amber-300 font-bold tracking-widest uppercase text-sm shadow-2xl shadow-amber-900/60 animate-bounce">
-          {mergeFlash.emoji} {mergeFlash.name} Forged!
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-6 py-3 rounded-2xl font-black tracking-widest uppercase text-sm animate-bounce"
+          style={{
+            background: 'linear-gradient(160deg, #7c3aed, #4c1d95)',
+            border: '2px solid #a78bfa',
+            boxShadow: '0 5px 0 #1e0a4a, 0 0 30px rgba(139,92,246,0.5)',
+            color: '#e9d5ff',
+            textShadow: '0 1px 3px rgba(0,0,0,0.5)',
+          }}>
+          ✨ {mergeFlash.emoji} {mergeFlash.name} Forged!
         </div>
       )}
       <ComboDisplay combo={combo} multiplier={comboMultiplier} />

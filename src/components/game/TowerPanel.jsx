@@ -1,36 +1,75 @@
 import { TOWER_TYPES } from "../../lib/gameEngine";
-import { cn } from "@/lib/utils";
+
+const TOWER_COLORS = {
+  archer: { from: "#b45309", to: "#78350f", border: "#fbbf24", shadow: "#451a03" },
+  cannon: { from: "#374151", to: "#1f2937", border: "#9ca3af", shadow: "#111827" },
+  mage:   { from: "#6d28d9", to: "#4c1d95", border: "#a78bfa", shadow: "#2e1065" },
+  frost:  { from: "#0ea5e9", to: "#0369a1", border: "#7dd3fc", shadow: "#082f49" },
+};
 
 export default function TowerPanel({ selectedTower, onSelect, gold }) {
   return (
     <div className="flex flex-col gap-2">
-      <h3 className="text-xs uppercase tracking-widest text-red-800/80 font-semibold mb-1 tracking-[0.2em]">
-        Towers
-      </h3>
+      <div className="text-center mb-2">
+        <span className="text-[10px] font-black uppercase tracking-[0.25em]"
+          style={{ color: "#c9b4f7", textShadow: "0 0 10px rgba(168,85,247,0.5)" }}>
+          ⚔ Deploy Troops ⚔
+        </span>
+      </div>
+
       {Object.entries(TOWER_TYPES).filter(([, t]) => !t.isMerged).map(([key, tower]) => {
         const canAfford = gold >= tower.cost;
         const isSelected = selectedTower === key;
+        const colors = TOWER_COLORS[key] || TOWER_COLORS.cannon;
 
         return (
           <button
             key={key}
             onClick={() => onSelect(isSelected ? null : key)}
             disabled={!canAfford}
-            className={`flex items-center gap-3 p-2.5 rounded border transition-all text-left ${
-              isSelected
-                ? "border-red-800 bg-red-950/50 shadow-lg shadow-red-950/30"
-                : "border-stone-800/60 bg-stone-950/60 hover:bg-red-950/20 hover:border-red-900/40"
-            } ${!canAfford ? "opacity-35 cursor-not-allowed" : ""}`}
+            className="relative flex items-center gap-2.5 text-left transition-all duration-150 rounded-xl"
+            style={{
+              padding: "8px 10px",
+              background: isSelected
+                ? `linear-gradient(160deg, ${colors.from}, ${colors.to})`
+                : "linear-gradient(160deg, #1e1b2e, #13101f)",
+              border: `2px solid ${isSelected ? colors.border : "rgba(100,80,140,0.35)"}`,
+              boxShadow: isSelected
+                ? `0 4px 0 ${colors.shadow}, 0 0 16px ${colors.border}55`
+                : "0 3px 0 #0a0814",
+              opacity: canAfford ? 1 : 0.38,
+              cursor: canAfford ? "pointer" : "not-allowed",
+              transform: isSelected ? "translateY(2px)" : "translateY(0)",
+            }}
           >
-            <span className="text-xl">{tower.emoji}</span>
+            {/* Tower icon bubble */}
+            <div className="flex-shrink-0 w-9 h-9 rounded-lg flex items-center justify-center text-xl"
+              style={{
+                background: isSelected
+                  ? "rgba(255,255,255,0.15)"
+                  : `linear-gradient(160deg, ${colors.from}88, ${colors.to}88)`,
+                border: `1.5px solid ${colors.border}66`,
+              }}>
+              {tower.emoji}
+            </div>
+
             <div className="flex-1 min-w-0">
-              <div className="text-xs font-semibold text-stone-200 truncate">
+              <div className="text-xs font-black truncate" style={{ color: isSelected ? "#fff" : "#d4c9f0" }}>
                 {tower.name}
               </div>
-              <div className="text-[10px] text-stone-500">{tower.description}</div>
+              <div className="text-[9px]" style={{ color: isSelected ? "rgba(255,255,255,0.6)" : "#6b5fa0" }}>
+                {tower.description}
+              </div>
             </div>
-            <div className="text-xs font-bold text-yellow-600/90 whitespace-nowrap">
-              {tower.cost}g
+
+            {/* Cost badge */}
+            <div className="flex-shrink-0 flex items-center gap-0.5 px-2 py-0.5 rounded-full font-black text-[10px]"
+              style={{
+                background: "linear-gradient(180deg, #ffd60a, #e09c00)",
+                color: "#3a2000",
+                boxShadow: "0 2px 0 #7a5200",
+              }}>
+              💰{tower.cost}
             </div>
           </button>
         );
