@@ -487,31 +487,43 @@ export function generateWaves(waveNumber) {
   const enemies = [];
   const isBossWave = !!STAGE_BOSS_WAVES[waveNumber];
 
-  // Spawn interval shrinks with wave — min 250ms at high waves
-  const spawnInterval = Math.max(250, 800 - waveNumber * 22);
-  // Enemy count grows with wave
-  const count = Math.min(4 + Math.floor(waveNumber * 1.6), 40);
+  // Spawn interval shrinks aggressively — min 180ms at high waves
+  const spawnInterval = Math.max(180, 750 - waveNumber * 28);
+  // Enemy count grows faster — more enemies per wave
+  const count = Math.min(5 + Math.floor(waveNumber * 2.2), 55);
 
-  if (waveNumber <= 3) {
+  if (waveNumber <= 2) {
     for (let i = 0; i < count; i++) {
       enemies.push({ type: "peasant", delay: i * spawnInterval });
     }
-  } else if (waveNumber <= 6) {
+  } else if (waveNumber <= 5) {
     for (let i = 0; i < count; i++) {
       enemies.push({ type: i % 3 === 0 ? "soldier" : "peasant", delay: i * spawnInterval });
     }
-  } else if (waveNumber <= 10) {
+  } else if (waveNumber <= 9) {
     const types = ["peasant", "soldier", "knight", "horseman"];
     for (let i = 0; i < count; i++) {
       enemies.push({ type: types[i % types.length], delay: i * spawnInterval });
     }
-  } else {
-    const types = ["soldier", "knight", "horseman"];
+  } else if (waveNumber <= 15) {
+    const types = ["soldier", "knight", "horseman", "king"];
     for (let i = 0; i < count; i++) {
       enemies.push({ type: types[i % types.length], delay: i * spawnInterval });
     }
-    if (waveNumber % 5 === 0 && !isBossWave) {
-      enemies.push({ type: "king", delay: count * spawnInterval + 1000 });
+    if (waveNumber % 4 === 0 && !isBossWave) {
+      enemies.push({ type: "king", delay: count * spawnInterval + 800 });
+    }
+  } else {
+    // Late game: dense waves of heavy enemies + kings
+    const types = ["knight", "horseman", "king", "soldier", "king"];
+    for (let i = 0; i < count; i++) {
+      enemies.push({ type: types[i % types.length], delay: i * spawnInterval });
+    }
+    // Extra king squad every 3 waves
+    if (waveNumber % 3 === 0 && !isBossWave) {
+      for (let k = 0; k < 3; k++) {
+        enemies.push({ type: "king", delay: count * spawnInterval + 800 + k * 600 });
+      }
     }
   }
 
@@ -521,13 +533,14 @@ export function generateWaves(waveNumber) {
     enemies.push({ type: STAGE_BOSS_WAVES[waveNumber], delay: lastDelay, isBoss: true });
   }
 
-  // HP scales faster at higher waves
-  const hpMultiplier = 1 + (waveNumber - 1) * 0.18;
+  // HP scales much harder — exponential after wave 10
+  const hpMultiplier = waveNumber <= 10
+    ? 1 + (waveNumber - 1) * 0.22
+    : 1 + (waveNumber - 1) * 0.22 + Math.pow(waveNumber - 10, 1.4) * 0.12;
 
-  return enemies.map((e, i) => ({
+  return enemies.map((e) => ({
     ...e,
     hpMultiplier,
-    // Don't apply modifiers to bosses; roll per-enemy
     modifier: e.isBoss ? null : rollModifier(waveNumber),
   }));
 }
@@ -574,14 +587,15 @@ export const ENEMY_MODIFIERS = {
 
 // Pick a random modifier for a wave, or null if wave too early
 function rollModifier(waveNumber) {
-  if (waveNumber < 5) return null;
+  if (waveNumber < 3) return null;
   const pool = [];
-  if (waveNumber >= 5)  pool.push("fast");
-  if (waveNumber >= 8)  pool.push("shielded");
-  if (waveNumber >= 12) pool.push("armored");
-  if (waveNumber >= 15) pool.push("berserker");
-  // ~50% chance of getting a modifier
-  if (Math.random() < 0.5) return null;
+  if (waveNumber >= 3)  pool.push("fast");
+  if (waveNumber >= 5)  pool.push("shielded");
+  if (waveNumber >= 8)  pool.push("armored");
+  if (waveNumber >= 11) pool.push("berserker");
+  // Chance increases with wave: 30% at wave 3, up to 80% late game
+  const chance = Math.min(0.80, 0.30 + (waveNumber - 3) * 0.04);
+  if (Math.random() > chance) return null;
   return pool[Math.floor(Math.random() * pool.length)];
 }
 

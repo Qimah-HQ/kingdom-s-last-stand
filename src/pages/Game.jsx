@@ -18,6 +18,7 @@ import WaveSuccessBanner from "../components/game/WaveSuccessBanner";
 import RoyalRewardModal from "../components/game/RoyalRewardModal";
 import DarkLordModal from "../components/game/DarkLordModal";
 import VictoryModal from "../components/game/VictoryModal";
+import PerkShop from "../components/game/PerkShop";
 import { playKillSound, playDamageSound, playWaveSuccessSound } from "../lib/sounds";
 
 
@@ -56,6 +57,10 @@ export default function Game() {
   const [royalReward, setRoyalReward] = useState(false);
   const [darkLordDefeated, setDarkLordDefeated] = useState(false);
   const [victory, setVictory] = useState(false);
+  const [perkShop, setPerkShop] = useState(false);
+  const [perksOwned, setPerksOwned] = useState({});
+  // Persistent multipliers from perks
+  const perkMultRef = useRef({ goldBonus: 1, damageBonus: 1, fireRateBonus: 1, projSpeedBonus: 1 });
   const comboTimerRef = useRef(null);
   const COMBO_WINDOW = 3000; // ms between kills to maintain combo
 
@@ -168,6 +173,40 @@ export default function Game() {
     forceRender(n => n + 1);
   }, []);
 
+  const handleBuyPerk = useCallback((perk) => {
+    if (perk.cost > 0) {
+      setGold(prev => {
+        if (prev < perk.cost) return prev;
+        return prev - perk.cost;
+      });
+    }
+    // Apply immediate rewards
+    if (perk.id === "extra_life") setLives(l => l + 3);
+    if (perk.id === "wave_gold") setGold(g => g + (perk.reward ?? 75));
+
+    // Apply persistent multipliers to towers
+    if (perk.id === "tower_power") {
+      perkMultRef.current.damageBonus *= 1.15;
+      towersRef.current.forEach(t => { t.damage = Math.floor(t.damage * 1.15); });
+    }
+    if (perk.id === "swift_reload") {
+      perkMultRef.current.fireRateBonus *= 0.90;
+      towersRef.current.forEach(t => { t.fireRate = Math.max(150, Math.floor(t.fireRate * 0.90)); });
+    }
+    if (perk.id === "wide_range") {
+      towersRef.current.forEach(t => { t.range *= 1.10; });
+    }
+    if (perk.id === "gold_rush") {
+      perkMultRef.current.goldBonus *= 1.25;
+    }
+    if (perk.id === "whirlwind") {
+      perkMultRef.current.projSpeedBonus = (perkMultRef.current.projSpeedBonus ?? 1) * 1.20;
+    }
+
+    setPerksOwned(prev => ({ ...prev, [perk.id]: (prev[perk.id] ?? 0) + 1 }));
+    forceRender(n => n + 1);
+  }, []);
+
   const startWave = useCallback(() => {
     if (waveActive || gameOver) return;
     const waveData = generateWaves(wave);
@@ -260,7 +299,9 @@ export default function Game() {
       let scoreEarned = 0;
       let killCount = 0;
       let newProjectiles = [];
+      const projSpeedMult = perkMultRef.current.projSpeedBonus ?? 1;
       projectilesRef.current.forEach(proj => {
+        proj.speed = 5 * projSpeedMult;
         const result = moveProjectile(proj, enemiesRef.current);
         if (result.hit) {
           const target = enemiesRef.current.find(e => e.id === result.targetId);
@@ -379,8 +420,9 @@ export default function Game() {
           const next = prev + killCount;
           if (comboTimerRef.current) clearTimeout(comboTimerRef.current);
           comboTimerRef.current = setTimeout(() => setCombo(0), COMBO_WINDOW);
-          const mult = next < 5 ? 1 : next < 10 ? 2 : next < 20 ? 3 : 5;
-          setGold(g => g + goldEarned * mult);
+          const comboMult = next < 5 ? 1 : next < 10 ? 2 : next < 20 ? 3 : 5;
+          const totalMult = comboMult * (perkMultRef.current.goldBonus ?? 1);
+          setGold(g => g + Math.floor(goldEarned * totalMult));
           return next;
         });
       }
@@ -398,9 +440,12 @@ export default function Game() {
               if (w === 10) setTimeout(() => setDarkLordDefeated(true), 800);
               return next;
             });
-            setGold(g => g + 25); // Wave completion bonus
+            // Wave bonus scales with wave number
+            setGold(g => g + 25 + wave * 5);
             playWaveSuccessSound();
-            setWaveSuccess(s => !s); // toggle to always re-trigger
+            setWaveSuccess(s => !s);
+            // Show perk shop every 2 waves
+            if (wave % 2 === 0) setTimeout(() => setPerkShop(true), 900);
             return false;
           }
           return prev;
@@ -439,6 +484,9 @@ export default function Game() {
     setRoyalReward(false);
     setDarkLordDefeated(false);
     setVictory(false);
+    setPerkShop(false);
+    setPerksOwned({});
+    perkMultRef.current = { goldBonus: 1, damageBonus: 1, fireRateBonus: 1, projSpeedBonus: 1 };
     if (comboTimerRef.current) clearTimeout(comboTimerRef.current);
     lastTimeRef.current = 0;
   };
@@ -579,6 +627,15 @@ export default function Game() {
           setRoyalReward(false);
           setGold(g => g + 200); // Royal reward bonus gold
         }}
+      />
+
+      <PerkShop
+        show={perkShop}
+        wave={wave}
+        gold={gold}
+        perksOwned={perksOwned}
+        onBuy={handleBuyPerk}
+        onClose={() => setPerkShop(false)}
       />
 
       {gameOver && (
