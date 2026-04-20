@@ -225,8 +225,8 @@ export function playVictoryShout() {
   const voices = window.speechSynthesis.getVoices();
   const preferred = voices.find(v =>
     v.lang === "en-GB" &&
-    (v.name.toLowerCase().includes("daniel") || v.name.toLowerCase().includes("george") ||
-     v.name.toLowerCase().includes("male") || v.name.toLowerCase().includes("oliver"))
+    (v.name.toLowerCase().includes("victoria") || v.name.toLowerCase().includes("sarah") ||
+     v.name.toLowerCase().includes("female") || v.name.toLowerCase().includes("woman"))
   ) || voices.find(v => v.lang === "en-GB") || voices.find(v => v.lang.startsWith("en"));
   if (preferred) utt.voice = preferred;
 
