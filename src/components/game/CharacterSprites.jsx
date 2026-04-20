@@ -1,4 +1,4 @@
-// ─── LORD ALDRIC ────────────────────────────────────────────────────
+// ─── LORD ALDRIC - Warrior Champion ────────────────────────────────────────────────────
 export function LordAldric({ size = 100 }) {
   return (
     <svg width={size} height={size * 1.3} viewBox="0 0 80 100" style={{ overflow: "visible" }}>
@@ -8,110 +8,114 @@ export function LordAldric({ size = 100 }) {
       `}</style>
 
       <g className="al-body">
-        {/* Body - simple tunic */}
-        <rect x="20" y="45" width="40" height="35" rx="8" fill="#8B4513" />
+        {/* Armor - metallic chest plate */}
+        <rect x="18" y="45" width="44" height="32" rx="6" fill="#4a4a4a" stroke="#6a6a6a" strokeWidth="1"/>
+        <path d="M30 48 L30 75 M50 48 L50 75" stroke="#6a6a6a" strokeWidth="0.5" opacity="0.5"/>
         
-        {/* Arms */}
-        <rect x="12" y="50" width="8" height="25" rx="4" fill="#d4a574" />
-        <rect x="60" y="50" width="8" height="25" rx="4" fill="#d4a574" />
+        {/* Arms - armored */}
+        <rect x="10" y="50" width="10" height="28" rx="4" fill="#3a3a3a" stroke="#5a5a5a" strokeWidth="0.5"/>
+        <rect x="60" y="50" width="10" height="28" rx="4" fill="#3a3a3a" stroke="#5a5a5a" strokeWidth="0.5"/>
         
-        {/* Hands */}
-        <circle cx="14" cy="78" r="5" fill="#d4a574" />
-        <circle cx="66" cy="78" r="5" fill="#d4a574" />
+        {/* Gauntlets */}
+        <circle cx="12" cy="80" r="6" fill="#5a5a5a" stroke="#7a7a7a" strokeWidth="1"/>
+        <circle cx="68" cy="80" r="6" fill="#5a5a5a" stroke="#7a7a7a" strokeWidth="1"/>
         
-        {/* Neck */}
-        <rect x="32" y="38" width="16" height="10" rx="3" fill="#d4a574" />
+        {/* Neck guard */}
+        <rect x="31" y="38" width="18" height="9" rx="2" fill="#4a4a4a" stroke="#6a6a6a" strokeWidth="0.5"/>
         
-        {/* Head */}
-        <circle cx="40" cy="25" r="13" fill="#d4a574" />
+        {/* Head - strong warrior face */}
+        <circle cx="40" cy="26" r="14" fill="#d4a574"/>
         
-        {/* Hair - simple dark brown */}
-        <path d="M27 18 Q27 12 40 10 Q53 12 53 18" fill="#3a2a1a" />
+        {/* Dark brown hair - short, practical */}
+        <path d="M25 15 Q25 9 40 7 Q55 9 55 15" fill="#3a2a1a"/>
+        <path d="M26 20 Q24 24 24 30" stroke="#3a2a1a" strokeWidth="2.5" fill="none"/>
+        <path d="M54 20 Q56 24 56 30" stroke="#3a2a1a" strokeWidth="2.5" fill="none"/>
         
-        {/* Eyes */}
-        <circle cx="34" cy="24" r="2" fill="#000" />
-        <circle cx="46" cy="24" r="2" fill="#000" />
-        <circle cx="35" cy="23" r="0.8" fill="#fff" opacity="0.9" />
-        <circle cx="47" cy="23" r="0.8" fill="#fff" opacity="0.9" />
+        {/* Intense eyes */}
+        <circle cx="32" cy="25" r="2.5" fill="#1a0a0a"/>
+        <circle cx="48" cy="25" r="2.5" fill="#1a0a0a"/>
+        <circle cx="33.2" cy="23.5" r="0.9" fill="#fff" opacity="0.95"/>
+        <circle cx="49.2" cy="23.5" r="0.9" fill="#fff" opacity="0.95"/>
         
-        {/* Eyebrows */}
-        <path d="M32 20 Q34 19 36 20" stroke="#2a1a0a" strokeWidth="1.2" fill="none" strokeLinecap="round" />
-        <path d="M44 20 Q46 19 48 20" stroke="#2a1a0a" strokeWidth="1.2" fill="none" strokeLinecap="round" />
+        {/* Stern eyebrows - battle-hardened */}
+        <path d="M30 19 Q32 17 35 19.5" stroke="#1a0a0a" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+        <path d="M45 19.5 Q48 17 50 19" stroke="#1a0a0a" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
         
-        {/* Nose */}
-        <line x1="40" y1="25" x2="40" y2="30" stroke="#c8956f" strokeWidth="1" />
+        {/* Scar on cheek */}
+        <path d="M45 27 Q47 30 46 33" stroke="#8a5030" strokeWidth="0.8" fill="none" opacity="0.6"/>
         
-        {/* Mouth - determined look */}
-        <path d="M35 32 Q40 34 45 32" stroke="#8a5030" strokeWidth="1" fill="none" strokeLinecap="round" />
+        {/* Strong nose */}
+        <line x1="40" y1="25" x2="40" y2="31" stroke="#b88860" strokeWidth="1.2"/>
+        
+        {/* Determined mouth */}
+        <path d="M35 34 Q40 35 45 34" stroke="#6a4030" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
       </g>
     </svg>
   );
 }
 
-// ─── QUEEN SERAPHINE ────────────────────────────────────────────────────
+// ─── QUEEN SERAPHINE - Wise Ruler ────────────────────────────────────────────────────
 export function QueenSeraphine({ size = 120 }) {
   return (
     <svg width={size} height={size * 1.6} viewBox="0 0 80 130" style={{ overflow: "visible" }}>
-      <defs>
-        <linearGradient id="serGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#4a3a2a" />
-          <stop offset="100%" stopColor="#2a1a0a" />
-        </linearGradient>
-      </defs>
-
       <style>{`
         @keyframes serBob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+        @keyframes crownGlow { 0%,100%{filter:drop-shadow(0 0 4px #d4af70)} 50%{filter:drop-shadow(0 0 10px #d4af70)} }
         .ser-body { animation: serBob 2.6s ease-in-out infinite; transform-origin: 40px 110px; }
+        .ser-crown { animation: crownGlow 2s ease-in-out infinite; }
       `}</style>
 
       <g className="ser-body">
-        {/* Gown - flowing dress */}
-        <path d="M20 50 L18 100 L22 125 L40 128 L58 125 L62 100 L60 50 Z" fill="#2a6a4a" />
-        <path d="M25 50 L24 100 L26 122 L40 124 L54 122 L56 100 L55 50 Z" fill="#4a8a6a" opacity="0.6" />
+        {/* Elegant gown - green silk */}
+        <path d="M20 52 L18 105 L22 128 L40 130 L58 128 L62 105 L60 52 Z" fill="#2a6a4a"/>
+        <path d="M25 52 L24 102 L26 124 L40 126 L54 124 L56 102 L55 52 Z" fill="#4a8a6a" opacity="0.5"/>
         
-        {/* Bodice */}
-        <path d="M22 45 Q20 50 20 55 L60 55 Q60 50 58 45 Q50 42 40 42 Q30 42 22 45 Z" fill="#1a6a4a" />
+        {/* Gold embroidered belt */}
+        <rect x="20" y="50" width="40" height="5" fill="#d4af70" opacity="0.7"/>
         
-        {/* Arms - sleeves */}
-        <ellipse cx="15" cy="52" rx="7" ry="18" fill="#2a6a4a" />
-        <ellipse cx="65" cy="52" rx="7" ry="18" fill="#2a6a4a" />
+        {/* Sleeves - draped */}
+        <path d="M20 55 Q15 60 12 75" stroke="#2a6a4a" strokeWidth="7" fill="none" strokeLinecap="round"/>
+        <path d="M60 55 Q65 60 68 75" stroke="#2a6a4a" strokeWidth="7" fill="none" strokeLinecap="round"/>
         
-        {/* Hands */}
-        <circle cx="12" cy="72" r="4.5" fill="#f9e4d0" />
-        <circle cx="68" cy="72" r="4.5" fill="#f9e4d0" />
+        {/* Elegant hands */}
+        <circle cx="10" cy="75" r="5" fill="#f0d4b8"/>
+        <circle cx="70" cy="75" r="5" fill="#f0d4b8"/>
         
         {/* Neck */}
-        <rect x="33" y="38" width="14" height="8" rx="2" fill="#f9e4d0" />
+        <rect x="32" y="40" width="16" height="9" rx="3" fill="#f0d4b8"/>
         
-        {/* Head */}
-        <circle cx="40" cy="26" r="12" fill="#f9e4d0" />
+        {/* Head - graceful */}
+        <circle cx="40" cy="28" r="13" fill="#f0d4b8"/>
         
-        {/* Hair - long, flowing */}
-        <path d="M28 20 Q20 18 18 30 Q16 45 20 60" stroke="#4a3a2a" strokeWidth="6" fill="none" strokeLinecap="round" />
-        <path d="M52 20 Q60 18 62 30 Q64 45 60 60" stroke="#4a3a2a" strokeWidth="6" fill="none" strokeLinecap="round" />
-        <path d="M30 15 Q40 12 50 15" fill="#4a3a2a" />
+        {/* Long dark hair */}
+        <path d="M27 18 Q27 11 40 9 Q53 11 53 18" fill="#3a2a1a"/>
+        <path d="M25 24 Q20 35 18 50 Q16 60 20 70" stroke="#3a2a1a" strokeWidth="4" fill="none" strokeLinecap="round"/>
+        <path d="M55 24 Q60 35 62 50 Q64 60 60 70" stroke="#3a2a1a" strokeWidth="4" fill="none" strokeLinecap="round"/>
         
-        {/* Eyes - kind, wise */}
-        <ellipse cx="33" cy="25" rx="2.5" ry="2" fill="#4a8a6a" />
-        <ellipse cx="47" cy="25" rx="2.5" ry="2" fill="#4a8a6a" />
-        <circle cx="34.5" cy="24" r="0.7" fill="#fff" opacity="0.95" />
-        <circle cx="48.5" cy="24" r="0.7" fill="#fff" opacity="0.95" />
+        {/* Kind, wise eyes - green */}
+        <ellipse cx="33" cy="27" rx="2.2" ry="2" fill="#4a8a6a"/>
+        <ellipse cx="47" cy="27" rx="2.2" ry="2" fill="#4a8a6a"/>
+        <circle cx="34.3" cy="25.5" r="0.8" fill="#fff" opacity="0.95"/>
+        <circle cx="48.3" cy="25.5" r="0.8" fill="#fff" opacity="0.95"/>
         
-        {/* Eyebrows - gentle arch */}
-        <path d="M31 21 Q33 19.5 35 21" stroke="#3a2a1a" strokeWidth="1" fill="none" strokeLinecap="round" />
-        <path d="M45 21 Q47 19.5 49 21" stroke="#3a2a1a" strokeWidth="1" fill="none" strokeLinecap="round" />
+        {/* Graceful eyebrows */}
+        <path d="M31 22 Q33 20 36 22" stroke="#2a1a0a" strokeWidth="0.9" fill="none" strokeLinecap="round"/>
+        <path d="M44 22 Q47 20 49 22" stroke="#2a1a0a" strokeWidth="0.9" fill="none" strokeLinecap="round"/>
         
-        {/* Nose */}
-        <line x1="40" y1="25" x2="40" y2="29" stroke="#d4a080" strokeWidth="0.8" />
+        {/* Refined nose */}
+        <line x1="40" y1="27" x2="40" y2="31" stroke="#d4a080" strokeWidth="0.8"/>
         
-        {/* Mouth - gentle smile */}
-        <path d="M35 31 Q40 32.5 45 31" stroke="#c8805a" strokeWidth="1" fill="none" strokeLinecap="round" />
+        {/* Gentle smile */}
+        <path d="M35 33 Q40 34.5 45 33" stroke="#c8805a" strokeWidth="1" fill="none" strokeLinecap="round"/>
         
-        {/* Crown - simple circlet */}
-        <ellipse cx="40" cy="14" rx="14" ry="4" fill="none" stroke="#d4af70" strokeWidth="1.5" />
-        <circle cx="40" cy="12" r="2" fill="#d4af70" />
-        <circle cx="30" cy="15" r="1.2" fill="#d4af70" opacity="0.8" />
-        <circle cx="50" cy="15" r="1.2" fill="#d4af70" opacity="0.8" />
+        {/* Royal Crown */}
+        <g className="ser-crown">
+          <ellipse cx="40" cy="12" rx="15" ry="4" fill="none" stroke="#d4af70" strokeWidth="1.5"/>
+          <circle cx="40" cy="9" r="2.5" fill="#d4af70"/>
+          <circle cx="29" cy="14" r="1.5" fill="#d4af70" opacity="0.9"/>
+          <circle cx="51" cy="14" r="1.5" fill="#d4af70" opacity="0.9"/>
+          <circle cx="40" cy="9" r="1.2" fill="#2d7a4a"/>
+        </g>
       </g>
     </svg>
   );
@@ -127,44 +131,47 @@ export function Morrigan({ size = 100 }) {
       `}</style>
 
       <g className="mor-body">
-        {/* Dark robe */}
-        <path d="M18 48 L16 95 L20 98 L40 100 L60 98 L64 95 L62 48 Z" fill="#3a0a2a" />
-        <path d="M22 48 L21 93 L40 96 L59 93 L58 48 Z" fill="#5a1a4a" opacity="0.5" />
+        {/* Dark mystical robe */}
+        <path d="M16 48 L14 100 L18 102 L40 104 L62 102 L66 100 L64 48 Z" fill="#2a0a3a"/>
+        <path d="M20 48 L19 98 L40 102 L61 98 L60 48 Z" fill="#4a1a5a" opacity="0.5"/>
         
-        {/* Arms with sleeves */}
-        <ellipse cx="12" cy="55" rx="6" ry="22" fill="#3a0a2a" />
-        <ellipse cx="68" cy="55" rx="6" ry="22" fill="#3a0a2a" />
+        {/* Purple arcane accents */}
+        <rect x="28" y="52" width="24" height="2" fill="#7c3aed" opacity="0.6"/>
         
-        {/* Hands */}
-        <circle cx="10" cy="78" r="4" fill="#d4a574" />
-        <circle cx="70" cy="78" r="4" fill="#d4a574" />
+        {/* Flowing sleeves */}
+        <ellipse cx="12" cy="55" rx="7" ry="24" fill="#2a0a3a"/>
+        <ellipse cx="68" cy="55" rx="7" ry="24" fill="#2a0a3a"/>
+        
+        {/* Pale hands */}
+        <circle cx="9" cy="80" r="5" fill="#e8d0f0"/>
+        <circle cx="71" cy="80" r="5" fill="#e8d0f0"/>
         
         {/* Neck */}
-        <rect x="32" y="38" width="16" height="10" rx="3" fill="#d4a574" />
+        <rect x="31" y="39" width="18" height="10" rx="3" fill="#e8d0f0"/>
         
-        {/* Head */}
-        <circle cx="40" cy="25" r="13" fill="#d4a574" />
+        {/* Head - pale, mysterious */}
+        <circle cx="40" cy="26" r="13" fill="#e8d0f0"/>
         
-        {/* Hair - dark, longer */}
-        <path d="M27 16 Q27 10 40 8 Q53 10 53 16" fill="#1a0a0a" />
-        <path d="M25 25 Q20 28 18 38" stroke="#1a0a0a" strokeWidth="5" fill="none" strokeLinecap="round" />
-        <path d="M55 25 Q60 28 62 38" stroke="#1a0a0a" strokeWidth="5" fill="none" strokeLinecap="round" />
+        {/* Long dark hair */}
+        <path d="M26 15 Q26 8 40 6 Q54 8 54 15" fill="#0a0a0a"/>
+        <path d="M24 23 Q18 32 16 48" stroke="#0a0a0a" strokeWidth="4" fill="none" strokeLinecap="round"/>
+        <path d="M56 23 Q62 32 64 48" stroke="#0a0a0a" strokeWidth="4" fill="none" strokeLinecap="round"/>
         
-        {/* Eyes - piercing */}
-        <circle cx="34" cy="24" r="2" fill="#000" />
-        <circle cx="46" cy="24" r="2" fill="#000" />
-        <circle cx="35.2" cy="23" r="0.7" fill="#fff" opacity="0.9" />
-        <circle cx="47.2" cy="23" r="0.7" fill="#fff" opacity="0.9" />
+        {/* Mystical purple eyes */}
+        <circle cx="32" cy="25" r="2.3" fill="#5a2a7a"/>
+        <circle cx="48" cy="25" r="2.3" fill="#5a2a7a"/>
+        <circle cx="33.3" cy="23.5" r="0.8" fill="#c8a0ff" opacity="0.95"/>
+        <circle cx="49.3" cy="23.5" r="0.8" fill="#c8a0ff" opacity="0.95"/>
         
-        {/* Eyebrows - sharp */}
-        <path d="M31 20 Q34 18.5 37 20.5" stroke="#1a0a0a" strokeWidth="1.2" fill="none" strokeLinecap="round" />
-        <path d="M43 20.5 Q46 18.5 49 20" stroke="#1a0a0a" strokeWidth="1.2" fill="none" strokeLinecap="round" />
+        {/* Sharp eyebrows - mysterious */}
+        <path d="M29 20 Q32 18 35 21" stroke="#0a0a0a" strokeWidth="1.3" fill="none" strokeLinecap="round"/>
+        <path d="M45 21 Q48 18 51 20" stroke="#0a0a0a" strokeWidth="1.3" fill="none" strokeLinecap="round"/>
         
         {/* Nose */}
-        <line x1="40" y1="25" x2="40" y2="30" stroke="#c8956f" strokeWidth="0.9" />
+        <line x1="40" y1="26" x2="40" y2="31" stroke="#d4a0c0" strokeWidth="0.9"/>
         
-        {/* Mouth - mysterious */}
-        <path d="M36 32 Q40 33 44 32" stroke="#8a5030" strokeWidth="0.9" fill="none" strokeLinecap="round" />
+        {/* Neutral mysterious mouth */}
+        <path d="M35 33 Q40 34 45 33" stroke="#a08090" strokeWidth="1" fill="none" strokeLinecap="round"/>
       </g>
     </svg>
   );
@@ -180,41 +187,47 @@ export function Kael({ size = 100 }) {
       `}</style>
 
       <g className="kael-body">
-        {/* Tunic - light blue */}
-        <rect x="20" y="45" width="40" height="35" rx="8" fill="#4a8a9a" />
+        {/* Icy blue tunic */}
+        <rect x="20" y="45" width="40" height="35" rx="8" fill="#3a8aaa" stroke="#5aa0ca" strokeWidth="1"/>
         
-        {/* Arms */}
-        <rect x="12" y="50" width="8" height="25" rx="4" fill="#d4a574" />
-        <rect x="60" y="50" width="8" height="25" rx="4" fill="#d4a574" />
+        {/* Icy crystalline patterns */}
+        <line x1="32" y1="50" x2="32" y2="75" stroke="#5aa0ca" strokeWidth="0.8" opacity="0.4"/>
+        <line x1="48" y1="50" x2="48" y2="75" stroke="#5aa0ca" strokeWidth="0.8" opacity="0.4"/>
+        
+        {/* Arms - with archery bracer detail */}
+        <rect x="10" y="50" width="10" height="28" rx="4" fill="#d4a574"/>
+        <rect x="60" y="50" width="10" height="28" rx="4" fill="#d4a574"/>
         
         {/* Hands */}
-        <circle cx="14" cy="78" r="5" fill="#d4a574" />
-        <circle cx="66" cy="78" r="5" fill="#d4a574" />
+        <circle cx="11" cy="80" r="5" fill="#d4a574"/>
+        <circle cx="69" cy="80" r="5" fill="#d4a574"/>
         
         {/* Neck */}
-        <rect x="32" y="38" width="16" height="10" rx="3" fill="#d4a574" />
+        <rect x="31" y="38" width="18" height="10" rx="3" fill="#d4a574"/>
         
         {/* Head */}
-        <circle cx="40" cy="25" r="13" fill="#d4a574" />
+        <circle cx="40" cy="26" r="13" fill="#d4a574"/>
         
-        {/* Hair - lighter, shorter */}
-        <path d="M27 16 Q27 11 40 9 Q53 11 53 16" fill="#6a5a4a" />
+        {/* Light blonde/silver hair - wind-swept */}
+        <path d="M26 16 Q26 10 40 8 Q54 10 54 16" fill="#a89070"/>
+        <path d="M26 22 Q22 28 20 38" stroke="#a89070" strokeWidth="3" fill="none" strokeLinecap="round"/>
+        <path d="M54 22 Q58 28 60 38" stroke="#a89070" strokeWidth="3" fill="none" strokeLinecap="round"/>
         
-        {/* Eyes - bright blue */}
-        <circle cx="34" cy="24" r="2" fill="#4a8a9a" />
-        <circle cx="46" cy="24" r="2" fill="#4a8a9a" />
-        <circle cx="35.2" cy="23" r="0.8" fill="#fff" opacity="0.95" />
-        <circle cx="47.2" cy="23" r="0.8" fill="#fff" opacity="0.95" />
+        {/* Cool ice-blue eyes */}
+        <circle cx="32" cy="25" r="2.2" fill="#3a8aaa"/>
+        <circle cx="48" cy="25" r="2.2" fill="#3a8aaa"/>
+        <circle cx="33.2" cy="23.5" r="0.8" fill="#a8d5ff" opacity="0.95"/>
+        <circle cx="49.2" cy="23.5" r="0.8" fill="#a8d5ff" opacity="0.95"/>
         
-        {/* Eyebrows */}
-        <path d="M32 20 Q34 18.5 36 20" stroke="#2a1a0a" strokeWidth="1" fill="none" strokeLinecap="round" />
-        <path d="M44 20 Q46 18.5 48 20" stroke="#2a1a0a" strokeWidth="1" fill="none" strokeLinecap="round" />
+        {/* Focused eyebrows */}
+        <path d="M30 20 Q32 18 35 20.5" stroke="#5a4a3a" strokeWidth="1" fill="none" strokeLinecap="round"/>
+        <path d="M45 20.5 Q48 18 50 20" stroke="#5a4a3a" strokeWidth="1" fill="none" strokeLinecap="round"/>
         
         {/* Nose */}
-        <line x1="40" y1="25" x2="40" y2="30" stroke="#c8956f" strokeWidth="1" />
+        <line x1="40" y1="26" x2="40" y2="31" stroke="#c8956f" strokeWidth="0.95"/>
         
-        {/* Mouth - friendly */}
-        <path d="M36 32 Q40 33.5 44 32" stroke="#8a5030" strokeWidth="1" fill="none" strokeLinecap="round" />
+        {/* Focused, determined mouth */}
+        <path d="M36 33 Q40 34 44 33" stroke="#8a6840" strokeWidth="1" fill="none" strokeLinecap="round"/>
       </g>
     </svg>
   );
@@ -225,50 +238,56 @@ export function Aurora({ size = 100 }) {
   return (
     <svg width={size} height={size * 1.3} viewBox="0 0 80 100" style={{ overflow: "visible" }}>
       <style>{`
-        @keyframes auroraGlow { 0%,100%{filter:drop-shadow(0 0 5px #ffd60a)} 50%{filter:drop-shadow(0 0 12px #ffd60a)} }
+        @keyframes auroraGlow { 0%,100%{filter:drop-shadow(0 0 6px #ffd60a)} 50%{filter:drop-shadow(0 0 14px #ffd60a)} }
         @keyframes auroraBob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
         .aurora-body { animation: auroraBob 2.5s ease-in-out infinite; transform-origin: 40px 85px; }
         .aurora-head { animation: auroraGlow 2s ease-in-out infinite; }
       `}</style>
 
       <g className="aurora-body">
-        {/* Tunic - golden yellow */}
-        <rect x="20" y="45" width="40" height="35" rx="8" fill="#d4a847" />
+        {/* Golden ceremonial tunic */}
+        <rect x="20" y="45" width="40" height="35" rx="8" fill="#d4a847" stroke="#ffd60a" strokeWidth="1"/>
+        
+        {/* Radiant sun pattern on chest */}
+        <circle cx="40" cy="58" r="4" fill="#ffd60a" opacity="0.6"/>
+        {[0,1,2,3,4,5].map(i => (
+          <line key={i} x1="40" y1="52" x2="40" y2="48" stroke="#ffd60a" strokeWidth="0.8" opacity="0.4" transform={`rotate(${i*60} 40 58)`}/>
+        ))}
         
         {/* Arms */}
-        <rect x="12" y="50" width="8" height="25" rx="4" fill="#f0d4a0" />
-        <rect x="60" y="50" width="8" height="25" rx="4" fill="#f0d4a0" />
+        <rect x="12" y="50" width="10" height="28" rx="4" fill="#f0d4a0"/>
+        <rect x="58" y="50" width="10" height="28" rx="4" fill="#f0d4a0"/>
         
         {/* Hands */}
-        <circle cx="14" cy="78" r="5" fill="#f0d4a0" />
-        <circle cx="66" cy="78" r="5" fill="#f0d4a0" />
+        <circle cx="13" cy="80" r="5" fill="#f0d4a0"/>
+        <circle cx="67" cy="80" r="5" fill="#f0d4a0"/>
         
         {/* Neck */}
-        <rect x="32" y="38" width="16" height="10" rx="3" fill="#f0d4a0" />
+        <rect x="31" y="38" width="18" height="10" rx="3" fill="#f0d4a0"/>
         
-        {/* Head */}
-        <circle cx="40" cy="25" r="13" fill="#f0d4a0" className="aurora-head" />
+        {/* Head - warm golden glow */}
+        <circle cx="40" cy="26" r="13" fill="#f0d4a0" className="aurora-head"/>
         
-        {/* Hair - golden blonde */}
-        <path d="M27 16 Q27 10 40 8 Q53 10 53 16" fill="#d4a070" />
-        <path d="M26 20 Q24 24 25 30" stroke="#d4a070" strokeWidth="3" fill="none" strokeLinecap="round" />
-        <path d="M54 20 Q56 24 55 30" stroke="#d4a070" strokeWidth="3" fill="none" strokeLinecap="round" />
+        {/* Flowing golden blonde hair */}
+        <path d="M26 15 Q26 8 40 6 Q54 8 54 15" fill="#d4a070"/>
+        <path d="M24 22 Q20 32 18 45" stroke="#d4a070" strokeWidth="3.5" fill="none" strokeLinecap="round"/>
+        <path d="M56 22 Q60 32 62 45" stroke="#d4a070" strokeWidth="3.5" fill="none" strokeLinecap="round"/>
         
-        {/* Eyes - warm golden */}
-        <circle cx="34" cy="24" r="2" fill="#d4a070" />
-        <circle cx="46" cy="24" r="2" fill="#d4a070" />
-        <circle cx="35.2" cy="23" r="0.8" fill="#fff" opacity="0.95" />
-        <circle cx="47.2" cy="23" r="0.8" fill="#fff" opacity="0.95" />
+        {/* Warm golden eyes */}
+        <circle cx="32" cy="25" r="2.2" fill="#d4a070"/>
+        <circle cx="48" cy="25" r="2.2" fill="#d4a070"/>
+        <circle cx="33.2" cy="23.5" r="0.8" fill="#fff" opacity="0.98"/>
+        <circle cx="49.2" cy="23.5" r="0.8" fill="#fff" opacity="0.98"/>
         
-        {/* Eyebrows */}
-        <path d="M32 20 Q34 18.5 36 20" stroke="#8a6a4a" strokeWidth="1" fill="none" strokeLinecap="round" />
-        <path d="M44 20 Q46 18.5 48 20" stroke="#8a6a4a" strokeWidth="1" fill="none" strokeLinecap="round" />
+        {/* Warm, kind eyebrows */}
+        <path d="M30 20 Q32 18 35 20" stroke="#8a6a4a" strokeWidth="1.1" fill="none" strokeLinecap="round"/>
+        <path d="M45 20 Q48 18 50 20" stroke="#8a6a4a" strokeWidth="1.1" fill="none" strokeLinecap="round"/>
         
         {/* Nose */}
-        <line x1="40" y1="25" x2="40" y2="30" stroke="#d4a080" strokeWidth="0.9" />
+        <line x1="40" y1="26" x2="40" y2="31" stroke="#d4a080" strokeWidth="0.95"/>
         
-        {/* Mouth - warm smile */}
-        <path d="M36 32 Q40 34 44 32" stroke="#c87030" strokeWidth="1" fill="none" strokeLinecap="round" />
+        {/* Warm, welcoming smile */}
+        <path d="M36 33 Q40 35 44 33" stroke="#c8705a" strokeWidth="1.1" fill="none" strokeLinecap="round"/>
       </g>
     </svg>
   );
