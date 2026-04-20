@@ -33,6 +33,7 @@ import CampaignIntro from "../components/game/CampaignIntro";
 import WaveDialogue from "../components/game/WaveDialogue";
 import CharacterSelect from "../components/game/CharacterSelect";
 import DifficultySelect from "../components/game/DifficultySelect";
+import ModeSelect from "../components/game/ModeSelect";
 import { checkNewAchievements } from "../lib/achievements";
 import { playKillSound, playDamageSound, playWaveSuccessSound, playVictoryShout, playMergeSound } from "../lib/sounds";
 import DamagePopup from "../components/game/DamagePopup";
@@ -61,7 +62,9 @@ function makeInitialState() {
 export default function Game() {
   const [selectedCharacter, setSelectedCharacter] = useState(INITIAL_CHARACTER);
   const [difficulty, setDifficulty] = useState(null);
-  const [showDifficultySelect, setShowDifficultySelect] = useState(true);
+  const [gameMode, setGameMode] = useState(null); // "story" or "endless"
+  const [showModeSelect, setShowModeSelect] = useState(true);
+  const [showDifficultySelect, setShowDifficultySelect] = useState(false);
   
   // Get character and apply health bonus to initial lives
   const charData = getCharacter(selectedCharacter);
@@ -832,15 +835,22 @@ export default function Game() {
     forceRender(n => n + 1);
   }, [armorUpgrade]);
 
+  const handleModeSelect = (mode) => {
+    setGameMode(mode);
+    setShowModeSelect(false);
+    setShowCharacterSelect(true);
+  };
+
   const handleCharacterSelect = (characterId) => {
     setSelectedCharacter(characterId);
     setShowCharacterSelect(false);
+    setShowDifficultySelect(true);
   };
 
   const handleDifficultySelect = (diff) => {
     setDifficulty(diff);
     setShowDifficultySelect(false);
-    setShowCampaignIntro(true);
+    setShowCampaignIntro(gameMode === "story");
   };
 
   const handleRestart = () => {
@@ -863,10 +873,12 @@ export default function Game() {
     setVictory(false);
     setPerkShop(false);
     setPerksOwned({});
-    setShowCharacterSelect(true);
-    setShowDifficultySelect(true);
+    setShowModeSelect(true);
+    setShowCharacterSelect(false);
+    setShowDifficultySelect(false);
     setShowCampaignIntro(false);
     setArmorUpgrade(null);
+    setGameMode(null);
     setDifficulty(null);
     setGloryPoints(0);
     setUnlockedAbilities([]);
@@ -889,8 +901,11 @@ export default function Game() {
 
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, #0d0a1a 0%, #08051a 40%, #0d0a1f 100%)' }}>
+      {/* Mode Select Modal */}
+      {showModeSelect && <ModeSelect onSelect={handleModeSelect} />}
+
       {/* Character Select Modal */}
-      {showCharacterSelect && <CharacterSelect onSelect={handleCharacterSelect} />}
+      {!showModeSelect && showCharacterSelect && <CharacterSelect onSelect={handleCharacterSelect} />}
 
       {/* Difficulty Select Modal */}
       {!showCharacterSelect && showDifficultySelect && <DifficultySelect onSelect={handleDifficultySelect} />}
