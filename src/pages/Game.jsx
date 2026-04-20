@@ -5,6 +5,7 @@ import {
   distanceBetween, moveEnemy, moveProjectile, generateBossInfo,
   findMergePair, mergeTowers, towerHasAbility,
 } from "../lib/gameEngine";
+import { getCharacter } from "../lib/characters";
 import GameBoard from "../components/game/GameBoard";
 import GameHUD from "../components/game/GameHUD";
 import TowerPanel from "../components/game/TowerPanel";
@@ -29,12 +30,14 @@ import CodexModal from "../components/game/CodexModal";
 import BossHealthBar from "../components/game/BossHealthBar";
 import CampaignIntro from "../components/game/CampaignIntro";
 import WaveDialogue from "../components/game/WaveDialogue";
+import CharacterSelect from "../components/game/CharacterSelect";
 import { checkNewAchievements } from "../lib/achievements";
 import { playKillSound, playDamageSound, playWaveSuccessSound, playVictoryShout, playMergeSound } from "../lib/sounds";
 
 
 const INITIAL_GOLD = 150;
 const INITIAL_LIVES = 20;
+const INITIAL_CHARACTER = "aldric";
 
 // Pre-placed cannon positions at game start
 const INITIAL_CANNON_POSITIONS = [];
@@ -53,8 +56,14 @@ function makeInitialState() {
 }
 
 export default function Game() {
+  const [selectedCharacter, setSelectedCharacter] = useState(INITIAL_CHARACTER);
+  
+  // Get character and apply health bonus to initial lives
+  const charData = getCharacter(selectedCharacter);
+  const adjustedInitialLives = Math.ceil(INITIAL_LIVES * (1 + charData.stats.healthBonus));
+  
   const [gold, setGold] = useState(INITIAL_GOLD);
-  const [lives, setLives] = useState(INITIAL_LIVES);
+  const [lives, setLives] = useState(adjustedInitialLives);
   const [score, setScore] = useState(0);
   const [wave, setWave] = useState(1);
   const [waveActive, setWaveActive] = useState(false);
@@ -70,6 +79,7 @@ export default function Game() {
   const [perkShop, setPerkShop] = useState(false);
   const [perksOwned, setPerksOwned] = useState({});
   const [showIntro, setShowIntro] = useState(true);
+  const [showCharacterSelect, setShowCharacterSelect] = useState(true);
   const [hallOfHeroes, setHallOfHeroes] = useState(false);
   const [armorUpgrade, setArmorUpgrade] = useState(null); // chapter number 2-5
   const [bossKillReward, setBossKillReward] = useState(null); // bossType string
@@ -80,7 +90,7 @@ export default function Game() {
   const [unlockedAbilities, setUnlockedAbilities] = useState([]);
   const [divineShieldActive, setDivineShieldActive] = useState(false);
   const [voidWrathActive, setVoidWrathActive] = useState(false);
-  const [showCampaignIntro, setShowCampaignIntro] = useState(true);
+  const [showCampaignIntro, setShowCampaignIntro] = useState(false);
   const [lastDialogueWave, setLastDialogueWave] = useState(0);
   const tempBuffsRef = useRef({}); // { damageBonus, fireRateBonus, rangeBonus, wavesLeft }
   const [unlockedAchievements, setUnlockedAchievements] = useState([]);
@@ -111,7 +121,20 @@ export default function Game() {
 
   const comboMultiplier = combo < 5 ? 1 : combo < 10 ? 2 : combo < 20 ? 3 : 5;
 
+  // Get selected character stats
+  const characterData = charData;
+
   const { towers: _initTowers, map: _initMap } = makeInitialState();
+  
+  // Apply character bonuses to towers
+  _initTowers.forEach(t => {
+    if (characterData.stats.damageBonus > 0) {
+      t.damage = Math.floor(t.damage * (1 + characterData.stats.damageBonus));
+    }
+    if (characterData.stats.rangeBonus > 0) {
+      t.range *= (1 + characterData.stats.rangeBonus);
+    }
+  });
   const towersRef = useRef(_initTowers);
   const enemiesRef = useRef([]);
   const projectilesRef = useRef([]);
@@ -152,6 +175,18 @@ export default function Game() {
     setGold(prev => {
       if (prev < cost) return prev;
       const tower = createTower(selectedTowerType, gx, gy);
+      
+      // Apply character bonuses to new tower
+      if (characterData.stats.damageBonus > 0) {
+        tower.damage = Math.floor(tower.damage * (1 + characterData.stats.damageBonus));
+      }
+      if (characterData.stats.rangeBonus > 0) {
+        tower.range *= (1 + characterData.stats.rangeBonus);
+      }
+      if (characterData.stats.costReduction > 0) {
+        // Already spent the full cost, but this affects tower quality
+      }
+      
       const newTowers = [...towersRef.current, tower];
       towerMapRef.current.set(key, tower.id);
 
@@ -775,6 +810,12 @@ export default function Game() {
     forceRender(n => n + 1);
   }, [armorUpgrade]);
 
+  const handleCharacterSelect = (characterId) => {
+    setSelectedCharacter(characterId);
+    setShowCharacterSelect(false);
+    setShowCampaignIntro(true);
+  };
+
   const handleRestart = () => {
     const { towers: rt, map: rm } = makeInitialState();
     towersRef.current = rt;
@@ -783,7 +824,7 @@ export default function Game() {
     towerMapRef.current = rm;
     waveQueueRef.current = [];
     setGold(INITIAL_GOLD);
-    setLives(INITIAL_LIVES);
+    setLives(adjustedInitialLives);
     setScore(0);
     setWave(1);
     setWaveActive(false);
@@ -795,7 +836,8 @@ export default function Game() {
     setVictory(false);
     setPerkShop(false);
     setPerksOwned({});
-    setShowIntro(true);
+    setShowCharacterSelect(true);
+    setShowCampaignIntro(false);
     setArmorUpgrade(null);
     setGloryPoints(0);
     setUnlockedAbilities([]);
@@ -818,6 +860,9 @@ export default function Game() {
 
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, #0d0a1a 0%, #08051a 40%, #0d0a1f 100%)' }}>
+      {/* Character Select Modal */}
+      {showCharacterSelect && <CharacterSelect onSelect={handleCharacterSelect} />}
+
       {/* Header — Clash Royale royal banner style */}
       <div style={{
         background: 'linear-gradient(180deg, #1a0f3a 0%, #0f0a2a 100%)',
@@ -847,7 +892,7 @@ export default function Game() {
                 Kingdom's Last Stand
               </h1>
               <p className="text-[9px] font-bold uppercase tracking-[0.3em]" style={{ color: '#7c5fa0' }}>
-                ⚔ Medieval Tower Defense ⚔
+                {characterData.emoji} {characterData.name} · {characterData.title} ⚔
               </p>
             </div>
           </div>
@@ -1056,7 +1101,7 @@ export default function Game() {
       )}
 
       <CodexModal show={showCodex} onClose={() => setShowCodex(false)} seenEnemies={seenEnemies} />
-      <IntroStoryModal show={showIntro} onBegin={(armorId) => setShowIntro(false)} />
+      <IntroStoryModal show={showIntro} onBegin={() => setShowIntro(false)} />
 
       <AbilityTree
         show={showAbilityTree}
