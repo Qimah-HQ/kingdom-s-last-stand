@@ -21,6 +21,7 @@ import PerkShop from "../components/game/PerkShop";
 import IntroStoryModal from "../components/game/IntroStoryModal";
 import HallOfHeroesModal from "../components/game/HallOfHeroesModal";
 import AchievementToast from "../components/game/AchievementToast";
+import ArmorUpgradeScreen from "../components/game/ArmorUpgradeScreen";
 import { checkNewAchievements } from "../lib/achievements";
 import { playKillSound, playDamageSound, playWaveSuccessSound, playVictoryShout } from "../lib/sounds";
 
@@ -63,6 +64,7 @@ export default function Game() {
   const [perksOwned, setPerksOwned] = useState({});
   const [showIntro, setShowIntro] = useState(true);
   const [hallOfHeroes, setHallOfHeroes] = useState(false);
+  const [armorUpgrade, setArmorUpgrade] = useState(null); // chapter number 2-5
   const [unlockedAchievements, setUnlockedAchievements] = useState([]);
   const [newlyUnlocked, setNewlyUnlocked] = useState([]);
 
@@ -533,6 +535,58 @@ export default function Game() {
     };
   }, [gameOver]);
 
+  const handleArmorUpgrade = useCallback((upgradeId) => {
+    // Apply upgrade effects
+    if (upgradeId === "iron_fist" || upgradeId === "storm_mantle") {
+      const pct = upgradeId === "storm_mantle" ? 1.20 : 1.15;
+      perkMultRef.current.damageBonus *= pct;
+      towersRef.current.forEach(t => { t.damage = Math.floor(t.damage * pct); });
+    }
+    if (upgradeId === "swift_grip") {
+      perkMultRef.current.fireRateBonus *= 0.88;
+      towersRef.current.forEach(t => { t.fireRate = Math.max(150, Math.floor(t.fireRate * 0.88)); });
+    }
+    if (upgradeId === "golden_palm") {
+      setGold(g => g + 20);
+      perkMultRef.current.goldBonus = (perkMultRef.current.goldBonus ?? 1) * 1.10;
+    }
+    if (upgradeId === "ember_cloak") {
+      perkMultRef.current.projSpeedBonus = (perkMultRef.current.projSpeedBonus ?? 1) * 1.20;
+    }
+    if (upgradeId === "forge_mantle") {
+      towersRef.current.forEach(t => { t.range *= 1.10; });
+    }
+    if (upgradeId === "cinder_shroud") {
+      setLives(l => l + 1);
+    }
+    if (upgradeId === "titan_shoulders") {
+      setLives(l => l + 3);
+    }
+    if (upgradeId === "kings_resolve") {
+      setLives(l => l + 10);
+      setGold(g => g + 200);
+    }
+    if (upgradeId === "eternal_flame") {
+      perkMultRef.current.damageBonus *= 1.40;
+      perkMultRef.current.fireRateBonus *= 0.75;
+      towersRef.current.forEach(t => {
+        t.damage = Math.floor(t.damage * 1.40);
+        t.fireRate = Math.max(150, Math.floor(t.fireRate * 0.75));
+      });
+    }
+    if (upgradeId === "soul_aegis") {
+      // Double all current bonuses
+      perkMultRef.current.damageBonus *= 2;
+      perkMultRef.current.fireRateBonus = Math.min(perkMultRef.current.fireRateBonus, 0.5);
+      perkMultRef.current.goldBonus *= 2;
+    }
+
+    const wasChapter5 = armorUpgrade === 5;
+    setArmorUpgrade(null);
+    if (wasChapter5) setTimeout(() => setVictory(true), 600);
+    forceRender(n => n + 1);
+  }, [armorUpgrade]);
+
   const handleRestart = () => {
     const { towers: rt, map: rm } = makeInitialState();
     towersRef.current = rt;
@@ -554,6 +608,7 @@ export default function Game() {
     setPerkShop(false);
     setPerksOwned({});
     setShowIntro(true);
+    setArmorUpgrade(null);
     setUnlockedAchievements([]);
     setNewlyUnlocked([]);
     achStatsRef.current = {
@@ -706,15 +761,19 @@ export default function Game() {
         onContinue={() => {
           const LAND_REWARDS = { 1: 300, 2: 500, 3: 750, 4: 1000, 5: 2000 };
           setGold(g => g + (LAND_REWARDS[landComplete] ?? 300));
+          const completedLand = landComplete;
           setLandComplete(null);
-          if (landComplete === 5) {
+          if (completedLand === 5) {
             setLives(currentLives => {
               achStatsRef.current.victory = true;
               achStatsRef.current.finalLives = currentLives;
               checkAchievements({ ...achStatsRef.current });
               return currentLives;
             });
-            setTimeout(() => setVictory(true), 600);
+            setArmorUpgrade(5);
+          } else if (completedLand >= 1 && completedLand <= 4) {
+            // Chapters 2-5 show upgrade after land 1-4 respectively
+            setTimeout(() => setArmorUpgrade(completedLand + 1), 400);
           }
         }}
       />
@@ -739,6 +798,13 @@ export default function Game() {
       )}
 
       <IntroStoryModal show={showIntro} onBegin={(armorId) => setShowIntro(false)} />
+
+      {armorUpgrade && (
+        <ArmorUpgradeScreen
+          chapter={armorUpgrade}
+          onConfirm={handleArmorUpgrade}
+        />
+      )}
 
       <HallOfHeroesModal
         show={hallOfHeroes}
