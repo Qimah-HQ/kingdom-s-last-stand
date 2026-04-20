@@ -206,51 +206,58 @@ export function Kael({ size = 100 }) {
     <svg width={size} height={size * 1.3} viewBox="0 0 100 130" style={{ overflow: "visible" }}>
       <style>{`
         @keyframes kaelBob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+        @keyframes frostGlow { 0%,100%{filter:drop-shadow(0 0 6px #38bdf8)} 50%{filter:drop-shadow(0 0 14px #38bdf8)} }
         .kael-body { animation: kaelBob 2.4s ease-in-out infinite; transform-origin: 50px 110px; }
+        .kael-head { animation: frostGlow 2.5s ease-in-out infinite; }
       `}</style>
 
       <g className="kael-body">
-        {/* Icy blue tunic */}
-        <rect x="25" y="65" width="50" height="38" rx="10" fill="#3a8aaa" stroke="#5aa0ca" strokeWidth="2"/>
+        {/* Icy blue tunic with frost accents */}
+        <rect x="25" y="65" width="50" height="38" rx="10" fill="#0ea5e9" stroke="#06b6d4" strokeWidth="2"/>
         
-        {/* Crystalline ice patterns */}
-        <line x1="38" y1="70" x2="38" y2="100" stroke="#5aa0ca" strokeWidth="1" opacity="0.5"/>
-        <line x1="62" y1="70" x2="62" y2="100" stroke="#5aa0ca" strokeWidth="1" opacity="0.5"/>
+        {/* Crystalline ice patterns - sharp geometric */}
+        <line x1="38" y1="70" x2="38" y2="100" stroke="#67e8f9" strokeWidth="1.5" opacity="0.6"/>
+        <line x1="62" y1="70" x2="62" y2="100" stroke="#67e8f9" strokeWidth="1.5" opacity="0.6"/>
+        <polygon points="50,72 55,80 50,85 45,80" fill="none" stroke="#06b6d4" strokeWidth="1" opacity="0.7"/>
+        <polygon points="50,95 56,103 50,108 44,103" fill="none" stroke="#06b6d4" strokeWidth="1" opacity="0.7"/>
         
-        {/* Arms - archer build */}
-        <ellipse cx="20" cy="80" rx="9" ry="26" fill="#d4a574" stroke="#8a6040" strokeWidth="1"/>
-        <ellipse cx="80" cy="80" rx="9" ry="26" fill="#d4a574" stroke="#8a6040" strokeWidth="1"/>
+        {/* Arms - lean archer build with frost shimmer */}
+        <ellipse cx="20" cy="80" rx="8" ry="26" fill="#f5f3ff" stroke="#38bdf8" strokeWidth="1"/>
+        <ellipse cx="80" cy="80" rx="8" ry="26" fill="#f5f3ff" stroke="#38bdf8" strokeWidth="1"/>
         
-        {/* Hands */}
-        <ellipse cx="16" cy="108" r="6" fill="#d4a574"/>
-        <ellipse cx="84" cy="108" r="6" fill="#d4a574"/>
+        {/* Hands - pale ice touched */}
+        <ellipse cx="16" cy="108" r="6" fill="#e0f2fe"/>
+        <ellipse cx="84" cy="108" r="6" fill="#e0f2fe"/>
         
         {/* Neck */}
-        <rect x="40" y="54" width="20" height="14" rx="4" fill="#d4a574"/>
+        <rect x="40" y="54" width="20" height="14" rx="4" fill="#e0f2fe"/>
         
-        {/* Head */}
-        <ellipse cx="50" cy="34" rx="17" ry="19" fill="#d4a574"/>
+        {/* Head - pale complexion */}
+        <ellipse cx="50" cy="34" rx="17" ry="19" fill="#e0f2fe" className="kael-head"/>
         
-        {/* Light blonde/silver hair - wind-swept */}
-        <path d="M31 18 Q31 8 50 6 Q69 8 69 18" fill="#a89070"/>
-        <path d="M29 26 Q24 36 22 55" stroke="#a89070" strokeWidth="4" fill="none" strokeLinecap="round"/>
-        <path d="M71 26 Q76 36 78 55" stroke="#a89070" strokeWidth="4" fill="none" strokeLinecap="round"/>
+        {/* Icy silver hair - sharp, frost-like */}
+        <path d="M31 18 Q31 8 50 6 Q69 8 69 18" fill="#a7f3d0"/>
+        <path d="M29 26 Q24 36 22 55" stroke="#a7f3d0" strokeWidth="4" fill="none" strokeLinecap="round"/>
+        <path d="M71 26 Q76 36 78 55" stroke="#a7f3d0" strokeWidth="4" fill="none" strokeLinecap="round"/>
+        {/* Frost streaks */}
+        <path d="M38 10 Q36 20 34 35" stroke="#cffafe" strokeWidth="1.5" opacity="0.7"/>
+        <path d="M62 10 Q64 20 66 35" stroke="#cffafe" strokeWidth="1.5" opacity="0.7"/>
         
-        {/* Cool ice-blue eyes */}
-        <ellipse cx="38" cy="33" rx="3" ry="3.5" fill="#3a8aaa"/>
-        <ellipse cx="62" cy="33" rx="3" ry="3.5" fill="#3a8aaa"/>
-        <circle cx="39.5" cy="30" r="1.2" fill="#a8d5ff" opacity="0.95"/>
-        <circle cx="63.5" cy="30" r="1.2" fill="#a8d5ff" opacity="0.95"/>
+        {/* Piercing ice-blue eyes */}
+        <ellipse cx="38" cy="33" rx="3" ry="3.5" fill="#06b6d4"/>
+        <ellipse cx="62" cy="33" rx="3" ry="3.5" fill="#06b6d4"/>
+        <circle cx="39.5" cy="30" r="1.3" fill="#e0f2fe" opacity="0.98"/>
+        <circle cx="63.5" cy="30" r="1.3" fill="#e0f2fe" opacity="0.98"/>
         
-        {/* Focused eyebrows */}
-        <path d="M35 25 Q38 21 42 26" stroke="#5a4a3a" strokeWidth="1.3" fill="none" strokeLinecap="round"/>
-        <path d="M58 26 Q62 21 65 25" stroke="#5a4a3a" strokeWidth="1.3" fill="none" strokeLinecap="round"/>
+        {/* Sharp, cold eyebrows */}
+        <path d="M35 25 Q38 21 42 26" stroke="#0284c7" strokeWidth="1.4" fill="none" strokeLinecap="round"/>
+        <path d="M58 26 Q62 21 65 25" stroke="#0284c7" strokeWidth="1.4" fill="none" strokeLinecap="round"/>
         
-        {/* Nose */}
-        <path d="M50 33 L50 42" stroke="#c8956f" strokeWidth="1"/>
+        {/* Nose - sharp and chiseled */}
+        <path d="M50 33 L50 42" stroke="#06b6d4" strokeWidth="1.2"/>
         
-        {/* Focused, determined mouth */}
-        <path d="M42 45 Q50 47 58 45" stroke="#8a6840" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+        {/* Determined, cold mouth */}
+        <path d="M42 45 Q50 47 58 45" stroke="#0284c7" strokeWidth="1.3" fill="none" strokeLinecap="round"/>
       </g>
     </svg>
   );
@@ -261,56 +268,62 @@ export function Aurora({ size = 100 }) {
   return (
     <svg width={size} height={size * 1.3} viewBox="0 0 100 130" style={{ overflow: "visible" }}>
       <style>{`
-        @keyframes auroraGlow { 0%,100%{filter:drop-shadow(0 0 6px #ffd60a)} 50%{filter:drop-shadow(0 0 14px #ffd60a)} }
+        @keyframes auroraGlow { 0%,100%{filter:drop-shadow(0 0 8px #f59e0b)} 50%{filter:drop-shadow(0 0 16px #f59e0b)} }
         @keyframes auroraBob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+        @keyframes sunPulse { 0%,100%{r:5} 50%{r:6} }
         .aurora-body { animation: auroraBob 2.5s ease-in-out infinite; transform-origin: 50px 110px; }
         .aurora-head { animation: auroraGlow 2s ease-in-out infinite; }
+        .sun-symbol { animation: sunPulse 1.5s ease-in-out infinite; }
       `}</style>
 
       <g className="aurora-body">
-        {/* Golden ceremonial tunic */}
-        <rect x="25" y="65" width="50" height="38" rx="10" fill="#d4a847" stroke="#ffd60a" strokeWidth="2"/>
+        {/* Golden ceremonial robes with sun theme */}
+        <rect x="25" y="65" width="50" height="38" rx="10" fill="#f59e0b" stroke="#fbbf24" strokeWidth="2"/>
         
-        {/* Radiant sun symbol */}
-        <circle cx="50" cy="78" r="5" fill="#ffd60a" opacity="0.7"/>
+        {/* Radiant sun symbol - glowing core */}
+        <circle cx="50" cy="78" r="5" fill="#fef3c7" className="sun-symbol"/>
+        <circle cx="50" cy="78" r="7" fill="none" stroke="#fbbf24" strokeWidth="1" opacity="0.6"/>
         {[0,1,2,3,4,5].map(i => (
-          <line key={i} x1="50" y1="71" x2="50" y2="66" stroke="#ffd60a" strokeWidth="1" opacity="0.5" transform={`rotate(${i*60} 50 78)`}/>
+          <line key={i} x1="50" y1="70" x2="50" y2="64" stroke="#fbbf24" strokeWidth="1.5" opacity="0.6" transform={`rotate(${i*60} 50 78)`}/>
         ))}
         
-        {/* Arms - priestess build */}
-        <ellipse cx="18" cy="80" rx="9" ry="26" fill="#f0d4a0" stroke="#a89050" strokeWidth="1"/>
-        <ellipse cx="82" cy="80" rx="9" ry="26" fill="#f0d4a0" stroke="#a89050" strokeWidth="1"/>
+        {/* Arms - graceful priestess build */}
+        <ellipse cx="18" cy="80" rx="9" ry="26" fill="#fef3c7" stroke="#d97706" strokeWidth="1"/>
+        <ellipse cx="82" cy="80" rx="9" ry="26" fill="#fef3c7" stroke="#d97706" strokeWidth="1"/>
         
-        {/* Hands */}
-        <ellipse cx="14" cy="108" r="6" fill="#f0d4a0"/>
-        <ellipse cx="86" cy="108" r="6" fill="#f0d4a0"/>
+        {/* Hands - warm pale */}
+        <ellipse cx="14" cy="108" r="6" fill="#fef3c7"/>
+        <ellipse cx="86" cy="108" r="6" fill="#fef3c7"/>
         
         {/* Neck */}
-        <rect x="40" y="54" width="20" height="14" rx="4" fill="#f0d4a0"/>
+        <rect x="40" y="54" width="20" height="14" rx="4" fill="#fef3c7"/>
         
-        {/* Head - warm glow */}
-        <ellipse cx="50" cy="34" rx="17" ry="19" fill="#f0d4a0" className="aurora-head"/>
+        {/* Head - radiant warmth */}
+        <ellipse cx="50" cy="34" rx="17" ry="19" fill="#fef3c7" className="aurora-head"/>
         
-        {/* Flowing golden blonde hair */}
-        <path d="M31 18 Q31 8 50 6 Q69 8 69 18" fill="#d4a070"/>
-        <path d="M29 26 Q24 36 22 55" stroke="#d4a070" strokeWidth="4.5" fill="none" strokeLinecap="round"/>
-        <path d="M71 26 Q76 36 78 55" stroke="#d4a070" strokeWidth="4.5" fill="none" strokeLinecap="round"/>
+        {/* Long flowing golden hair - bright and vibrant */}
+        <path d="M31 18 Q31 8 50 6 Q69 8 69 18" fill="#fbbf24"/>
+        <path d="M29 26 Q24 36 22 55" stroke="#fbbf24" strokeWidth="4.5" fill="none" strokeLinecap="round"/>
+        <path d="M71 26 Q76 36 78 55" stroke="#fbbf24" strokeWidth="4.5" fill="none" strokeLinecap="round"/>
+        {/* Sun rays in hair */}
+        <path d="M36 15 Q34 25 32 40" stroke="#fcd34d" strokeWidth="1" opacity="0.6"/>
+        <path d="M64 15 Q66 25 68 40" stroke="#fcd34d" strokeWidth="1" opacity="0.6"/>
         
-        {/* Warm golden eyes - bright and kind */}
-        <ellipse cx="38" cy="33" rx="3" ry="3.5" fill="#d4a070"/>
-        <ellipse cx="62" cy="33" rx="3" ry="3.5" fill="#d4a070"/>
-        <circle cx="39.5" cy="30" r="1.3" fill="#fff" opacity="0.98"/>
-        <circle cx="63.5" cy="30" r="1.3" fill="#fff" opacity="0.98"/>
+        {/* Bright golden eyes - warm and compassionate */}
+        <ellipse cx="38" cy="33" rx="3" ry="3.5" fill="#f59e0b"/>
+        <ellipse cx="62" cy="33" rx="3" ry="3.5" fill="#f59e0b"/>
+        <circle cx="39.5" cy="30" r="1.3" fill="#fffbeb" opacity="0.99"/>
+        <circle cx="63.5" cy="30" r="1.3" fill="#fffbeb" opacity="0.99"/>
         
-        {/* Warm, kind eyebrows */}
-        <path d="M35 25 Q38 21 42 26" stroke="#8a6a4a" strokeWidth="1.3" fill="none" strokeLinecap="round"/>
-        <path d="M58 26 Q62 21 65 25" stroke="#8a6a4a" strokeWidth="1.3" fill="none" strokeLinecap="round"/>
+        {/* Soft, kind eyebrows */}
+        <path d="M35 25 Q38 21 42 26" stroke="#b45309" strokeWidth="1.3" fill="none" strokeLinecap="round"/>
+        <path d="M58 26 Q62 21 65 25" stroke="#b45309" strokeWidth="1.3" fill="none" strokeLinecap="round"/>
         
         {/* Nose */}
-        <path d="M50 33 L50 42" stroke="#d4a080" strokeWidth="1"/>
+        <path d="M50 33 L50 42" stroke="#f59e0b" strokeWidth="1"/>
         
-        {/* Warm, welcoming smile */}
-        <path d="M42 45 Q50 48 58 45" stroke="#c8705a" strokeWidth="1.3" fill="none" strokeLinecap="round"/>
+        {/* Warm, healing smile */}
+        <path d="M42 45 Q50 48 58 45" stroke="#d97706" strokeWidth="1.3" fill="none" strokeLinecap="round"/>
       </g>
     </svg>
   );
