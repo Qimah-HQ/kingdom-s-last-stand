@@ -187,6 +187,22 @@ export default function AbilityTree({ show, gloryPoints, unlockedAbilities, onUn
         }} />
       </div>
 
+      {/* Top-right exit button */}
+      <button
+        onClick={onClose}
+        style={{
+          position: "fixed", top: 16, right: 16, zIndex: 10,
+          width: 44, height: 44, borderRadius: "50%",
+          background: "linear-gradient(180deg,#4c1d95,#2e0a6a)",
+          border: "2px solid #a78bfa",
+          boxShadow: "0 4px 0 #1e0a4a, 0 0 16px rgba(139,92,246,0.4)",
+          color: "#e9d5ff", fontSize: 20, fontWeight: 900,
+          cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+          lineHeight: 1,
+        }}>
+        ✕
+      </button>
+
       <div className="relative w-full max-w-3xl mx-4" style={{ zIndex: 2 }}>
         {/* Header */}
         <div className="text-center mb-6">
