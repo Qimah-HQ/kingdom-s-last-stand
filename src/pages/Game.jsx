@@ -32,6 +32,7 @@ import BossHealthBar from "../components/game/BossHealthBar";
 import CampaignIntro from "../components/game/CampaignIntro";
 import WaveDialogue from "../components/game/WaveDialogue";
 import CharacterSelect from "../components/game/CharacterSelect";
+import DifficultySelect from "../components/game/DifficultySelect";
 import { checkNewAchievements } from "../lib/achievements";
 import { playKillSound, playDamageSound, playWaveSuccessSound, playVictoryShout, playMergeSound } from "../lib/sounds";
 
@@ -58,6 +59,8 @@ function makeInitialState() {
 
 export default function Game() {
   const [selectedCharacter, setSelectedCharacter] = useState(INITIAL_CHARACTER);
+  const [difficulty, setDifficulty] = useState(null);
+  const [showDifficultySelect, setShowDifficultySelect] = useState(true);
   
   // Get character and apply health bonus to initial lives
   const charData = getCharacter(selectedCharacter);
@@ -316,7 +319,9 @@ export default function Game() {
         waveTimerRef.current += dt * 1000;
         const nextEnemy = waveQueueRef.current[0];
         if (waveTimerRef.current >= nextEnemy.delay) {
-          const enemy = createEnemy(nextEnemy.type, nextEnemy.hpMultiplier, nextEnemy.modifier, nextEnemy.speedMultiplier);
+          const diffMult = difficulty ? difficulty.hpMult : 1;
+          const diffSpeed = difficulty ? difficulty.speedMult : 1;
+          const enemy = createEnemy(nextEnemy.type, nextEnemy.hpMultiplier * diffMult, nextEnemy.modifier, nextEnemy.speedMultiplier * diffSpeed);
           enemiesRef.current = [...enemiesRef.current, enemy];
           // Track for Codex
           setSeenEnemies(prev => prev.has(nextEnemy.type) ? prev : new Set([...prev, nextEnemy.type]));
@@ -524,7 +529,8 @@ export default function Game() {
           if (comboTimerRef.current) clearTimeout(comboTimerRef.current);
           comboTimerRef.current = setTimeout(() => setCombo(0), COMBO_WINDOW);
           const comboMult = next < 5 ? 1 : next < 10 ? 2 : next < 20 ? 3 : 5;
-          const totalMult = comboMult * (perkMultRef.current.goldBonus ?? 1);
+          const diffGoldMult = difficulty ? difficulty.goldMult : 1;
+          const totalMult = comboMult * (perkMultRef.current.goldBonus ?? 1) * diffGoldMult;
           // Track max combo
           if (next > (achStatsRef.current.maxCombo ?? 0)) {
             achStatsRef.current.maxCombo = next;
@@ -577,9 +583,10 @@ export default function Game() {
               }
               return next;
             });
-            // Wave bonus scales with wave number
+            // Wave bonus scales with wave number and difficulty
+            const diffGoldBonus = difficulty ? difficulty.goldMult : 1;
             setGold(g => {
-              const ng = g + 25 + wave * 5;
+              const ng = g + Math.floor((25 + wave * 5) * diffGoldBonus);
               if (ng > (achStatsRef.current.maxGold ?? 0)) achStatsRef.current.maxGold = ng;
               return ng;
             });
@@ -815,6 +822,11 @@ export default function Game() {
   const handleCharacterSelect = (characterId) => {
     setSelectedCharacter(characterId);
     setShowCharacterSelect(false);
+  };
+
+  const handleDifficultySelect = (diff) => {
+    setDifficulty(diff);
+    setShowDifficultySelect(false);
     setShowCampaignIntro(true);
   };
 
@@ -839,8 +851,10 @@ export default function Game() {
     setPerkShop(false);
     setPerksOwned({});
     setShowCharacterSelect(true);
+    setShowDifficultySelect(true);
     setShowCampaignIntro(false);
     setArmorUpgrade(null);
+    setDifficulty(null);
     setGloryPoints(0);
     setUnlockedAbilities([]);
     setDivineShieldActive(false);
@@ -864,6 +878,9 @@ export default function Game() {
     <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, #0d0a1a 0%, #08051a 40%, #0d0a1f 100%)' }}>
       {/* Character Select Modal */}
       {showCharacterSelect && <CharacterSelect onSelect={handleCharacterSelect} />}
+
+      {/* Difficulty Select Modal */}
+      {!showCharacterSelect && showDifficultySelect && <DifficultySelect onSelect={handleDifficultySelect} />}
 
       {/* Header — Clash Royale royal banner style */}
       <div style={{
