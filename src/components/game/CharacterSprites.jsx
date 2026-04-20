@@ -69,11 +69,19 @@ export function LordAldric({ size = 100 }) {
         {/* Mouth - confident, slight smile */}
         <path d="M42 45 Q50 47 58 45" stroke="#5a2a10" strokeWidth="1.3" fill="none" strokeLinecap="round"/>
         
+        {/* Beard - thick and distinguished */}
+        <path d="M40 46 Q50 50 60 46" stroke="#4a3a2a" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+        <path d="M38 48 Q50 52 62 48" stroke="#3a2a1a" strokeWidth="1" fill="none" strokeLinecap="round"/>
+        
         {/* Stubble/beard shadow */}
-        <circle cx="35" cy="44" r="0.5" fill="#3a2a1a" opacity="0.4"/>
-        <circle cx="38" cy="45" r="0.5" fill="#3a2a1a" opacity="0.4"/>
-        <circle cx="62" cy="44" r="0.5" fill="#3a2a1a" opacity="0.4"/>
-        <circle cx="65" cy="45" r="0.5" fill="#3a2a1a" opacity="0.4"/>
+        <circle cx="35" cy="44" r="0.8" fill="#3a2a1a" opacity="0.5"/>
+        <circle cx="38" cy="45" r="0.8" fill="#3a2a1a" opacity="0.5"/>
+        <circle cx="42" cy="46" r="0.7" fill="#3a2a1a" opacity="0.6"/>
+        <circle cx="45" cy="47" r="0.7" fill="#3a2a1a" opacity="0.6"/>
+        <circle cx="55" cy="47" r="0.7" fill="#3a2a1a" opacity="0.6"/>
+        <circle cx="58" cy="46" r="0.7" fill="#3a2a1a" opacity="0.6"/>
+        <circle cx="62" cy="44" r="0.8" fill="#3a2a1a" opacity="0.5"/>
+        <circle cx="65" cy="45" r="0.8" fill="#3a2a1a" opacity="0.5"/>
       </g>
     </svg>
   );
