@@ -90,6 +90,28 @@ const CHAPTER_DATA = {
       { id: "void_mantle",   emoji: "🌀", name: "Void Mantle",   desc: "Sovereign's own cloak. All towers +50% range & damage +30%.",    statLabel: "Range+Damage", statVal: "+50/+30%",  color: "#c084fc", colorRgb: "192,132,252" },
     ],
   },
+  6: {
+    chapterLabel: "Chapter VI — The Demon Lord's Fall & Eternal Peace",
+    victoryShout: "THE DEMON LORD IS SLAIN — THE REALM IS SAVED!",
+    queenLines: [
+      "My lord... what I have witnessed shall echo through the ages. The Demon Lord Malgrath — HE WHO PLAGUED US FOR TEN THOUSAND YEARS — is NO MORE.",
+      "By thy blade, by thy will, by thy UNBREAKABLE SPIRIT, thou hast brought light back to a world consumed by darkness.",
+      "Now, the greatest honor: accept the Crown of Eldenmoor. Rule not as a mere lord, but as the LEGENDARY SAVIOUR who delivered us from eternal damnation.",
+    ],
+    slotLabel: "The Crown of Eldenmoor",
+    slotEmoji: "👑",
+    glow: "#ffd60a",
+    glowRgb: "255,214,10",
+    bg: "linear-gradient(180deg, #0a0805 0%, #1a1008 60%, #2a1f10 100%)",
+    queenBg: "linear-gradient(180deg, #ffd60a, #b8860b)",
+    bgParticles: ["👑","✨","🌟","🕊️","⚔️"],
+    upgrades: [
+      { id: "legend_crown",     emoji: "👑", name: "Legend's Crown",     desc: "The crown of ages past. All towers +60% damage, +40% range.",      statLabel: "DMG + Range", statVal: "+60/+40%", color: "#ffd60a", colorRgb: "255,214,10" },
+      { id: "peace_aegis",      emoji: "🕊️", name: "Peace Aegis",       desc: "The realm's blessing. +15 lives, +500 gold, all bonuses ×1.5.",   statLabel: "Lives + Mult", statVal: "+15/×1.5", color: "#86efac", colorRgb: "134,239,172" },
+      { id: "saviour_mantle",   emoji: "⚔️", name: "Saviour's Mantle",   desc: "The hero's final cloak. All towers +75% damage, +35% fire rate.", statLabel: "DMG + Speed",  statVal: "+75/+35%", color: "#ff4d6d", colorRgb: "255,77,109"  },
+      { id: "eternal_victory",  emoji: "✨", name: "Eternal Victory",    desc: "The symbol of triumph. ALL BONUSES TRIPLED — A TRUE LEGEND.", statLabel: "All Bonuses",  statVal: "×3",        color: "#ffd60a", colorRgb: "255,214,10" },
+    ],
+  },
 };
 
 

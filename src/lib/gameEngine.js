@@ -7,6 +7,20 @@ export const GRID_ROWS = 10;
 // 5 Lands — each has 5 waves (boss on final wave of each land)
 // Land 1: Waves 1–5   | Land 2: 6–10 | Land 3: 11–15 | Land 4: 16–20 | Land 5: 21–25
 export const STAGE_THEMES = {
+  demonRealm: {
+    name: "The Demon's Throne",
+    waveRange: [26, 30],
+    bg: "#0a0005",
+    grassA: "#15000f",
+    grassB: "#0f000a",
+    pathA: "#2a0010",
+    pathB: "#240008",
+    pathBorder: "rgba(180,0,80,0.5)",
+    gridLine: "rgba(100,0,50,0.08)",
+    borderColor: "#6a001a",
+    label: "Land 6 · Waves 26–30",
+    emoji: "👑",
+  },
   meadow: {
     name: "The Verdant Meadow",
     waveRange: [1, 5],
@@ -673,6 +687,12 @@ export const ENEMY_TYPES = {
     phaseShifts: [0.7, 0.5, 0.3, 0.1],
     rageMultiplier: 2.5,
   },
+  boss_demon: { hp: 15000, speed: 0.35, reward: 5000, emoji: "👑",   name: "Demon Lord Malgrath", isBoss: true,
+    cinematicTitle: "THE DEMON LORD FALLS — PEACE RETURNS",
+    cinematicDesc: "The ancient evil that plagued the realm for ten thousand years has been vanquished. By thy hand, Eldenmoor is FOREVER FREE.",
+    phaseShifts: [0.8, 0.6, 0.4, 0.2],
+    rageMultiplier: 3.0,
+  },
 };
 
 // Boss spawns on the final wave of each land
@@ -682,6 +702,7 @@ export const STAGE_BOSS_WAVES = {
   15: "boss_volcano",
   20: "boss_abyss",
   25: "boss_shadow",
+  30: "boss_demon",
 };
 
 const BOSS_NAME_PARTS = {
@@ -787,13 +808,26 @@ export function generateWaves(waveNumber) {
     const types = ["voidling", "soulReaper", "shadow", "doomKnight", "voidling", "specter"];
     for (let i = 0; i < count; i++)
       enemies.push({ type: types[i % types.length], delay: i * spawnInterval });
-  } else {
+  } else if (waveNumber <= 25) {
     const types = ["abyssLord", "doomKnight", "soulReaper", "voidling", "shadow", "abyssLord", "doomKnight"];
     for (let i = 0; i < count; i++)
       enemies.push({ type: types[i % types.length], delay: i * spawnInterval });
     if (!isBossWave)
       for (let k = 0; k < 4; k++)
         enemies.push({ type: k % 2 === 0 ? "abyssLord" : "doomKnight", delay: count * spawnInterval + 800 + k * 500 });
+  
+  // Land 6: Demon's Throne (waves 26–30)
+  } else if (waveNumber <= 27) {
+    const types = ["doomKnight", "abyssLord", "soulReaper", "voidling"];
+    for (let i = 0; i < count; i++)
+      enemies.push({ type: types[i % types.length], delay: i * spawnInterval });
+  } else {
+    const types = ["abyssLord", "soulReaper", "doomKnight", "voidling", "abyssLord", "soulReaper"];
+    for (let i = 0; i < count; i++)
+      enemies.push({ type: types[i % types.length], delay: i * spawnInterval });
+    if (!isBossWave)
+      for (let k = 0; k < 5; k++)
+        enemies.push({ type: k % 2 === 0 ? "abyssLord" : "soulReaper", delay: count * spawnInterval + 800 + k * 400 });
   }
 
   // Boss at end of boss wave

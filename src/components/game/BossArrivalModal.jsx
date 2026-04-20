@@ -103,6 +103,26 @@ const BOSS_CINEMATIC = {
     phaseLabel: "FINAL FORM",
     phaseColor: "#e879f9",
   },
+  boss_demon: {
+    title: "DEMON LORD MALGRATH",
+    subtitle: "The Ancient Evil",
+    cinematicTitle: "THE DEMON LORD FALLS — PEACE RETURNS",
+    lore: "The ancient evil that plagued the realm for ten thousand years\nhas been vanquished. By thy hand, Eldenmoor is FOREVER FREE.",
+    tauntLines: [
+      "Impossible! How dare a mortal defy me!",
+      "I shall drag thy soul to the abyss with me!",
+      "But... no... my reign... ENDS HERE...",
+    ],
+    glow: "#ff1744",
+    rgb: "255,23,68",
+    bg: "linear-gradient(180deg,#0a0005,#1a000a,#0d0005)",
+    emoji: "👑",
+    screenShake: true,
+    particles: ["👑","🔥","⚔️","💥","✨"],
+    rageWarning: "THE DEMON LORD UNLEASHES TOTAL ANNIHILATION",
+    phaseLabel: "APOCALYPSE",
+    phaseColor: "#ff5252",
+  },
 };
 
 function playBossRoar(bossType, glow) {

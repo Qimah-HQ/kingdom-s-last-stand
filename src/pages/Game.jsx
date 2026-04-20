@@ -726,10 +726,37 @@ export default function Game() {
       perkMultRef.current.damageBonus *= 1.30;
       towersRef.current.forEach(t => { t.range *= 1.50; t.damage = Math.floor(t.damage * 1.30); });
     }
+    if (upgradeId === "legend_crown") {
+      perkMultRef.current.damageBonus *= 1.60;
+      towersRef.current.forEach(t => { t.damage = Math.floor(t.damage * 1.60); t.range *= 1.40; });
+    }
+    if (upgradeId === "peace_aegis") {
+      setLives(l => l + 15);
+      setGold(g => g + 500);
+      perkMultRef.current.damageBonus *= 1.5;
+      perkMultRef.current.fireRateBonus *= 0.95;
+      perkMultRef.current.goldBonus *= 1.5;
+      towersRef.current.forEach(t => { t.damage = Math.floor(t.damage * 1.5); });
+    }
+    if (upgradeId === "saviour_mantle") {
+      perkMultRef.current.damageBonus *= 1.75;
+      perkMultRef.current.fireRateBonus *= 0.65;
+      towersRef.current.forEach(t => {
+        t.damage = Math.floor(t.damage * 1.75);
+        t.fireRate = Math.max(150, Math.floor(t.fireRate * 0.65));
+      });
+    }
+    if (upgradeId === "eternal_victory") {
+      perkMultRef.current.damageBonus *= 3;
+      perkMultRef.current.fireRateBonus *= 0.7;
+      perkMultRef.current.goldBonus *= 3;
+      towersRef.current.forEach(t => { t.damage = Math.floor(t.damage * 3); t.range *= 1.5; });
+    }
 
+    const wasChapter6 = armorUpgrade === 6;
     const wasChapter5 = armorUpgrade === 5;
     setArmorUpgrade(null);
-    if (wasChapter5) setTimeout(() => setVictory(true), 600);
+    if (wasChapter6 || wasChapter5) setTimeout(() => setVictory(true), 600);
     forceRender(n => n + 1);
   }, [armorUpgrade]);
 
@@ -971,7 +998,15 @@ export default function Game() {
           setGold(g => g + (LAND_REWARDS[landComplete] ?? 300));
           const completedLand = landComplete;
           setLandComplete(null);
-          if (completedLand === 5) {
+          if (completedLand === 6) {
+            setLives(currentLives => {
+              achStatsRef.current.victory = true;
+              achStatsRef.current.finalLives = currentLives;
+              checkAchievements({ ...achStatsRef.current });
+              return currentLives;
+            });
+            setArmorUpgrade(6);
+          } else if (completedLand === 5) {
             setLives(currentLives => {
               achStatsRef.current.victory = true;
               achStatsRef.current.finalLives = currentLives;
