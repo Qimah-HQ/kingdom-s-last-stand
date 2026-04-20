@@ -47,29 +47,27 @@ export function LordAldric({ size = 100 }) {
         <path d="M42 10 L40 28" stroke="#d0d0d0" strokeWidth="1.2" opacity="0.8"/>
         <path d="M58 10 L60 28" stroke="#d0d0d0" strokeWidth="1.2" opacity="0.8"/>
         
-        {/* Eyes - intense, bloodshot */}
-        <ellipse cx="38" cy="30" rx="3" ry="3.5" fill="#8a1010"/>
-        <ellipse cx="62" cy="30" rx="3" ry="3.5" fill="#8a1010"/>
-        <circle cx="39" cy="28" r="1.2" fill="#fff" opacity="0.9"/>
-        <circle cx="63" cy="28" r="1.2" fill="#fff" opacity="0.9"/>
+        {/* Eyes - piercing, determined blue-grey */}
+        <ellipse cx="38" cy="30" rx="3.5" ry="4" fill="#5a7a9a"/>
+        <ellipse cx="62" cy="30" rx="3.5" ry="4" fill="#5a7a9a"/>
+        <circle cx="39.5" cy="28" r="1.5" fill="#e0f0ff" opacity="0.95"/>
+        <circle cx="63.5" cy="28" r="1.5" fill="#e0f0ff" opacity="0.95"/>
         
-        {/* Eyebrows - heavy, scarred */}
-        <path d="M35 22 Q38 19 42 23" stroke="#2a1a0a" strokeWidth="2" fill="none" strokeLinecap="round"/>
-        <path d="M58 23 Q62 19 65 22" stroke="#2a1a0a" strokeWidth="2" fill="none" strokeLinecap="round"/>
+        {/* Eyebrows - strong but refined */}
+        <path d="M35 22 Q38 19 42 23" stroke="#3a2010" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
+        <path d="M58 23 Q62 19 65 22" stroke="#3a2010" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
         
-        {/* Scars - deep battle marks */}
-        <path d="M52 25 Q55 32 53 40" stroke="#6a3020" strokeWidth="1.5" fill="none" opacity="0.8"/>
-        <path d="M56 26 Q59 34 57 42" stroke="#6a3020" strokeWidth="1.5" fill="none" opacity="0.8"/>
-        <path d="M50 22 Q52 26 51 32" stroke="#6a2010" strokeWidth="1" fill="none" opacity="0.6"/>
+        {/* Scars - subtle battle marks */}
+        <path d="M52 26 Q54 32 52 39" stroke="#7a4020" strokeWidth="1" fill="none" opacity="0.5"/>
+        <path d="M50 24 Q51 28 50 35" stroke="#6a3010" strokeWidth="0.8" fill="none" opacity="0.4"/>
         
-        {/* Nose - broken fighter's nose */}
-        <path d="M50 30 L50 40" stroke="#9a7050" strokeWidth="1.8"/>
-        <ellipse cx="48" cy="35" rx="1.2" ry="1.5" fill="#7a5030"/>
-        <ellipse cx="52" cy="35" rx="1.2" ry="1.5" fill="#7a5030"/>
+        {/* Nose - strong and refined */}
+        <path d="M50 30 L50 40" stroke="#a88060" strokeWidth="1.5"/>
+        <ellipse cx="48" cy="37" rx="1.5" ry="1.2" fill="#8a7050"/>
+        <ellipse cx="52" cy="37" rx="1.5" ry="1.2" fill="#8a7050"/>
         
-        {/* Mouth - stern, clenched */}
-        <path d="M42 45 L58 45" stroke="#4a2010" strokeWidth="1.5" strokeLinecap="round"/>
-        <path d="M42 46 L58 46" stroke="#2a1010" strokeWidth="0.8" opacity="0.5"/>
+        {/* Mouth - confident, slight smile */}
+        <path d="M42 45 Q50 47 58 45" stroke="#5a2a10" strokeWidth="1.3" fill="none" strokeLinecap="round"/>
         
         {/* Stubble/beard shadow */}
         <circle cx="35" cy="44" r="0.5" fill="#3a2a1a" opacity="0.4"/>
