@@ -23,6 +23,8 @@ import HallOfHeroesModal from "../components/game/HallOfHeroesModal";
 import AchievementToast from "../components/game/AchievementToast";
 import ArmorUpgradeScreen from "../components/game/ArmorUpgradeScreen";
 import BossKillReward from "../components/game/BossKillReward";
+import AbilityTree from "../components/game/AbilityTree";
+import ActiveAbilityBar from "../components/game/ActiveAbilityBar";
 import { checkNewAchievements } from "../lib/achievements";
 import { playKillSound, playDamageSound, playWaveSuccessSound, playVictoryShout, playMergeSound } from "../lib/sounds";
 
@@ -67,6 +69,11 @@ export default function Game() {
   const [hallOfHeroes, setHallOfHeroes] = useState(false);
   const [armorUpgrade, setArmorUpgrade] = useState(null); // chapter number 2-5
   const [bossKillReward, setBossKillReward] = useState(null); // bossType string
+  const [showAbilityTree, setShowAbilityTree] = useState(false);
+  const [gloryPoints, setGloryPoints] = useState(0);
+  const [unlockedAbilities, setUnlockedAbilities] = useState([]);
+  const [divineShieldActive, setDivineShieldActive] = useState(false);
+  const [voidWrathActive, setVoidWrathActive] = useState(false);
   const tempBuffsRef = useRef({}); // { damageBonus, fireRateBonus, rangeBonus, wavesLeft }
   const [unlockedAchievements, setUnlockedAchievements] = useState([]);
   const [newlyUnlocked, setNewlyUnlocked] = useState([]);
@@ -286,7 +293,7 @@ export default function Game() {
       });
       enemiesRef.current = newEnemies;
 
-      if (livesLost > 0) {
+      if (livesLost > 0 && !divineShieldActive) {
         playDamageSound();
         setLives(prev => {
           const newLives = prev - livesLost;
@@ -346,7 +353,8 @@ export default function Game() {
             // Armor break: reduce effective armor
             const armorReduction = proj.armorBreak ?? 0;
             const effectiveDR = Math.max(0, (target.damageReduction ?? 0) - armorReduction);
-            const dmg = Math.floor(proj.damage * (1 - effectiveDR));
+            const voidMult = voidWrathActive ? 3 : 1;
+            const dmg = Math.floor(proj.damage * (1 - effectiveDR) * voidMult);
             target.hp -= dmg;
 
             // Slow / freeze effects
@@ -426,6 +434,7 @@ export default function Game() {
               playKillSound();
               if (target.type?.startsWith("boss_")) {
                 setBossKillReward(target.type);
+                setGloryPoints(gp => gp + 2); // +2 glory per boss kill
               }
               enemiesRef.current = enemiesRef.current.filter(e => e.id !== target.id);
             }
@@ -542,6 +551,55 @@ export default function Game() {
     };
   }, [gameOver]);
 
+  const handleActivateAbility = useCallback((abilityId) => {
+    if (abilityId === "rain_of_arrows") {
+      // Deal 150 damage to all enemies on screen
+      enemiesRef.current.forEach(e => { e.hp -= 150; });
+      enemiesRef.current = enemiesRef.current.filter(e => e.hp > 0);
+      forceRender(n => n + 1);
+    }
+    if (abilityId === "healing_aura") {
+      setLives(l => l + 3);
+    }
+    if (abilityId === "gold_surge") {
+      setGold(g => g + 80);
+    }
+    if (abilityId === "earthquake") {
+      // Freeze all enemies for 3s
+      enemiesRef.current.forEach(e => { e.frozenTimer = 3000; e.slowTimer = 3000; });
+    }
+    if (abilityId === "frost_nova") {
+      // Slow all enemies 70% for 5s
+      enemiesRef.current.forEach(e => { e.slowTimer = 5000; });
+    }
+    if (abilityId === "tower_overcharge") {
+      // Triple fire rate for 8 seconds
+      const originalRates = towersRef.current.map(t => t.fireRate);
+      towersRef.current.forEach(t => { t.fireRate = Math.max(50, Math.floor(t.fireRate / 3)); });
+      setTimeout(() => {
+        towersRef.current.forEach((t, i) => { t.fireRate = originalRates[i] ?? t.fireRate; });
+        forceRender(n => n + 1);
+      }, 8000);
+    }
+    if (abilityId === "meteor_strike") {
+      // Kill all non-boss enemies, deal 2000 damage to bosses
+      enemiesRef.current.forEach(e => {
+        if (e.type?.startsWith("boss_")) { e.hp -= 2000; }
+        else { e.hp = 0; }
+      });
+      enemiesRef.current = enemiesRef.current.filter(e => e.hp > 0);
+      forceRender(n => n + 1);
+    }
+    if (abilityId === "divine_shield") {
+      setDivineShieldActive(true);
+      setTimeout(() => setDivineShieldActive(false), 10000);
+    }
+    if (abilityId === "void_wrath") {
+      setVoidWrathActive(true);
+      setTimeout(() => setVoidWrathActive(false), 6000);
+    }
+  }, []);
+
   const handleBossRewardClaim = useCallback((reward) => {
     if (!reward) { setBossKillReward(null); return; }
     if (reward.type === "gold") setGold(g => g + reward.value);
@@ -594,6 +652,14 @@ export default function Game() {
     }
     setBossKillReward(null);
     forceRender(n => n + 1);
+  }, []);
+
+  const handleUnlockAbility = useCallback((ability) => {
+    setGloryPoints(gp => {
+      if (gp < ability.cost) return gp;
+      setUnlockedAbilities(prev => [...prev, ability.id]);
+      return gp - ability.cost;
+    });
   }, []);
 
   const handleArmorUpgrade = useCallback((upgradeId) => {
@@ -683,6 +749,11 @@ export default function Game() {
     setPerksOwned({});
     setShowIntro(true);
     setArmorUpgrade(null);
+    setGloryPoints(0);
+    setUnlockedAbilities([]);
+    setDivineShieldActive(false);
+    setVoidWrathActive(false);
+    setShowAbilityTree(false);
     setUnlockedAchievements([]);
     setNewlyUnlocked([]);
     achStatsRef.current = {
@@ -732,6 +803,23 @@ export default function Game() {
           </div>
           <div className="flex items-center gap-2">
             <button
+              onClick={() => setShowAbilityTree(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-black text-xs uppercase tracking-wider transition-all hover:scale-105"
+              style={{
+                background: "linear-gradient(180deg, #7c3aed, #4c1d95)",
+                border: "2px solid #a78bfa",
+                boxShadow: "0 2px 0 #1e0a4a, 0 0 10px rgba(139,92,246,0.4)",
+                color: "#e9d5ff",
+              }}>
+              ✨ <span className="hidden sm:inline">Abilities</span>
+              {gloryPoints > 0 && (
+                <span className="ml-1 px-1.5 py-0.5 rounded-full text-[9px] font-black"
+                  style={{ background: "#ffd60a", color: "#3a2000" }}>
+                  {gloryPoints}✨
+                </span>
+              )}
+            </button>
+            <button
               onClick={() => setHallOfHeroes(true)}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-black text-xs uppercase tracking-wider transition-all hover:scale-105"
               style={{
@@ -773,6 +861,26 @@ export default function Game() {
                 Click on a valid tile to place your {TOWER_TYPES[selectedTowerType].name}
               </p>
             )}
+            {/* Active ability status badges */}
+            <div className="flex items-center justify-center gap-2 mt-1 flex-wrap">
+              {divineShieldActive && (
+                <div className="flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-black animate-pulse"
+                  style={{ background: "rgba(167,139,250,0.2)", border: "1px solid #a78bfa", color: "#e9d5ff" }}>
+                  🛡️ Divine Shield Active
+                </div>
+              )}
+              {voidWrathActive && (
+                <div className="flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-black animate-pulse"
+                  style={{ background: "rgba(192,132,252,0.2)", border: "1px solid #c084fc", color: "#f0d0ff" }}>
+                  🌀 Void Wrath — 3× Damage
+                </div>
+              )}
+            </div>
+            <ActiveAbilityBar
+              unlockedAbilities={unlockedAbilities}
+              onActivate={handleActivateAbility}
+              disabled={!waveActive}
+            />
           </div>
 
           {/* Side Panel */}
@@ -872,6 +980,14 @@ export default function Game() {
       )}
 
       <IntroStoryModal show={showIntro} onBegin={(armorId) => setShowIntro(false)} />
+
+      <AbilityTree
+        show={showAbilityTree}
+        gloryPoints={gloryPoints}
+        unlockedAbilities={unlockedAbilities}
+        onUnlock={handleUnlockAbility}
+        onClose={() => setShowAbilityTree(false)}
+      />
 
       <BossKillReward
         bossType={bossKillReward}
