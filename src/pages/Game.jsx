@@ -1177,6 +1177,11 @@ export default function Game() {
                 Click on a valid tile to place your {TOWER_TYPES[selectedTowerType].name}
               </p>
             )}
+            {/* Merge Recipes — middle overlay */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 max-w-xs">
+              <ComboSuggestions />
+            </div>
+
             {/* Active ability status badges */}
             <div className="flex items-center justify-center gap-2 mt-1 flex-wrap">
               {divineShieldActive && (
@@ -1228,7 +1233,6 @@ export default function Game() {
                 fastForward={fastForward}
                 onToggleFastForward={() => setFastForward(f => !f)}
               />
-              <ComboSuggestions />
               <div className="mt-4 rounded-xl px-3 py-2 space-y-1 text-[9px] font-semibold"
                 style={{ background: 'rgba(100,60,180,0.08)', border: '1px solid rgba(100,60,180,0.2)', color: '#5a4880' }}>
                 <p>⚔ Select tower → click board to place</p>
