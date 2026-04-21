@@ -1155,7 +1155,7 @@ export default function Game() {
       <div className="max-w-7xl mx-auto px-4 py-4">
         <div className="flex flex-col lg:flex-row gap-4">
           {/* Board */}
-          <div className="flex-1" id="game-board-wrap">
+          <div className="flex-1 relative" id="game-board-wrap">
             <GameBoard
               towers={towersRef.current}
               enemies={enemiesRef.current}
@@ -1167,6 +1167,11 @@ export default function Game() {
               wave={wave}
               onTowerSwap={handleTowerSwap}
             />
+            {/* Battle Log — top left overlay */}
+            <div className="absolute top-8 left-2 z-20 w-56">
+              <CombatLog entries={combatLog} />
+            </div>
+
             {selectedTowerType && (
               <p className="text-center text-xs text-red-900/60 mt-2 tracking-wide">
                 Click on a valid tile to place your {TOWER_TYPES[selectedTowerType].name}
@@ -1223,7 +1228,6 @@ export default function Game() {
                 fastForward={fastForward}
                 onToggleFastForward={() => setFastForward(f => !f)}
               />
-              <CombatLog entries={combatLog} />
               <ComboSuggestions />
               <div className="mt-4 rounded-xl px-3 py-2 space-y-1 text-[9px] font-semibold"
                 style={{ background: 'rgba(100,60,180,0.08)', border: '1px solid rgba(100,60,180,0.2)', color: '#5a4880' }}>
