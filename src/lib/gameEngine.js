@@ -1325,9 +1325,9 @@ export function createProjectile(tower, enemy, overrideDamage = null) {
   return proj;
 }
 
-// Check if two grid positions are adjacent (including diagonals)
+// Check if two grid positions are within merge range (2 cells)
 export function areAdjacent(t1, t2) {
-  return Math.abs(t1.gridX - t2.gridX) <= 1 && Math.abs(t1.gridY - t2.gridY) <= 1
+  return Math.abs(t1.gridX - t2.gridX) <= 2 && Math.abs(t1.gridY - t2.gridY) <= 2
     && !(t1.gridX === t2.gridX && t1.gridY === t2.gridY);
 }
 
