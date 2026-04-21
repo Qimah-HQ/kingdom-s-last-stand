@@ -1178,8 +1178,8 @@ export default function Game() {
                 Click on a valid tile to place your {TOWER_TYPES[selectedTowerType].name}
               </p>
             )}
-            {/* Merge Recipes — middle overlay */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 max-w-xs">
+            {/* Merge Recipes — centered horizontally, lower on board */}
+            <div className="absolute top-2/3 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 max-w-xs">
               <ComboSuggestions />
             </div>
 
