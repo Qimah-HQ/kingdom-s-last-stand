@@ -1,4 +1,5 @@
 // Web Audio API sound effects — no external dependencies
+import { isMuted } from "./audioContext";
 
 let ctx = null;
 
@@ -26,12 +27,14 @@ function playTone({ frequency = 440, type = "sine", duration = 0.1, gain = 0.3, 
 }
 
 export function playKillSound() {
+  if (isMuted()) return;
   // Quick satisfying pop
   playTone({ frequency: 320, type: "square", duration: 0.07, gain: 0.18, detune: 0 });
   setTimeout(() => playTone({ frequency: 500, type: "sine", duration: 0.06, gain: 0.12 }), 30);
 }
 
 export function playDamageSound() {
+  if (isMuted()) return;
   // Low thud / grunt
   playTone({ frequency: 90, type: "sawtooth", duration: 0.15, gain: 0.4 });
   setTimeout(() => playTone({ frequency: 60, type: "sine", duration: 0.2, gain: 0.25 }), 20);
@@ -39,6 +42,7 @@ export function playDamageSound() {
 
 // Unique merge sounds — one per result tower type
 export function playMergeSound(resultType) {
+  if (isMuted()) return;
   const ac = getCtx();
 
   function tone(freq, type, duration, gain, startOffset = 0, detune = 0) {
@@ -198,6 +202,7 @@ export function playMergeSound(resultType) {
 }
 
 export function playWaveSuccessSound() {
+  if (isMuted()) return 0;
   // Triumphant fanfare arpeggio — total duration ~550ms
   const notes = [523, 659, 784, 1047];
   notes.forEach((freq, i) => {
@@ -216,6 +221,7 @@ const VICTORY_SHOUTS = [
 ];
 
 export function playVictoryShout() {
+  if (isMuted()) return;
   if (!window.speechSynthesis) return;
   window.speechSynthesis.cancel();
   const text = VICTORY_SHOUTS[Math.floor(Math.random() * VICTORY_SHOUTS.length)];

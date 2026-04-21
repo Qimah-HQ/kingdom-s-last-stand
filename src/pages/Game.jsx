@@ -36,6 +36,7 @@ import DifficultySelect from "../components/game/DifficultySelect";
 import ModeSelect from "../components/game/ModeSelect";
 import { checkNewAchievements } from "../lib/achievements";
 import { playKillSound, playDamageSound, playWaveSuccessSound, playVictoryShout, playMergeSound } from "../lib/sounds";
+import { isMuted, toggleMute } from "../lib/audioContext";
 import DamagePopup from "../components/game/DamagePopup";
 import CombatLog from "../components/game/CombatLog";
 
@@ -103,6 +104,7 @@ export default function Game() {
   const [showCampaignIntro, setShowCampaignIntro] = useState(false);
   const [lastDialogueWave, setLastDialogueWave] = useState(0);
   const [fastForward, setFastForward] = useState(false);
+  const [muted, setMuted] = useState(false);
   const tempBuffsRef = useRef({}); // { damageBonus, fireRateBonus, rangeBonus, wavesLeft }
   const [unlockedAchievements, setUnlockedAchievements] = useState([]);
   const [newlyUnlocked, setNewlyUnlocked] = useState([]);
@@ -1117,6 +1119,21 @@ export default function Game() {
                   {unlockedAchievements.length}
                 </span>
               )}
+            </button>
+            {/* Mute button */}
+            <button
+              onClick={() => { const m = toggleMute(); setMuted(m); if (m) window.speechSynthesis?.cancel(); }}
+              title={muted ? "Unmute" : "Mute"}
+              className="flex items-center justify-center rounded-full font-black text-sm transition-all hover:scale-105"
+              style={{
+                width: 36, height: 36,
+                background: muted ? "linear-gradient(180deg,#374151,#1f2937)" : "linear-gradient(180deg,#4b5563,#374151)",
+                border: muted ? "2px solid #6b7280" : "2px solid #9ca3af",
+                boxShadow: muted ? "0 2px 0 #111" : "0 2px 0 #111, 0 0 10px rgba(156,163,175,0.3)",
+                color: muted ? "#6b7280" : "#e5e7eb",
+                flexShrink: 0,
+              }}>
+              {muted ? "🔇" : "🔊"}
             </button>
             <GameHUD lives={lives} gold={gold} wave={wave} score={score} />
           </div>

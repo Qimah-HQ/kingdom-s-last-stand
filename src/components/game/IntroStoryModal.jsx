@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { isMuted } from "../../lib/audioContext";
 import ArmorSelectScreen from "./ArmorSelectScreen";
 import { LordAldric } from "./CharacterSprites";
 
@@ -17,7 +18,7 @@ const STORY_LINES = [
 ];
 
 function speakLine(text, onEnd) {
-  if (!window.speechSynthesis) { onEnd(); return; }
+  if (isMuted() || !window.speechSynthesis) { onEnd(); return; }
   window.speechSynthesis.cancel();
   const utt = new SpeechSynthesisUtterance(text);
   utt.rate = 0.68;
