@@ -420,25 +420,31 @@ export function Kael({ size = 100 }) {
       <g className="kael-body">
         {/* Arms */}
         <g className="kael-arm-l">
-          <ellipse cx="40" cy="85" rx="8" ry="26" fill="#f5f3ff" stroke="#38bdf8" strokeWidth="1"/>
-          {/* Left hand */}
+          <ellipse cx="40" cy="85" rx="8" ry="26" fill="#bae6fd" stroke="#38bdf8" strokeWidth="1.5"/>
+          {/* Left ice gauntlet */}
           <g transform="translate(0, 10)">
-            <rect x="30" y="108" width="8" height="10" rx="2" fill="#e0f2fe" stroke="#38bdf8" strokeWidth="0.8"/>
-            <rect x="29" y="105" width="3.5" height="7" rx="1.5" fill="#e0f2fe" stroke="#38bdf8" strokeWidth="0.7"/>
-            <rect x="33" y="104" width="3.5" height="7" rx="1.5" fill="#e0f2fe" stroke="#38bdf8" strokeWidth="0.7"/>
-            <rect x="37" y="105" width="3" height="6" rx="1.5" fill="#e0f2fe" stroke="#38bdf8" strokeWidth="0.7"/>
-            <rect x="26" y="110" width="3" height="5" rx="1.5" fill="#e0f2fe" stroke="#38bdf8" strokeWidth="0.7"/>
+            <rect x="29" y="108" width="10" height="11" rx="3" fill="#0ea5e9" stroke="#67e8f9" strokeWidth="1.2"/>
+            <rect x="28" y="105" width="4" height="7" rx="2" fill="#38bdf8" stroke="#67e8f9" strokeWidth="0.8"/>
+            <rect x="32" y="104" width="4" height="7" rx="2" fill="#38bdf8" stroke="#67e8f9" strokeWidth="0.8"/>
+            <rect x="36" y="105" width="3.5" height="6" rx="2" fill="#38bdf8" stroke="#67e8f9" strokeWidth="0.8"/>
+            <rect x="25" y="111" width="3.5" height="5" rx="2" fill="#38bdf8" stroke="#67e8f9" strokeWidth="0.8"/>
+            {/* frost crystal on knuckle */}
+            <polygon points="34,103 36,99 38,103" fill="#e0f2fe" opacity="0.9"/>
+            <circle cx="34" cy="118" r="4" fill="#bae6fd" opacity="0.25"/>
           </g>
         </g>
         <g className="kael-arm-r">
-          <ellipse cx="100" cy="85" rx="8" ry="26" fill="#f5f3ff" stroke="#38bdf8" strokeWidth="1"/>
-          {/* Right hand */}
+          <ellipse cx="100" cy="85" rx="8" ry="26" fill="#bae6fd" stroke="#38bdf8" strokeWidth="1.5"/>
+          {/* Right ice gauntlet */}
           <g transform="translate(0, 10)">
-            <rect x="102" y="108" width="8" height="10" rx="2" fill="#e0f2fe" stroke="#38bdf8" strokeWidth="0.8"/>
-            <rect x="103" y="105" width="3.5" height="7" rx="1.5" fill="#e0f2fe" stroke="#38bdf8" strokeWidth="0.7"/>
-            <rect x="107" y="104" width="3.5" height="7" rx="1.5" fill="#e0f2fe" stroke="#38bdf8" strokeWidth="0.7"/>
-            <rect x="100" y="105" width="3" height="6" rx="1.5" fill="#e0f2fe" stroke="#38bdf8" strokeWidth="0.7"/>
-            <rect x="111" y="110" width="3" height="5" rx="1.5" fill="#e0f2fe" stroke="#38bdf8" strokeWidth="0.7"/>
+            <rect x="101" y="108" width="10" height="11" rx="3" fill="#0ea5e9" stroke="#67e8f9" strokeWidth="1.2"/>
+            <rect x="102" y="105" width="4" height="7" rx="2" fill="#38bdf8" stroke="#67e8f9" strokeWidth="0.8"/>
+            <rect x="106" y="104" width="4" height="7" rx="2" fill="#38bdf8" stroke="#67e8f9" strokeWidth="0.8"/>
+            <rect x="110" y="105" width="3.5" height="6" rx="2" fill="#38bdf8" stroke="#67e8f9" strokeWidth="0.8"/>
+            <rect x="98" y="111" width="3.5" height="5" rx="2" fill="#38bdf8" stroke="#67e8f9" strokeWidth="0.8"/>
+            {/* frost crystal on knuckle */}
+            <polygon points="106,103 108,99 110,103" fill="#e0f2fe" opacity="0.9"/>
+            <circle cx="106" cy="118" r="4" fill="#bae6fd" opacity="0.25"/>
           </g>
         </g>
 
@@ -544,25 +550,31 @@ export function Aurora({ size = 100 }) {
       <g className="aurora-body">
         {/* Arms */}
         <g className="aurora-arm-l">
-          <ellipse cx="40" cy="86" rx="9" ry="26" fill="#fef3c7" stroke="#d97706" strokeWidth="1"/>
-          {/* Left hand */}
+          <ellipse cx="40" cy="86" rx="9" ry="26" fill="#fcd34d" stroke="#f59e0b" strokeWidth="1.5"/>
+          {/* Left sun gauntlet */}
           <g transform="translate(0, 10)">
-            <rect x="30" y="109" width="8" height="10" rx="2" fill="#fef3c7" stroke="#d97706" strokeWidth="0.8"/>
-            <rect x="29" y="106" width="3.5" height="7" rx="1.5" fill="#fef3c7" stroke="#d97706" strokeWidth="0.7"/>
-            <rect x="33" y="105" width="3.5" height="7" rx="1.5" fill="#fef3c7" stroke="#d97706" strokeWidth="0.7"/>
-            <rect x="37" y="106" width="3" height="6" rx="1.5" fill="#fef3c7" stroke="#d97706" strokeWidth="0.7"/>
-            <rect x="26" y="111" width="3" height="5" rx="1.5" fill="#fef3c7" stroke="#d97706" strokeWidth="0.7"/>
+            <rect x="29" y="109" width="10" height="11" rx="3" fill="#f59e0b" stroke="#fbbf24" strokeWidth="1.2"/>
+            <rect x="28" y="106" width="4" height="7" rx="2" fill="#fbbf24" stroke="#fcd34d" strokeWidth="0.9"/>
+            <rect x="32" y="105" width="4" height="7" rx="2" fill="#fbbf24" stroke="#fcd34d" strokeWidth="0.9"/>
+            <rect x="36" y="106" width="3.5" height="6" rx="2" fill="#fbbf24" stroke="#fcd34d" strokeWidth="0.9"/>
+            <rect x="25" y="112" width="3.5" height="5" rx="2" fill="#fbbf24" stroke="#fcd34d" strokeWidth="0.9"/>
+            {/* sun ray symbol on back of hand */}
+            <circle cx="34" cy="115" r="2.5" fill="#fef3c7" opacity="0.9"/>
+            <circle cx="34" cy="115" r="4" fill="none" stroke="#fef3c7" strokeWidth="0.8" opacity="0.5"/>
           </g>
         </g>
         <g className="aurora-arm-r">
-          <ellipse cx="100" cy="86" rx="9" ry="26" fill="#fef3c7" stroke="#d97706" strokeWidth="1"/>
-          {/* Right hand */}
+          <ellipse cx="100" cy="86" rx="9" ry="26" fill="#fcd34d" stroke="#f59e0b" strokeWidth="1.5"/>
+          {/* Right sun gauntlet */}
           <g transform="translate(0, 10)">
-            <rect x="102" y="109" width="8" height="10" rx="2" fill="#fef3c7" stroke="#d97706" strokeWidth="0.8"/>
-            <rect x="103" y="106" width="3.5" height="7" rx="1.5" fill="#fef3c7" stroke="#d97706" strokeWidth="0.7"/>
-            <rect x="107" y="105" width="3.5" height="7" rx="1.5" fill="#fef3c7" stroke="#d97706" strokeWidth="0.7"/>
-            <rect x="100" y="106" width="3" height="6" rx="1.5" fill="#fef3c7" stroke="#d97706" strokeWidth="0.7"/>
-            <rect x="111" y="111" width="3" height="5" rx="1.5" fill="#fef3c7" stroke="#d97706" strokeWidth="0.7"/>
+            <rect x="101" y="109" width="10" height="11" rx="3" fill="#f59e0b" stroke="#fbbf24" strokeWidth="1.2"/>
+            <rect x="102" y="106" width="4" height="7" rx="2" fill="#fbbf24" stroke="#fcd34d" strokeWidth="0.9"/>
+            <rect x="106" y="105" width="4" height="7" rx="2" fill="#fbbf24" stroke="#fcd34d" strokeWidth="0.9"/>
+            <rect x="110" y="106" width="3.5" height="6" rx="2" fill="#fbbf24" stroke="#fcd34d" strokeWidth="0.9"/>
+            <rect x="98" y="112" width="3.5" height="5" rx="2" fill="#fbbf24" stroke="#fcd34d" strokeWidth="0.9"/>
+            {/* sun ray symbol on back of hand */}
+            <circle cx="106" cy="115" r="2.5" fill="#fef3c7" opacity="0.9"/>
+            <circle cx="106" cy="115" r="4" fill="none" stroke="#fef3c7" strokeWidth="0.8" opacity="0.5"/>
           </g>
         </g>
 
