@@ -102,6 +102,7 @@ export default function Game() {
   const [voidWrathActive, setVoidWrathActive] = useState(false);
   const [showCampaignIntro, setShowCampaignIntro] = useState(false);
   const [lastDialogueWave, setLastDialogueWave] = useState(0);
+  const [fastForward, setFastForward] = useState(false);
   const tempBuffsRef = useRef({}); // { damageBonus, fireRateBonus, rangeBonus, wavesLeft }
   const [unlockedAchievements, setUnlockedAchievements] = useState([]);
   const [newlyUnlocked, setNewlyUnlocked] = useState([]);
@@ -354,7 +355,8 @@ export default function Game() {
   useEffect(() => {
     const gameLoop = (timestamp) => {
       if (!lastTimeRef.current) lastTimeRef.current = timestamp;
-      const dt = Math.min((timestamp - lastTimeRef.current) / 1000, 0.05);
+      const speedMult = fastForward ? 2 : 1;
+      const dt = Math.min((timestamp - lastTimeRef.current) / 1000, 0.05) * speedMult;
       lastTimeRef.current = timestamp;
 
       // Spawn enemies from queue
@@ -672,10 +674,11 @@ export default function Game() {
       gameLoopRef.current = requestAnimationFrame(gameLoop);
     }
 
+
     return () => {
       if (gameLoopRef.current) cancelAnimationFrame(gameLoopRef.current);
     };
-  }, [gameOver]);
+  }, [gameOver, fastForward]);
 
   const handleActivateAbility = useCallback((abilityId) => {
     if (abilityId === "rain_of_arrows") {
@@ -1179,6 +1182,8 @@ export default function Game() {
                 waveActive={waveActive}
                 onStartWave={startWave}
                 wave={wave}
+                fastForward={fastForward}
+                onToggleFastForward={() => setFastForward(f => !f)}
               />
               <CombatLog entries={combatLog} />
               <ComboSuggestions />
