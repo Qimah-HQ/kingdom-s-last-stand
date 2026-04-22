@@ -47,6 +47,8 @@ import CombatLog from "../components/game/CombatLog";
 import MergeFusionEffect from "../components/game/MergeFusionEffect";
 import ForgeShop from "../components/game/ForgeShop";
 import { FORGE_UPGRADES, applyForgeBonusToTower } from "../lib/forgeUpgrades";
+import WaveThreatBadge from "../components/game/WaveThreatBadge";
+import EnemyProgressBar from "../components/game/EnemyProgressBar";
 
 
 const INITIAL_GOLD = 150;
@@ -181,7 +183,8 @@ export default function Game() {
   const towerMapRef = useRef(_initMap);
   const waveQueueRef = useRef([]);
   const waveTimerRef = useRef(0);
-  const waveEnemiesSpawnedRef = useRef(false); // true once at least one enemy has been spawned this wave
+  const waveEnemiesSpawnedRef = useRef(false);
+  const [totalWaveEnemies, setTotalWaveEnemies] = useState(0); // true once at least one enemy has been spawned this wave
   const gameLoopRef = useRef(null);
   const lastTimeRef = useRef(0);
 
@@ -392,6 +395,7 @@ export default function Game() {
     waveQueueRef.current = waveData;
     waveTimerRef.current = 0;
     waveEnemiesSpawnedRef.current = false;
+    setTotalWaveEnemies(waveData.length);
     setWaveActive(true);
     playWaveStartSound();
     addLog("wave", `Wave ${wave} begins — ${waveData.length} enemies incoming!`);
@@ -1333,6 +1337,12 @@ export default function Game() {
               canvasRef={gameBoardCanvasRef}
             />
             <MergeFusionEffect event={fusionEvent} canvasRef={gameBoardCanvasRef} />
+            <EnemyProgressBar
+              waveActive={waveActive}
+              totalEnemies={totalWaveEnemies}
+              enemiesAlive={enemiesRef.current.length}
+              waveQueue={waveQueueRef.current}
+            />
             {/* Battle Log — top left overlay */}
             <div className="absolute top-8 left-2 z-20 w-56">
               <CombatLog entries={combatLog} />
@@ -1403,6 +1413,7 @@ export default function Game() {
                 onToggleFastForward={() => setFastForward(f => !f)}
                 style={{ marginTop: "-16px" }}
               />
+              {!waveActive && <WaveThreatBadge wave={wave} />}
               <div className="mt-4 rounded-xl px-3 py-2 space-y-1 text-[9px] font-semibold"
                 style={{ background: 'rgba(100,60,180,0.08)', border: '1px solid rgba(100,60,180,0.2)', color: '#5a4880' }}>
                 <p>⚔ Select tower → click board to place</p>
