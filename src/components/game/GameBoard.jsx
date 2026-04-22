@@ -784,9 +784,10 @@ function drawHoverPreview(ctx, hoverCell, selectedTowerType) {
 
 export default function GameBoard({
   towers, enemies, projectiles, selectedTowerType,
-  towerMap, onCellClick, selectedTowerId, wave, onTowerSwap
+  towerMap, onCellClick, selectedTowerId, wave, onTowerSwap, canvasRef: externalCanvasRef
 }) {
-  const canvasRef = useRef(null);
+  const internalCanvasRef = useRef(null);
+  const canvasRef = externalCanvasRef ?? internalCanvasRef;
   const hoverRef = useRef(null);
   const animFrameRef = useRef(null);
   const dragRef = useRef(null); // { towerId, startGx, startGy }

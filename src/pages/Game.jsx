@@ -44,6 +44,7 @@ import { playKillSound, playDamageSound, playWaveSuccessSound, playVictoryShout,
 import { isMuted, toggleMute } from "../lib/audioContext";
 import DamagePopup from "../components/game/DamagePopup";
 import CombatLog from "../components/game/CombatLog";
+import MergeFusionEffect from "../components/game/MergeFusionEffect";
 
 
 const INITIAL_GOLD = 150;
@@ -120,6 +121,8 @@ export default function Game() {
   const [newlyUnlocked, setNewlyUnlocked] = useState([]);
   const [damagePopups, setDamagePopups] = useState([]);
   const [combatLog, setCombatLog] = useState([]);
+  const [fusionEvent, setFusionEvent] = useState(null);
+  const gameBoardCanvasRef = useRef(null);
   const combatLogIdRef = useRef(0);
 
   const addLog = (type, text) => {
@@ -243,6 +246,16 @@ export default function Game() {
         playMergeSound(resultType);
         playPlaceSound();
         setMergeFlash(TOWER_TYPES[resultType]);
+        // Fire fusion visual at the merged tower's canvas position
+        setFusionEvent({
+          id: Math.random(),
+          x: merged2.x,
+          y: merged2.y,
+          emoji: TOWER_TYPES[resultType].emoji,
+          name: TOWER_TYPES[resultType].name,
+          color: "#a78bfa",
+        });
+        setTimeout(() => setFusionEvent(null), 1700);
         addLog("merge", `✨ Merged into ${TOWER_TYPES[resultType].name}! (${TOWER_TYPES[resultType].emoji})`);
         setTimeout(() => setMergeFlash(false), 1800);
       } else {
@@ -1272,7 +1285,9 @@ export default function Game() {
               selectedTowerId={selectedTowerId}
               wave={wave}
               onTowerSwap={handleTowerSwap}
+              canvasRef={gameBoardCanvasRef}
             />
+            <MergeFusionEffect event={fusionEvent} canvasRef={gameBoardCanvasRef} />
             {/* Battle Log — top left overlay */}
             <div className="absolute top-8 left-2 z-20 w-56">
               <CombatLog entries={combatLog} />
