@@ -2,6 +2,7 @@ import { useRef, useEffect, useCallback } from "react";
 import {
   CELL_SIZE, GRID_COLS, GRID_ROWS, PATH, PATH_SET, TOWER_TYPES, getStageTheme
 } from "../../lib/gameEngine";
+import { drawEnemyGraphic } from "../../lib/enemyGraphics";
 
 const BOARD_W = GRID_COLS * CELL_SIZE;
 const BOARD_H = GRID_ROWS * CELL_SIZE;
@@ -556,19 +557,20 @@ function drawEnemies(ctx, enemies) {
     ctx.ellipse(0, CELL_SIZE * 0.3 - bob, 8 * shadowScale, 4 * shadowScale, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // Enemy emoji — scale pulse on boss
+    // 3D enemy graphic — scale pulse on boss
     const isBoss = enemy.type?.startsWith("boss_");
-    const scale = isBoss ? 1 + Math.sin(now * 0.004 + phase) * 0.07 : 1;
-    const fontSize = CELL_SIZE * 0.45 * scale;
-    ctx.font = `${fontSize}px serif`;
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(emoji, 0, 0);
+    const scale = isBoss ? 1.6 + Math.sin(now * 0.004 + phase) * 0.08 : 1.0;
+    ctx.save();
+    ctx.scale(scale, scale);
+    drawEnemyGraphic(ctx, enemy.type, isBoss);
+    ctx.restore();
 
-    // Modifier badge
+    // Modifier badge (emoji still used as small overlay icon)
     if (modEmoji) {
       ctx.font = `${CELL_SIZE * 0.28}px serif`;
-      ctx.fillText(modEmoji, CELL_SIZE * 0.22, -CELL_SIZE * 0.22);
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(modEmoji, CELL_SIZE * 0.28, -CELL_SIZE * 0.28);
     }
 
     ctx.restore();
