@@ -21,7 +21,7 @@ const COMBOS = [
   { a: "💣 Cannon",    b: "🪨 Catapult",      result: "💣🪨 War Machine",         resultDesc: "Heavy barrage",                   color: "#fcd34d", tier: "MERGE" },
   { a: "🔮 Mage",      b: "🔮 Mage",          result: "🌀 Spellcaster",           resultDesc: "Arcane barrage",                  color: "#c4b5fd", tier: "MERGE" },
   { a: "🔮 Mage",      b: "❄️ Frost",         result: "🧊 Frozen Mage",           resultDesc: "Slows & deals magic dmg",         color: "#67e8f9", tier: "MERGE" },
-  { a: "🔮 Mage",      b: "💣 Cannon",        result: "🔯 Arcane Cannoneer",      resultDesc: "Heavy arcane shells",             color: "#d8b4fe", tier: "MERGE" },
+  { a: "🔮 Mage",      b: "💣 Cannon",        result: "🔵 Arcane Cannoneer",      resultDesc: "Heavy arcane shells",             color: "#d8b4fe", tier: "MERGE" },
   { a: "❄️ Frost",     b: "❄️ Frost",         result: "❄️🌀 Blizzard Tower",     resultDesc: "Powerful AoE slow",               color: "#7dd3fc", tier: "MERGE" },
   { a: "❄️ Frost",     b: "💣 Cannon",        result: "🧊💣 Frost Cannoneer",     resultDesc: "Freezing heavy shells",           color: "#93c5fd", tier: "MERGE" },
 
@@ -31,7 +31,7 @@ const COMBOS = [
   { a: "🔮 Mage",      b: "🔴 War Cannon",    result: "🌀💣 Void Cannon",         resultDesc: "Arcane void explosions",          color: "#c084fc", tier: "NEW"   },
   { a: "⚡ Storm Arch.",b: "🔮 Mage",          result: "⚡🏹 Thunder Archer",      resultDesc: "Lightning chain volley",          color: "#fef08a", tier: "NEW"   },
   { a: "🏹 Crossbow",  b: "🔮 Mage",          result: "☠️🏹 Venom Crossbow",      resultDesc: "Rapid arcane poison bolts",       color: "#86efac", tier: "NEW"   },
-  { a: "🌀 Spellcast.",b: "⚙️ Trebuchet",     result: "🔯⚙️ Arcane Siege",       resultDesc: "Arcane boulders with AoE",        color: "#e879f9", tier: "NEW"   },
+  { a: "🌀 Spellcast.",b: "⚙️ Trebuchet",     result: "🌀⚙️ Arcane Siege",       resultDesc: "Arcane boulders with AoE",        color: "#e879f9", tier: "NEW"   },
   { a: "❄️ Frost",     b: "🎯 Ballista",      result: "🧊🎯 Glacial Ballista",    resultDesc: "Freezing piercing bolts",         color: "#a5f3fc", tier: "NEW"   },
   { a: "❄️ Blizzard",  b: "🏹⚡ Arrow Storm", result: "❄️⚡ Frost Storm",         resultDesc: "Freezing rapid volley",           color: "#bae6fd", tier: "NEW"   },
 
@@ -39,7 +39,7 @@ const COMBOS = [
   { a: "⚡ Storm Arch.",b: "❄️ Frost",         result: "👻🏹 Phantom Archer",      resultDesc: "Ghost arrows phasing armor",      color: "#c084fc", tier: "EPIC"  },
   { a: "☠️🏹 Venom CB", b: "🎯 Ballista",      result: "☠️🎯 Plague Ballista",     resultDesc: "Plague-tipped piercing bolts",    color: "#4ade80", tier: "EPIC"  },
   { a: "🧊💣 Frost Can.",b: "💣🪨 War Mach.",   result: "🧊🔥 Frostfire Cannon",    resultDesc: "Alternates freeze and burn",      color: "#38bdf8", tier: "EPIC"  },
-  { a: "🔯 Arc. Canon.",b: "🌑🔮 Shadow Mage",  result: "💀🔮 Soul Reaper Tower",   resultDesc: "Harvests souls for bonus dmg",    color: "#fb7185", tier: "EPIC"  },
+  { a: "🔵 Arc. Canon.",b: "🌑🔮 Shadow Mage",  result: "💀🔮 Soul Reaper Tower",   resultDesc: "Harvests souls for bonus dmg",    color: "#fb7185", tier: "EPIC"  },
   { a: "⚙️ Siege Eng.", b: "⚡🏹 Thunder Arch.",result: "⚡⚙️ Tempest Engine",      resultDesc: "Thunderstorm siege weapon",       color: "#facc15", tier: "EPIC"  },
   { a: "🌑🔮 Shadow Mg.",b: "🌀💣 Void Cannon", result: "🕳️🔮 Abyssal Mage",       resultDesc: "Dark matter obliteration blasts", color: "#6d28d9", tier: "EPIC"  },
   { a: "🧊🎯 Glacial B.",b: "⚡🏹 Thunder Arch.",result: "✨🎯 Celestial Ballista",  resultDesc: "Divine light piercing bolts",     color: "#fde68a", tier: "EPIC"  },
@@ -52,7 +52,7 @@ const COMBOS = [
 
   // ── Ultra / Legend Merges ───────────────────────────────────────────────
   { a: "⚙️ Siege Eng.", b: "💥 Doom Cannon",   result: "💥⚙️ Doom Siege",         resultDesc: "Total annihilation engine",       color: "#fda4af", tier: "ULTRA" },
-  { a: "💥⚙️ Doom Siege",b: "🔯⚙️ Arcane Siege",result: "🌀⚙️ Void Siege",         resultDesc: "Ultimate arcane siege behemoth",  color: "#e879f9", tier: "LEGEND"},
+  { a: "💥⚙️ Doom Siege",b: "🌀⚙️ Arcane Siege",result: "🌀⚙️ Void Siege",         resultDesc: "Ultimate arcane siege behemoth",  color: "#e879f9", tier: "LEGEND"},
 ];
 
 const TIER_GROUPS = ["LEGEND", "ULTRA", "MEGA", "EPIC", "NEW", "MERGE"];
