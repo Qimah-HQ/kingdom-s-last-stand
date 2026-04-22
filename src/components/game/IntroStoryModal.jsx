@@ -1,21 +1,83 @@
 import { useEffect, useRef, useState } from "react";
 import { isMuted } from "../../lib/audioContext";
 import ArmorSelectScreen from "./ArmorSelectScreen";
-import { LordAldric } from "./CharacterSprites";
+import { LordAldric, QueenSeraphine, Morrigan, Kael, Aurora } from "./CharacterSprites";
 
-const STORY_LINES = [
-  "Hearken well, good lord... for what I am about to tell thee is no mere fancy nor fireside tale.",
-  "There was once a kingdom — Eldenmoor, they called it. Green hills, honest folk, children laughing in the lanes. A good place. A real place.",
-  "Thou wert its lord and its shield. Lord Aldric Stoneheart. Aye, the very last of that bloodline.",
-  "But trouble, as it always does... came a-creeping. From beyond the Ashenmoor mountains, something ancient stirred. The Warlord Malgrath — gods forgive us — had woken.",
-  "His host was vast, my lord. Vast beyond all reckoning. Peasants turned to rot, knights twisted by darkness, demons that had no name in any tongue I know.",
-  "They did not merely march. They poured forth like a black tide — burning, breaking, howling with a hunger that fair chilled the blood.",
-  "The villages fell first. Then the outer walls. Then the gates themselves, iron and all, were sundered like dry timber.",
-  "And yet... thou didst not flee. Thou stood at the rampart — sword drawn, jaw set — as thy people wept behind thee.",
-  "They look to thee now, lord. Every man, woman, and bairn in that castle is counting on thy will and thy wit.",
-  "So build thy towers tall. Marshal every archer, every cannon, every blade thou canst spare. And do not yield — not one blessed inch.",
-  "For Eldenmoor. For thy blood. For everything that is worth a damn in this wretched and beautiful world.",
-];
+const CHARACTER_STORIES = {
+  aldric: [
+    "Hearken well, good lord... for what I am about to tell thee is no mere fancy nor fireside tale.",
+    "There was once a kingdom — Eldenmoor, they called it. Green hills, honest folk, children laughing in the lanes. A good place. A real place.",
+    "Thou wert its lord and its shield. Lord Aldric Stoneheart. Aye, the very last of that bloodline.",
+    "But trouble, as it always does... came a-creeping. From beyond the Ashenmoor mountains, something ancient stirred. The Warlord Malgrath — gods forgive us — had woken.",
+    "His host was vast. Vast beyond all reckoning. Peasants turned to rot, knights twisted by darkness, demons that had no name in any tongue I know.",
+    "They did not merely march. They poured forth like a black tide — burning, breaking, howling with a hunger that fair chilled the blood.",
+    "The villages fell first. Then the outer walls. Then the gates themselves, iron and all, were sundered like dry timber.",
+    "And yet... thou didst not flee. Thou stood at the rampart — sword drawn, jaw set — as thy people wept behind thee.",
+    "They look to thee now, lord. Every man, woman, and bairn in that castle is counting on thy will and thy wit.",
+    "So build thy towers tall. Marshal every archer, every cannon, every blade thou canst spare. And do not yield — not one blessed inch.",
+    "For Eldenmoor. For thy blood. For everything that is worth a damn in this wretched and beautiful world.",
+  ],
+  seraphine: [
+    "Hear me, my Queen... for the hour is grave and the tale I bear heavier still.",
+    "Eldenmoor — thy kingdom, thy responsibility — burns at its edges. The forests thou hast sworn to protect shriek in the darkness.",
+    "Thou art Queen Seraphine, Sentinel of the Green, crowned not just by lineage but by the ancient groves themselves.",
+    "Malgrath's host tears through the sacred lands. Ancient trees felled. Rivers poisoned. The land itself weeps.",
+    "Thy people did not ask for war. Farmers, healers, children of the grove — they look to thee with eyes that have seen too much sorrow.",
+    "Thou hast cast aside thy crown's comfort and taken up the mantle of a warrior. For what is a queen who will not bleed for her kingdom?",
+    "The outer ramparts crumble. The darkness seeps inward like a rot through old wood. But thou standest firm.",
+    "Every tower thou buildest is a root sunk deep into Eldenmoor's soil. Every cannon fired is a prayer answered.",
+    "They call thee the Green Sentinel. Today, thou must earn that name a thousand times over.",
+    "Let thy forests rise. Let thy towers sing. Let Malgrath know that Eldenmoor's queen does not kneel.",
+    "For thy people. For the sacred groves. For every living thing that flourishes under thy watch.",
+  ],
+  morrigan: [
+    "So... thou hast returned. I wondered if thou would. After everything they said. After everything they did.",
+    "Eldenmoor cast thee out, Morrigan. Accused thee of dark arts, of treachery, of sins thou did not commit. And yet here thou art.",
+    "Malgrath rises. The very darkness they once accused thee of wielding now marches on the kingdom that exiled thee.",
+    "Irony is a blade with no handle — it cuts both ways. They need thee now. The banished mage. The shadow witch. Their only hope.",
+    "His armies are vast. His corruption deep. But thy magic — thy real magic — was never darkness. It was power. Raw, honest, merciless power.",
+    "The towers must hold. And only thou canst marshal the arcane forces needed to make them truly deadly.",
+    "Every tower thou reinforces with thy magic spits in the face of every lord who called thee monster.",
+    "They barred thee from the court. They stripped thee of title. But they cannot strip thee of what burns in thy blood.",
+    "So build. And fight. Not for them — not yet. Fight for the proof. Fight to show what they threw away.",
+    "Let the cannons roar with arcane fire. Let every fallen enemy be an answer to every lie told about thee.",
+    "For justice. For proof. And maybe — just maybe — for the Eldenmoor that could have been, had they listened.",
+  ],
+  kael: [
+    "Easy now, ranger. Breathe. Thou hast wandered far — but this is where the road was always taking thee.",
+    "They call thee Kael Ironbow. Wanderer. Borderlands ghost. The arrow that never misses and the man who never stays.",
+    "Thou hast watched darkness creep across the frontier for years. Village by village. Fire by fire. Face by face.",
+    "Malgrath's horde is nothing new to thy eyes — but never before hath it threatened to swallow everything at once.",
+    "Thou could have kept running. Kept watching. It would have been easy. Safer. Alone in the wilderness with no blood on thy conscience.",
+    "But thou stopped. Here. At Eldenmoor's last gate. Because some part of thee remembered the faces of those thou could not save.",
+    "Every tower thou places is a line drawn in the earth. A promise made to the dead. A debt being paid.",
+    "The arrows matter. The positioning matters. Every decision matters. Thou hast spent thy life honing this instinct — use it.",
+    "Malgrath's horde does not know what hunts it. They see towers. They do not see the mind behind them.",
+    "So aim true, ranger. Place every defense with purpose. Let each wave that breaks against thy line be a name struck from thy list of failures.",
+    "For the borderlands. For the fallen. For every soul thou watched burn while thou were not yet ready to fight. Thou art ready now.",
+  ],
+  aurora: [
+    "Be still, holy warrior. The light has not abandoned thee — it brought thee here.",
+    "Aurora, Paladin of the Sun Order. They said thou left without blessing. Without permission. Without reason.",
+    "But thou saw what they refused to look at. A darkness so deep it swallowed the light of faith itself.",
+    "Malgrath is not merely a warlord. He is a wound in the world. An absence where hope used to live.",
+    "Thy order prays. Thy order chants. But prayers alone do not stop armies. Steel does. Fire does. Will does.",
+    "So thou came. Alone. Armour bright and heart burning with something fiercer than doctrine — conviction.",
+    "Eldenmoor's people are not thy congregation. But they are innocent. And innocence is worth any price.",
+    "Every tower thou raises is a beacon. Every enemy felled is the light reclaiming ground from the dark.",
+    "Thy shield arm may tire. Thy faith may waver in the long hours. But the light within thee does not extinguish.",
+    "They will write hymns about this day, or they will not write anything at all — for there will be no one left.",
+    "For the innocent. For the light. For every soul that prays in darkness and deserves to see the dawn.",
+  ],
+};
+
+const CHARACTER_SPRITES = {
+  aldric: LordAldric,
+  seraphine: QueenSeraphine,
+  morrigan: Morrigan,
+  kael: Kael,
+  aurora: Aurora,
+};
 
 function speakLine(text, onEnd) {
   if (isMuted() || !window.speechSynthesis) { onEnd(); return; }
@@ -40,7 +102,7 @@ function speakLine(text, onEnd) {
   window.speechSynthesis.speak(utt);
 }
 
-export default function IntroStoryModal({ show, onBegin }) {
+export default function IntroStoryModal({ show, onBegin, characterId }) {
   const [lineIndex, setLineIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState("");
   const [phase, setPhase] = useState("typing"); // typing | waiting | done
@@ -48,6 +110,9 @@ export default function IntroStoryModal({ show, onBegin }) {
   const [showArmorSelect, setShowArmorSelect] = useState(false);
   const typeRef = useRef(null);
   const lineRef = useRef(0);
+
+  const STORY_LINES = CHARACTER_STORIES[characterId] || CHARACTER_STORIES.aldric;
+  const CharacterSprite = CHARACTER_SPRITES[characterId] || LordAldric;
 
   // Reset when shown
   useEffect(() => {
@@ -149,10 +214,10 @@ export default function IntroStoryModal({ show, onBegin }) {
         style={{ background: "radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.85) 100%)" }} />
 
       <div className="relative max-w-2xl w-full mx-4">
-        {/* Header with Lord Aldric */}
+        {/* Header with character sprite */}
         <div className="text-center mb-8">
           <div className="flex justify-center mb-2">
-            <LordAldric size={90} />
+            <CharacterSprite size={90} />
           </div>
           <h2 className="text-2xl font-black uppercase tracking-[0.3em]"
             style={{

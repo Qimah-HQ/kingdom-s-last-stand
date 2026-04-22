@@ -1347,7 +1347,7 @@ export default function Game() {
         }}
         onClose={() => setShowTowerShop(false)}
       />
-      <IntroStoryModal show={showIntro} onBegin={() => setShowIntro(false)} />
+      <IntroStoryModal show={showIntro} onBegin={() => setShowIntro(false)} characterId={selectedCharacter} />
 
       <AbilityTree
         show={showAbilityTree}
