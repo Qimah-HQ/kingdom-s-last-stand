@@ -10,7 +10,54 @@ const TOWER_COLORS = {
   crossbow:  { from: "#78350f", to: "#57230a", border: "#d97706", shadow: "#2c1004" },
 };
 
-export default function TowerPanel({ selectedTower, onSelect, gold }) {
+export default function TowerPanel({ selectedTower, onSelect, gold, horizontal = false }) {
+  const towers = Object.entries(TOWER_TYPES).filter(([, t]) => !t.isMerged);
+
+  if (horizontal) {
+    // Mobile: compact icon grid, 4 per row
+    return (
+      <div>
+        <div className="text-center mb-2">
+          <span className="text-[9px] font-black uppercase tracking-[0.2em]"
+            style={{ color: "#c9b4f7" }}>⚔ Deploy Troops ⚔</span>
+        </div>
+        <div className="grid grid-cols-4 gap-1.5">
+          {towers.map(([key, tower]) => {
+            const canAfford = gold >= tower.cost;
+            const isSelected = selectedTower === key;
+            const colors = TOWER_COLORS[key] || TOWER_COLORS.cannon;
+            return (
+              <button
+                key={key}
+                onClick={() => onSelect(isSelected ? null : key)}
+                disabled={!canAfford}
+                className="flex flex-col items-center gap-0.5 rounded-xl py-2 px-1 transition-all"
+                style={{
+                  background: isSelected
+                    ? `linear-gradient(160deg, ${colors.from}, ${colors.to})`
+                    : "linear-gradient(160deg, #1e1b2e, #13101f)",
+                  border: `2px solid ${isSelected ? colors.border : "rgba(100,80,140,0.35)"}`,
+                  boxShadow: isSelected ? `0 3px 0 ${colors.shadow}, 0 0 14px ${colors.border}88` : "0 2px 0 #0a0814",
+                  opacity: canAfford ? 1 : 0.35,
+                  cursor: canAfford ? "pointer" : "not-allowed",
+                }}>
+                <span className="text-xl">{tower.emoji}</span>
+                <span className="text-[8px] font-black leading-tight text-center" style={{ color: isSelected ? "#fff" : "#c4b5fd" }}>
+                  {tower.name.replace(" Tower", "").replace("Trebuchet", "Trebuch.")}
+                </span>
+                <span className="text-[8px] font-black px-1 py-0.5 rounded-full"
+                  style={{ background: "linear-gradient(180deg,#ffd60a,#e09c00)", color: "#3a2000" }}>
+                  {tower.cost}g
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  // Desktop: original vertical list
   return (
     <div className="flex flex-col gap-2">
       <div className="text-center mb-2">
@@ -20,7 +67,7 @@ export default function TowerPanel({ selectedTower, onSelect, gold }) {
         </span>
       </div>
 
-      {Object.entries(TOWER_TYPES).filter(([, t]) => !t.isMerged).map(([key, tower]) => {
+      {towers.map(([key, tower]) => {
         const canAfford = gold >= tower.cost;
         const isSelected = selectedTower === key;
         const colors = TOWER_COLORS[key] || TOWER_COLORS.cannon;
@@ -46,7 +93,6 @@ export default function TowerPanel({ selectedTower, onSelect, gold }) {
               transition: "all 0.2s",
             }}
           >
-            {/* Tower icon bubble */}
             <div className="flex-shrink-0 w-9 h-9 rounded-lg flex items-center justify-center text-xl"
               style={{
                 background: isSelected
@@ -66,7 +112,6 @@ export default function TowerPanel({ selectedTower, onSelect, gold }) {
               </div>
             </div>
 
-            {/* Cost badge */}
             <div className="flex-shrink-0 flex items-center gap-0.5 px-2 py-0.5 rounded-full font-black text-[10px]"
               style={{
                 background: "linear-gradient(180deg, #ffd60a, #e09c00)",

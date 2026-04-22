@@ -1175,16 +1175,16 @@ export default function Game() {
       {/* Difficulty Select Modal */}
       {!showCharacterSelect && showDifficultySelect && <DifficultySelect onSelect={handleDifficultySelect} />}
 
-      {/* Header — Clash Royale royal banner style */}
+      {/* Header */}
       <div style={{
         background: 'linear-gradient(180deg, #1a0f3a 0%, #0f0a2a 100%)',
         borderBottom: '3px solid #4a2d8a',
         boxShadow: '0 4px 0 #06030f, 0 0 30px rgba(100,60,200,0.2)',
       }}>
-        <div className="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            {/* Crown icon */}
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center text-2xl flex-shrink-0"
+        {/* Top row: title + HUD stats */}
+        <div className="max-w-7xl mx-auto px-3 pt-2 pb-1 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xl flex-shrink-0"
               style={{
                 background: 'linear-gradient(160deg, #7c3aed, #4c1d95)',
                 border: '2px solid #a78bfa',
@@ -1192,8 +1192,8 @@ export default function Game() {
               }}>
               👑
             </div>
-            <div>
-              <h1 className="text-base font-black uppercase tracking-[0.15em]"
+            <div className="min-w-0">
+              <h1 className="text-xs sm:text-sm font-black uppercase tracking-[0.1em] truncate"
                 style={{
                   fontFamily: "'Cinzel Decorative', serif",
                   background: 'linear-gradient(135deg, #e9d5ff, #ffd60a, #e9d5ff)',
@@ -1203,127 +1203,127 @@ export default function Game() {
                 }}>
                 Kingdom's Last Stand
               </h1>
-              <p className="text-[9px] font-bold uppercase tracking-[0.3em]" style={{ color: '#7c5fa0' }}>
-                {characterData.emoji} {characterData.name} · {characterData.title} ⚔
+              <p className="text-[8px] font-bold uppercase tracking-[0.2em] truncate hidden sm:block" style={{ color: '#7c5fa0' }}>
+                {characterData.emoji} {characterData.name} · {characterData.title}
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setShowSkillTree(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-black text-xs uppercase tracking-wider transition-all hover:scale-105"
-              style={{
-                background: `linear-gradient(180deg, ${characterData.color}cc, ${characterData.color}88)`,
-                border: `2px solid ${characterData.color}`,
-                boxShadow: `0 2px 0 #000, 0 0 10px ${characterData.color}44`,
-                color: "#fff",
-              }}>
-              🔮 <span className="hidden sm:inline">Skills</span>
-              {skillPoints > 0 && (
-                <span className="ml-1 px-1.5 py-0.5 rounded-full text-[9px] font-black"
-                  style={{ background: characterData.color, color: "#fff" }}>
-                  {skillPoints}
-                </span>
-              )}
-            </button>
-            <button
-              onClick={() => setShowAbilityTree(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-black text-xs uppercase tracking-wider transition-all hover:scale-105"
-              style={{
-                background: "linear-gradient(180deg, #7c3aed, #4c1d95)",
-                border: "2px solid #a78bfa",
-                boxShadow: "0 2px 0 #1e0a4a, 0 0 10px rgba(139,92,246,0.4)",
-                color: "#e9d5ff",
-              }}>
-              ✨ <span className="hidden sm:inline">Abilities</span>
-              {gloryPoints > 0 && (
-                <span className="ml-1 px-1.5 py-0.5 rounded-full text-[9px] font-black"
-                  style={{ background: "#ffd60a", color: "#3a2000" }}>
-                  {gloryPoints}✨
-                </span>
-              )}
-            </button>
-            <button
-              onClick={() => setShowForgeShop(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-black text-xs uppercase tracking-wider transition-all hover:scale-105"
-              style={{
-                background: "linear-gradient(180deg, #78350f, #451a03)",
-                border: "2px solid #f59e0b",
-                boxShadow: "0 2px 0 #78350f, 0 0 10px rgba(245,158,11,0.3)",
-                color: "#fef3c7",
-              }}>
-              🔨 <span className="hidden sm:inline">Forge</span>
-            </button>
-            <button
-              onClick={() => setShowTowerShop(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-black text-xs uppercase tracking-wider transition-all hover:scale-105"
-              style={{
-                background: "linear-gradient(180deg, #92400e, #b45309)",
-                border: "2px solid #f59e0b",
-                boxShadow: "0 2px 0 #78350f, 0 0 10px rgba(245,158,11,0.3)",
-                color: "#fef3c7",
-              }}>
-              🛍️ <span className="hidden sm:inline">Shop</span>
-            </button>
-            <button
-              onClick={() => setShowCodex(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-black text-xs uppercase tracking-wider transition-all hover:scale-105"
-              style={{
-                background: "linear-gradient(180deg, #0e7490, #155e75)",
-                border: "2px solid #22d3ee",
-                boxShadow: "0 2px 0 #042f2e, 0 0 10px rgba(34,211,238,0.3)",
-                color: "#cffafe",
-              }}>
-              📖 <span className="hidden sm:inline">Codex</span>
-              {seenEnemies.size > 0 && (
-                <span className="ml-1 px-1.5 py-0.5 rounded-full text-[9px] font-black"
-                  style={{ background: "#22d3ee", color: "#042f2e" }}>
-                  {seenEnemies.size}
-                </span>
-              )}
-            </button>
-            <button
-              onClick={() => setHallOfHeroes(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-black text-xs uppercase tracking-wider transition-all hover:scale-105"
-              style={{
-                background: "linear-gradient(180deg, #f59e0b, #d97706)",
-                border: "2px solid #fcd34d",
-                boxShadow: "0 2px 0 #78350f, 0 0 10px rgba(245,158,11,0.3)",
-                color: "#1c0a00",
-              }}>
-              🏛️ <span className="hidden sm:inline">Heroes</span>
-              {unlockedAchievements.length > 0 && (
-                <span className="ml-1 px-1.5 py-0.5 rounded-full text-[9px] font-black"
-                  style={{ background: "#7c3aed", color: "#e9d5ff" }}>
-                  {unlockedAchievements.length}
-                </span>
-              )}
-            </button>
-            {/* Mute button */}
-            <button
-              onClick={() => { const m = toggleMute(); setMuted(m); if (m) window.speechSynthesis?.cancel(); }}
-              title={muted ? "Unmute" : "Mute"}
-              className="flex items-center justify-center rounded-full font-black text-sm transition-all hover:scale-105"
-              style={{
-                width: 36, height: 36,
-                background: muted ? "linear-gradient(180deg,#374151,#1f2937)" : "linear-gradient(180deg,#4b5563,#374151)",
-                border: muted ? "2px solid #6b7280" : "2px solid #9ca3af",
-                boxShadow: muted ? "0 2px 0 #111" : "0 2px 0 #111, 0 0 10px rgba(156,163,175,0.3)",
-                color: muted ? "#6b7280" : "#e5e7eb",
-                flexShrink: 0,
-              }}>
-              {muted ? "🔇" : "🔊"}
-            </button>
-            <GameHUD lives={lives} gold={gold} wave={wave} score={score} />
-          </div>
+          <GameHUD lives={lives} gold={gold} wave={wave} score={score} />
+        </div>
+
+        {/* Bottom row: action buttons — scrollable on mobile */}
+        <div className="max-w-7xl mx-auto px-3 pb-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+          <button
+            onClick={() => setShowSkillTree(true)}
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-full font-black text-[10px] uppercase tracking-wider transition-all hover:scale-105 flex-shrink-0"
+            style={{
+              background: `linear-gradient(180deg, ${characterData.color}cc, ${characterData.color}88)`,
+              border: `2px solid ${characterData.color}`,
+              boxShadow: `0 2px 0 #000, 0 0 10px ${characterData.color}44`,
+              color: "#fff",
+            }}>
+            🔮 Skills
+            {skillPoints > 0 && (
+              <span className="ml-1 px-1.5 py-0.5 rounded-full text-[8px] font-black"
+                style={{ background: characterData.color, color: "#fff" }}>
+                {skillPoints}
+              </span>
+            )}
+          </button>
+          <button
+            onClick={() => setShowAbilityTree(true)}
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-full font-black text-[10px] uppercase tracking-wider transition-all hover:scale-105 flex-shrink-0"
+            style={{
+              background: "linear-gradient(180deg, #7c3aed, #4c1d95)",
+              border: "2px solid #a78bfa",
+              boxShadow: "0 2px 0 #1e0a4a, 0 0 10px rgba(139,92,246,0.4)",
+              color: "#e9d5ff",
+            }}>
+            ✨ Abilities
+            {gloryPoints > 0 && (
+              <span className="ml-1 px-1.5 py-0.5 rounded-full text-[8px] font-black"
+                style={{ background: "#ffd60a", color: "#3a2000" }}>
+                {gloryPoints}
+              </span>
+            )}
+          </button>
+          <button
+            onClick={() => setShowForgeShop(true)}
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-full font-black text-[10px] uppercase tracking-wider transition-all hover:scale-105 flex-shrink-0"
+            style={{
+              background: "linear-gradient(180deg, #78350f, #451a03)",
+              border: "2px solid #f59e0b",
+              boxShadow: "0 2px 0 #78350f, 0 0 10px rgba(245,158,11,0.3)",
+              color: "#fef3c7",
+            }}>
+            🔨 Forge
+          </button>
+          <button
+            onClick={() => setShowTowerShop(true)}
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-full font-black text-[10px] uppercase tracking-wider transition-all hover:scale-105 flex-shrink-0"
+            style={{
+              background: "linear-gradient(180deg, #92400e, #b45309)",
+              border: "2px solid #f59e0b",
+              boxShadow: "0 2px 0 #78350f, 0 0 10px rgba(245,158,11,0.3)",
+              color: "#fef3c7",
+            }}>
+            🛍️ Shop
+          </button>
+          <button
+            onClick={() => setShowCodex(true)}
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-full font-black text-[10px] uppercase tracking-wider transition-all hover:scale-105 flex-shrink-0"
+            style={{
+              background: "linear-gradient(180deg, #0e7490, #155e75)",
+              border: "2px solid #22d3ee",
+              boxShadow: "0 2px 0 #042f2e, 0 0 10px rgba(34,211,238,0.3)",
+              color: "#cffafe",
+            }}>
+            📖 Codex
+            {seenEnemies.size > 0 && (
+              <span className="ml-1 px-1.5 py-0.5 rounded-full text-[8px] font-black"
+                style={{ background: "#22d3ee", color: "#042f2e" }}>
+                {seenEnemies.size}
+              </span>
+            )}
+          </button>
+          <button
+            onClick={() => setHallOfHeroes(true)}
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-full font-black text-[10px] uppercase tracking-wider transition-all hover:scale-105 flex-shrink-0"
+            style={{
+              background: "linear-gradient(180deg, #f59e0b, #d97706)",
+              border: "2px solid #fcd34d",
+              boxShadow: "0 2px 0 #78350f, 0 0 10px rgba(245,158,11,0.3)",
+              color: "#1c0a00",
+            }}>
+            🏛️ Heroes
+            {unlockedAchievements.length > 0 && (
+              <span className="ml-1 px-1.5 py-0.5 rounded-full text-[8px] font-black"
+                style={{ background: "#7c3aed", color: "#e9d5ff" }}>
+                {unlockedAchievements.length}
+              </span>
+            )}
+          </button>
+          <button
+            onClick={() => { const m = toggleMute(); setMuted(m); if (m) window.speechSynthesis?.cancel(); }}
+            title={muted ? "Unmute" : "Mute"}
+            className="flex items-center justify-center rounded-full font-black text-sm transition-all hover:scale-105 flex-shrink-0"
+            style={{
+              width: 32, height: 32,
+              background: muted ? "linear-gradient(180deg,#374151,#1f2937)" : "linear-gradient(180deg,#4b5563,#374151)",
+              border: muted ? "2px solid #6b7280" : "2px solid #9ca3af",
+              color: muted ? "#6b7280" : "#e5e7eb",
+            }}>
+            {muted ? "🔇" : "🔊"}
+          </button>
         </div>
       </div>
 
       {/* Game Area */}
-      <div className="max-w-7xl mx-auto px-4 py-4">
-        <div className="flex flex-col lg:flex-row gap-4">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 py-2 sm:py-4">
+        <div className="flex flex-col lg:flex-row gap-2 sm:gap-4">
+
           {/* Board */}
-          <div className="flex-1 relative" id="game-board-wrap">
+          <div className="flex-1 relative min-w-0" id="game-board-wrap">
             <GameBoard
               towers={towersRef.current}
               enemies={enemiesRef.current}
@@ -1344,35 +1344,36 @@ export default function Game() {
               waveQueue={waveQueueRef.current}
             />
             {/* Battle Log — top left overlay */}
-            <div className="absolute top-8 left-2 z-20 w-56">
+            <div className="absolute top-8 left-2 z-20 w-44 sm:w-56">
               <CombatLog entries={combatLog} />
             </div>
 
             {selectedTowerType && (
-              <p className="text-center text-xs text-red-900/60 mt-2 tracking-wide">
-                Click on a valid tile to place your {TOWER_TYPES[selectedTowerType].name}
+              <p className="text-center text-xs text-red-900/60 mt-1 tracking-wide">
+                Tap a valid tile to place {TOWER_TYPES[selectedTowerType].name}
               </p>
             )}
-            {/* Merge Recipes — centered horizontally, lower on board */}
-            <div className="absolute top-[85%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 max-w-xs">
+
+            {/* Merge Recipes — bottom of board */}
+            <div className="absolute top-[85%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-48 sm:max-w-xs">
               <ComboSuggestions />
             </div>
 
             {/* Wave Countdown Timer */}
             <WaveCountdown waveActive={waveActive} waveQueue={waveQueueRef.current} waveTimer={waveTimerRef.current} />
 
-            {/* Active ability status badges */}
+            {/* Active ability badges */}
             <div className="flex items-center justify-center gap-2 mt-1 flex-wrap">
               {divineShieldActive && (
                 <div className="flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-black animate-pulse"
                   style={{ background: "rgba(167,139,250,0.2)", border: "1px solid #a78bfa", color: "#e9d5ff" }}>
-                  🛡️ Divine Shield Active
+                  🛡️ Divine Shield
                 </div>
               )}
               {voidWrathActive && (
                 <div className="flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-black animate-pulse"
                   style={{ background: "rgba(192,132,252,0.2)", border: "1px solid #c084fc", color: "#f0d0ff" }}>
-                  🌀 Void Wrath — 3× Damage
+                  🌀 Void Wrath 3×
                 </div>
               )}
             </div>
@@ -1383,9 +1384,61 @@ export default function Game() {
             />
           </div>
 
-          {/* Side Panel */}
+          {/* Side Panel — horizontal scrollable strip on mobile, vertical sidebar on desktop */}
           <div className="w-full lg:w-56 shrink-0">
-            <div className="rounded-2xl p-4" style={{
+            {/* Mobile: compact horizontal layout */}
+            <div className="lg:hidden">
+              {/* Wave button + tower selector in a row */}
+              <div className="rounded-xl p-2 mb-2" style={{
+                background: 'linear-gradient(160deg, #1a1535, #100e22)',
+                border: '2px solid rgba(100,60,180,0.5)',
+              }}>
+                <WaveButton
+                  waveActive={waveActive}
+                  onStartWave={startWave}
+                  wave={wave}
+                  fastForward={fastForward}
+                  onToggleFastForward={() => setFastForward(f => !f)}
+                />
+                {!waveActive && <WaveThreatBadge wave={wave} />}
+              </div>
+
+              {/* Tower selector — horizontal scrollable */}
+              <div className="rounded-xl p-2 mb-2" style={{
+                background: 'linear-gradient(160deg, #1a1535, #100e22)',
+                border: '2px solid rgba(100,60,180,0.5)',
+              }}>
+                <TowerPanel
+                  selectedTower={selectedTowerType}
+                  onSelect={(type) => {
+                    setSelectedTowerType(type);
+                    setSelectedTowerId(null);
+                  }}
+                  gold={gold}
+                  horizontal={true}
+                />
+              </div>
+
+              {/* Tower info — only shown when a tower is selected */}
+              {getSelectedTower() && (
+                <div className="rounded-xl p-2 mb-2" style={{
+                  background: 'linear-gradient(160deg, #1a1535, #100e22)',
+                  border: '2px solid rgba(100,60,180,0.5)',
+                }}>
+                  <TowerInfoPanel
+                    tower={getSelectedTower()}
+                    gold={gold}
+                    onLevelUp={handleUpgrade}
+                    onUpgrade={() => setShowUpgradeMenu(true)}
+                    onSell={handleSell}
+                    onCustomize={handleCustomize}
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Desktop: original vertical layout */}
+            <div className="hidden lg:block rounded-2xl p-4" style={{
               background: 'linear-gradient(160deg, #1a1535, #100e22)',
               border: '2px solid rgba(100,60,180,0.5)',
               boxShadow: '0 6px 0 #05030f, 0 0 30px rgba(100,60,200,0.12)',
@@ -1412,7 +1465,6 @@ export default function Game() {
                 wave={wave}
                 fastForward={fastForward}
                 onToggleFastForward={() => setFastForward(f => !f)}
-                style={{ marginTop: "-16px" }}
               />
               {!waveActive && <WaveThreatBadge wave={wave} />}
               <div className="mt-4 rounded-xl px-3 py-2 space-y-1 text-[9px] font-semibold"
@@ -1423,6 +1475,7 @@ export default function Game() {
               </div>
             </div>
           </div>
+
         </div>
       </div>
 

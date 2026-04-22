@@ -19,9 +19,9 @@ export default function GameHUD({ lives, gold, wave, score }) {
   const scorePulse = usePulse(score);
 
   return (
-    <div className="flex items-center gap-2 md:gap-3 flex-wrap">
+    <div className="flex items-center gap-1 sm:gap-2 flex-wrap justify-end">
       {/* Hearts */}
-      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-black text-sm"
+      <div className="flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 rounded-full font-black text-xs sm:text-sm"
         style={{
           background: "linear-gradient(180deg, #ff4d6d 0%, #c9184a 100%)",
           border: "2px solid #ff758f",
@@ -35,7 +35,7 @@ export default function GameHUD({ lives, gold, wave, score }) {
       </div>
 
       {/* Gold */}
-      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-black text-sm"
+      <div className="flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 rounded-full font-black text-xs sm:text-sm"
         style={{
           background: "linear-gradient(180deg, #ffd60a 0%, #e09c00 100%)",
           border: "2px solid #ffe566",
@@ -49,7 +49,7 @@ export default function GameHUD({ lives, gold, wave, score }) {
       </div>
 
       {/* Wave */}
-      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-black text-sm"
+      <div className="flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 rounded-full font-black text-xs sm:text-sm"
         style={{
           background: "linear-gradient(180deg, #4ea8de 0%, #1d6fa4 100%)",
           border: "2px solid #74c0fc",
@@ -60,8 +60,8 @@ export default function GameHUD({ lives, gold, wave, score }) {
         ⚔️ <span>Wave {wave}</span>
       </div>
 
-      {/* Score */}
-      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-black text-sm"
+      {/* Score — hidden on very small screens */}
+      <div className="hidden sm:flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 rounded-full font-black text-xs sm:text-sm"
         style={{
           background: "linear-gradient(180deg, #c77dff 0%, #7b2fbe 100%)",
           border: "2px solid #da9fff",
