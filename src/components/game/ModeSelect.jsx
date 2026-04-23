@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { hasSave, getSaveSummary, deleteSave } from "../../lib/saveGame";
 
 const STAR_COUNT = 80;
 const stars = Array.from({ length: STAR_COUNT }, (_, i) => ({
@@ -19,16 +20,36 @@ const EMBERS = Array.from({ length: 20 }, (_, i) => ({
   color: i % 2 === 0 ? "#a78bfa" : "#d4af70",
 }));
 
-export default function ModeSelect({ onSelect }) {
+export default function ModeSelect({ onSelect, onContinue }) {
   const [visible, setVisible] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const [hovered, setHovered] = useState(null);
+  const [saveInfo, setSaveInfo] = useState(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
-    // Slight delay for mount animation
     const t = setTimeout(() => setVisible(true), 60);
+    setSaveInfo(getSaveSummary());
     return () => clearTimeout(t);
   }, []);
+
+  const handleContinue = () => {
+    setLeaving(true);
+    setTimeout(() => onContinue(), 420);
+  };
+
+  const handleDeleteSave = () => {
+    deleteSave();
+    setSaveInfo(null);
+    setShowDeleteConfirm(false);
+  };
+
+  const formatSaveDate = (iso) => {
+    try {
+      const d = new Date(iso);
+      return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    } catch { return ''; }
+  };
 
   const handleSelect = (mode) => {
     setLeaving(true);
@@ -248,9 +269,84 @@ export default function ModeSelect({ onSelect }) {
           })}
         </div>
 
+        {/* Continue saved game */}
+        {saveInfo && (
+          <div style={{
+            marginTop: 28,
+            padding: "16px 20px",
+            borderRadius: 14,
+            background: "linear-gradient(160deg, rgba(15,10,40,0.97), rgba(25,15,60,0.97))",
+            border: "2px solid rgba(167,139,250,0.6)",
+            boxShadow: "0 0 40px rgba(139,92,246,0.25)",
+            animation: "fadeInUp 0.6s ease 0.4s both",
+          }}>
+            {!showDeleteConfirm ? (
+              <div className="flex items-center justify-between gap-3 flex-wrap">
+                <div>
+                  <div style={{ fontSize: 11, color: "#a78bfa", fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 4 }}>
+                    💾 Saved Progress
+                  </div>
+                  <div style={{ fontSize: 13, color: "#e2d9f3", fontFamily: "'Cinzel', serif" }}>
+                    Wave {saveInfo.wave} · Score {saveInfo.score?.toLocaleString() ?? 0}
+                    {saveInfo.difficulty && <span style={{ color: "#a78bfa" }}> · {saveInfo.difficulty.name}</span>}
+                  </div>
+                  <div style={{ fontSize: 10, color: "rgba(130,100,180,0.6)", marginTop: 2 }}>
+                    {formatSaveDate(saveInfo.savedAt)}
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleContinue}
+                    style={{
+                      padding: "10px 20px",
+                      borderRadius: 10,
+                      background: "linear-gradient(180deg, #7c3aed, #4c1d95)",
+                      border: "2px solid #a78bfa",
+                      color: "#e9d5ff",
+                      fontWeight: 900,
+                      fontSize: 13,
+                      cursor: "pointer",
+                      boxShadow: "0 4px 0 #1e0a4a, 0 0 20px rgba(139,92,246,0.4)",
+                      whiteSpace: "nowrap",
+                    }}>
+                    ▶ Continue
+                  </button>
+                  <button
+                    onClick={() => setShowDeleteConfirm(true)}
+                    style={{
+                      padding: "10px 14px",
+                      borderRadius: 10,
+                      background: "rgba(80,20,20,0.8)",
+                      border: "2px solid rgba(200,60,60,0.4)",
+                      color: "#f87171",
+                      fontSize: 13,
+                      cursor: "pointer",
+                    }}>
+                    🗑
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center">
+                <p style={{ color: "#f87171", fontSize: 13, marginBottom: 12, fontFamily: "'Cinzel', serif" }}>
+                  Delete saved progress?
+                </p>
+                <div className="flex gap-2 justify-center">
+                  <button onClick={handleDeleteSave} style={{ padding: "8px 18px", borderRadius: 8, background: "#7f1d1d", border: "2px solid #f87171", color: "#fff", fontWeight: 700, cursor: "pointer" }}>
+                    Yes, Delete
+                  </button>
+                  <button onClick={() => setShowDeleteConfirm(false)} style={{ padding: "8px 18px", borderRadius: 8, background: "rgba(60,40,100,0.8)", border: "2px solid #a78bfa", color: "#e9d5ff", fontWeight: 700, cursor: "pointer" }}>
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Bottom hint */}
         <p style={{
-          textAlign: "center", marginTop: 28,
+          textAlign: "center", marginTop: 20,
           fontSize: 10, letterSpacing: "0.25em", textTransform: "uppercase",
           color: "rgba(100,80,140,0.5)", fontFamily: "'Cinzel', serif",
           animation: "fadeInUp 0.8s ease 0.5s both",

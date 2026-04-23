@@ -50,6 +50,7 @@ import ForgeShop from "../components/game/ForgeShop";
 import { FORGE_UPGRADES, applyForgeBonusToTower } from "../lib/forgeUpgrades";
 import WaveThreatBadge from "../components/game/WaveThreatBadge";
 import EnemyProgressBar from "../components/game/EnemyProgressBar";
+import { saveGame, loadGame } from "../lib/saveGame";
 
 
 const INITIAL_GOLD = 150;
@@ -699,6 +700,8 @@ export default function Game() {
             setTimeout(() => playVictoryShout(), fanfareDuration);
             setWaveSuccess(s => !s);
             addLog("wave", `Wave ${wave} cleared! Bonus gold awarded.`);
+            // Auto-save after each wave
+            setTimeout(() => doSave(), 200);
             // Check achievements after each wave
             checkAchievements({ ...achStatsRef.current });
             // Show perk shop every 2 waves
@@ -1111,6 +1114,62 @@ export default function Game() {
     forceRender(n => n + 1);
   }, [armorUpgrade]);
 
+  // Auto-save every wave clear (triggered in game loop) and manually
+  const doSave = useCallback(() => {
+    saveGame({
+      wave, gold, lives, score,
+      selectedCharacter, difficulty, gameMode,
+      towers: towersRef.current,
+      towerMap: towerMapRef.current,
+      perksOwned, forgeRanks, unlockedTowers,
+      unlockedSkills, unlockedAbilities,
+      skillPoints, gloryPoints,
+      unlockedAchievements, seenEnemies,
+      perkMult: perkMultRef.current,
+    });
+  }, [wave, gold, lives, score, selectedCharacter, difficulty, gameMode,
+      perksOwned, forgeRanks, unlockedTowers, unlockedSkills, unlockedAbilities,
+      skillPoints, gloryPoints, unlockedAchievements, seenEnemies]);
+
+  const handleContinueSave = useCallback(() => {
+    const save = loadGame();
+    if (!save) return;
+    // Restore towers
+    towersRef.current = save.towers;
+    towerMapRef.current = save.towerMap;
+    enemiesRef.current = [];
+    projectilesRef.current = [];
+    waveQueueRef.current = [];
+    // Restore state
+    setSelectedCharacter(save.selectedCharacter || INITIAL_CHARACTER);
+    setDifficulty(save.difficulty || null);
+    setGameMode(save.gameMode || "story");
+    setWave(save.wave || 1);
+    setGold(save.gold ?? INITIAL_GOLD);
+    setLives(save.lives ?? INITIAL_LIVES);
+    setScore(save.score ?? 0);
+    setPerksOwned(save.perksOwned || {});
+    setForgeRanks(save.forgeRanks || {});
+    setUnlockedTowers(save.unlockedTowers || []);
+    setUnlockedSkills(save.unlockedSkills || []);
+    setUnlockedAbilities(save.unlockedAbilities || []);
+    setSkillPoints(save.skillPoints || 0);
+    setGloryPoints(save.gloryPoints || 0);
+    setUnlockedAchievements(save.unlockedAchievements || []);
+    setSeenEnemies(save.seenEnemies || new Set());
+    if (save.perkMult) perkMultRef.current = save.perkMult;
+    // Hide all intro screens
+    setShowModeSelect(false);
+    setShowCharacterSelect(false);
+    setShowDifficultySelect(false);
+    setShowCampaignIntro(false);
+    setShowIntro(false);
+    setWaveActive(false);
+    setGameOver(false);
+    lastTimeRef.current = 0;
+    forceRender(n => n + 1);
+  }, []);
+
   const handleModeSelect = (mode) => {
     setGameMode(mode);
     setShowModeSelect(false);
@@ -1184,7 +1243,7 @@ export default function Game() {
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, #0d0a1a 0%, #08051a 40%, #0d0a1f 100%)' }}>
       {/* Mode Select Modal */}
-      {showModeSelect && <ModeSelect onSelect={handleModeSelect} />}
+      {showModeSelect && <ModeSelect onSelect={handleModeSelect} onContinue={handleContinueSave} />}
 
       {/* Character Select Modal */}
       {!showModeSelect && showCharacterSelect && <CharacterSelect onSelect={handleCharacterSelect} />}
@@ -1319,6 +1378,18 @@ export default function Game() {
                 {unlockedAchievements.length}
               </span>
             )}
+          </button>
+          <button
+            onClick={() => { doSave(); addLog("special", "💾 Game saved!"); }}
+            title="Save Progress"
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-full font-black text-[10px] uppercase tracking-wider transition-all hover:scale-105 flex-shrink-0"
+            style={{
+              background: "linear-gradient(180deg, #1e4d2b, #0f2a18)",
+              border: "2px solid #4ade80",
+              boxShadow: "0 2px 0 #052e16, 0 0 10px rgba(74,222,128,0.3)",
+              color: "#bbf7d0",
+            }}>
+            💾 Save
           </button>
           <button
             onClick={() => { const m = toggleMute(); setMuted(m); if (m) window.speechSynthesis?.cancel(); }}
