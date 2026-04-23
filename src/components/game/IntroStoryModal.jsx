@@ -304,16 +304,17 @@ export default function IntroStoryModal({ show, onBegin, characterId }) {
 
         {/* Buttons */}
         <div className="flex gap-3 mt-6 justify-center">
-          {phase !== "done" && !skipped && (
+          {!skipped && (
             <button
-              onClick={handleSkip}
+              onClick={phase === "done" ? undefined : handleSkip}
               className="px-5 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-all hover:opacity-80"
               style={{
-                background: "rgba(60,40,10,0.8)",
-                border: "1px solid #5a3a10",
-                color: "#6a5030",
+                background: phase === "done" ? "rgba(30,20,5,0.4)" : "rgba(80,55,15,0.9)",
+                border: "1px solid #7a5020",
+                color: phase === "done" ? "#3a2810" : "#c8a050",
+                cursor: phase === "done" ? "default" : "pointer",
               }}>
-              Skip Tale
+              ⏭ Skip
             </button>
           )}
 
