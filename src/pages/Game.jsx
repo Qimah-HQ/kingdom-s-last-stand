@@ -3,7 +3,7 @@ import {
   TOWER_TYPES, PATH_SET, CELL_SIZE,
   generateWaves, createEnemy, createTower, createProjectile,
   distanceBetween, moveEnemy, moveProjectile, generateBossInfo,
-  findMergePair, mergeTowers, towerHasAbility,
+  findMergePair, mergeTowers, towerHasAbility, nextEntityId,
 } from "../lib/gameEngine";
 import { getCharacter } from "../lib/characters";
 import GameBoard, { spawnDeathParticles } from "../components/game/GameBoard";
@@ -519,15 +519,21 @@ export default function Game() {
             const dmg = Math.floor(proj.damage * (1 - effectiveDR) * voidMult);
             target.hp -= dmg;
 
-            // Add damage popup
+            // Add damage popup — cap to MAX_DAMAGE_POPUPS so a multi-hit splash
+            // frame can't unboundedly grow the array (each popup is its own
+            // DOM node + cleanup timer).
             const isCritical = Math.random() < 0.15;
-            setDamagePopups(prev => [...prev, {
-              id: Math.random(),
-              damage: isCritical ? Math.floor(dmg * 1.5) : dmg,
-              x: target.x,
-              y: target.y - 30,
-              critical: isCritical,
-            }]);
+            setDamagePopups(prev => {
+              const next = [...prev, {
+                id: nextEntityId(),
+                damage: isCritical ? Math.floor(dmg * 1.5) : dmg,
+                x: target.x,
+                y: target.y - 30,
+                critical: isCritical,
+              }];
+              const MAX_DAMAGE_POPUPS = 40;
+              return next.length > MAX_DAMAGE_POPUPS ? next.slice(-MAX_DAMAGE_POPUPS) : next;
+            });
 
             // Stun (from upgrade path)
             if (proj.appliesStun) {
@@ -776,6 +782,25 @@ export default function Game() {
       if (gameLoopRef.current) cancelAnimationFrame(gameLoopRef.current);
     };
   }, [gameOver, fastForward]);
+
+  // Auto-save on tab close / page hide so a player who closes the tab
+  // mid-wave doesn't lose progress. localStorage.setItem is sync; beforeunload
+  // is the canonical hook. visibilitychange catches mobile background-tab
+  // teardown which doesn't always fire beforeunload.
+  useEffect(() => {
+    const onSave = () => {
+      try { doSave(); } catch (_) { /* noop */ }
+    };
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") onSave();
+    };
+    window.addEventListener("beforeunload", onSave);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      window.removeEventListener("beforeunload", onSave);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, [doSave]);
 
   const handleActivateAbility = useCallback((abilityId) => {
     const abilityMods = getAbilityMods(selectedCharacter, unlockedSkills);
