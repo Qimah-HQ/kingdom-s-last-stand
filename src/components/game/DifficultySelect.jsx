@@ -76,24 +76,26 @@ export default function DifficultySelect({ onSelect, onBack }) {
       ))}
 
       <div className="relative max-w-2xl w-full mx-4" style={{ zIndex: 10 }}>
-        {/* Back button */}
+        {/* Back button — fixed top-left of the viewport so it never covers
+            the title on narrow screens. */}
         {onBack && (
           <button
             onClick={onBack}
             style={{
-              position: "absolute",
-              top: -8,
-              left: 0,
+              position: "fixed",
+              top: 16,
+              left: 16,
               padding: "8px 14px",
               borderRadius: 8,
-              background: "rgba(20,10,40,0.7)",
-              border: "1px solid rgba(167,139,250,0.4)",
+              background: "rgba(20,10,40,0.85)",
+              border: "1px solid rgba(167,139,250,0.5)",
               color: "#a78bfa",
               fontSize: 12,
               fontFamily: "'Cinzel', serif",
               letterSpacing: "0.15em",
               cursor: "pointer",
-              zIndex: 20,
+              zIndex: 30,
+              backdropFilter: "blur(6px)",
             }}>
             ← Back
           </button>

@@ -146,24 +146,26 @@ export default function CharacterSelect({ onSelect, onBack }) {
       ))}
 
       <div className="relative max-w-4xl w-full mx-4" style={{ zIndex: 10 }}>
-        {/* Back button */}
+        {/* Back button — fixed top-left of the viewport so it never covers
+            the title on narrow screens. */}
         {onBack && (
           <button
             onClick={() => { window.speechSynthesis?.cancel(); onBack(); }}
             style={{
-              position: "absolute",
-              top: -8,
-              left: 0,
+              position: "fixed",
+              top: 16,
+              left: 16,
               padding: "8px 14px",
               borderRadius: 8,
-              background: "rgba(20,10,40,0.7)",
-              border: "1px solid rgba(167,139,250,0.4)",
+              background: "rgba(20,10,40,0.85)",
+              border: "1px solid rgba(167,139,250,0.5)",
               color: "#a78bfa",
               fontSize: 12,
               fontFamily: "'Cinzel', serif",
               letterSpacing: "0.15em",
               cursor: "pointer",
-              zIndex: 20,
+              zIndex: 30,
+              backdropFilter: "blur(6px)",
             }}>
             ← Back
           </button>
@@ -304,7 +306,9 @@ export default function CharacterSelect({ onSelect, onBack }) {
               {current.title}
             </p>
 
-            {/* Story text with typewriter — tap to skip */}
+            {/* Story text with typewriter — tap anywhere on the block to skip.
+                The "tap to skip" hint sits in a fixed-height area below the
+                text so it can fade in/out without shifting the layout. */}
             <div
               onClick={skipTypewriter}
               role={!showDetails ? "button" : undefined}
@@ -315,17 +319,40 @@ export default function CharacterSelect({ onSelect, onBack }) {
                 lineHeight: 1.8,
                 fontFamily: "'Cinzel', serif",
                 minHeight: 140,
-                marginBottom: 20,
+                marginBottom: 0,
                 textAlign: "left",
                 cursor: showDetails ? "default" : "pointer",
               }}>
               {typedText}
               {!showDetails && <span style={{ opacity: 0.7, animation: "blink 0.6s ease-in-out infinite" }}>▌</span>}
-              {!showDetails && (
-                <div style={{ marginTop: 10, fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(167,139,250,0.5)" }}>
-                  ▶ Tap to skip
-                </div>
-              )}
+            </div>
+            <div style={{
+              height: 22,
+              marginTop: 6,
+              marginBottom: 14,
+              textAlign: "center",
+              fontSize: 10,
+              letterSpacing: "0.2em",
+              textTransform: "uppercase",
+              color: "rgba(167,139,250,0.55)",
+              opacity: showDetails ? 0 : 1,
+              transition: "opacity 0.25s ease",
+              pointerEvents: showDetails ? "none" : "auto",
+            }}>
+              <button
+                onClick={skipTypewriter}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: "inherit",
+                  fontSize: "inherit",
+                  letterSpacing: "inherit",
+                  textTransform: "inherit",
+                  fontFamily: "'Cinzel', serif",
+                  cursor: "pointer",
+                }}>
+                ▶ Tap to skip
+              </button>
             </div>
 
             {/* Motivation quote */}
