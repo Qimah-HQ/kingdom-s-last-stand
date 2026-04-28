@@ -4,7 +4,7 @@ import { CHARACTERS, getAllCharacters } from "../../lib/characters";
 import { LordAldric, QueenSeraphine, Morrigan, Kael, Aurora } from "./CharacterSprites";
 import CharacterStatsPanel from "./CharacterStatsPanel";
 
-export default function CharacterSelect({ onSelect }) {
+export default function CharacterSelect({ onSelect, onBack }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
   const [selectedCharForStats, setSelectedCharForStats] = useState(null);
@@ -114,6 +114,15 @@ export default function CharacterSelect({ onSelect }) {
     setIsVisible(false);
   };
 
+  // Tap to skip the per-character story typewriter — was a forced ~3-5s wait
+  // before the "Become X" button became available.
+  const skipTypewriter = () => {
+    if (showDetails) return;
+    if (typeRef.current) clearInterval(typeRef.current);
+    setTypedText(current.story);
+    setShowDetails(true);
+  };
+
   if (!isVisible) return null;
 
   return (
@@ -137,6 +146,28 @@ export default function CharacterSelect({ onSelect }) {
       ))}
 
       <div className="relative max-w-4xl w-full mx-4" style={{ zIndex: 10 }}>
+        {/* Back button */}
+        {onBack && (
+          <button
+            onClick={() => { window.speechSynthesis?.cancel(); onBack(); }}
+            style={{
+              position: "absolute",
+              top: -8,
+              left: 0,
+              padding: "8px 14px",
+              borderRadius: 8,
+              background: "rgba(20,10,40,0.7)",
+              border: "1px solid rgba(167,139,250,0.4)",
+              color: "#a78bfa",
+              fontSize: 12,
+              fontFamily: "'Cinzel', serif",
+              letterSpacing: "0.15em",
+              cursor: "pointer",
+              zIndex: 20,
+            }}>
+            ← Back
+          </button>
+        )}
         {/* Top title */}
         <div style={{
           textAlign: "center",
@@ -273,18 +304,28 @@ export default function CharacterSelect({ onSelect }) {
               {current.title}
             </p>
 
-            {/* Story text with typewriter */}
-            <div style={{
-              fontSize: 14,
-              color: "#f0e6ff",
-              lineHeight: 1.8,
-              fontFamily: "'Cinzel', serif",
-              minHeight: 140,
-              marginBottom: 20,
-              textAlign: "left",
-            }}>
+            {/* Story text with typewriter — tap to skip */}
+            <div
+              onClick={skipTypewriter}
+              role={!showDetails ? "button" : undefined}
+              title={!showDetails ? "Tap to skip" : undefined}
+              style={{
+                fontSize: 14,
+                color: "#f0e6ff",
+                lineHeight: 1.8,
+                fontFamily: "'Cinzel', serif",
+                minHeight: 140,
+                marginBottom: 20,
+                textAlign: "left",
+                cursor: showDetails ? "default" : "pointer",
+              }}>
               {typedText}
               {!showDetails && <span style={{ opacity: 0.7, animation: "blink 0.6s ease-in-out infinite" }}>▌</span>}
+              {!showDetails && (
+                <div style={{ marginTop: 10, fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(167,139,250,0.5)" }}>
+                  ▶ Tap to skip
+                </div>
+              )}
             </div>
 
             {/* Motivation quote */}

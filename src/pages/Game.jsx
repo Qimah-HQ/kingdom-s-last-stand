@@ -274,7 +274,11 @@ export default function Game() {
       forceRender(n => n + 1);
       return prev - cost;
     });
-  }, [selectedTowerType]);
+    // Deps include selectedCharacter + forgeRanks so the closure picks up the
+    // current character's damage/range bonuses (and current forge ranks) when
+    // a new tower is placed. Without these the closure froze on the initial
+    // character and any later character pick was silently ignored.
+  }, [selectedTowerType, selectedCharacter, forgeRanks, characterData]);
 
   const handleUpgrade = useCallback((tower) => {
     const base = TOWER_TYPES[tower.type];
@@ -1259,7 +1263,24 @@ export default function Game() {
   const handleDifficultySelect = (diff) => {
     setDifficulty(diff);
     setShowDifficultySelect(false);
+    // Initial-lives state was seeded from the DEFAULT character (Aldric) at
+    // component construction time, so picking a character with a healthBonus
+    // (e.g. Seraphine) had no effect on actual starting lives. Recompute from
+    // the chosen character now, before the game loop starts running.
+    const chosenChar = getCharacter(selectedCharacter);
+    setLives(Math.ceil(INITIAL_LIVES * (1 + (chosenChar.stats.healthBonus ?? 0))));
     setShowCampaignIntro(gameMode === "story");
+  };
+
+  // Back-navigation: lets players change their mind without refreshing.
+  const handleBackToMode = () => {
+    setShowCharacterSelect(false);
+    setShowDifficultySelect(false);
+    setShowModeSelect(true);
+  };
+  const handleBackToCharacter = () => {
+    setShowDifficultySelect(false);
+    setShowCharacterSelect(true);
   };
 
   const handleRestart = () => {
@@ -1317,13 +1338,22 @@ export default function Game() {
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, #0d0a1a 0%, #08051a 40%, #0d0a1f 100%)' }}>
       {/* Mode Select Modal */}
-      {!showIntro && showModeSelect && <ModeSelect onSelect={handleModeSelect} onContinue={handleContinueSave} />}
+      {!showIntro && showModeSelect && (
+        <ModeSelect
+          onSelect={handleModeSelect}
+          onContinue={handleContinueSave}
+          onReplayIntro={() => {
+            try { window.localStorage.removeItem("qls_intro_seen"); } catch (_) { /* noop */ }
+            setShowIntro(true);
+          }}
+        />
+      )}
 
       {/* Character Select Modal */}
-      {!showModeSelect && showCharacterSelect && <CharacterSelect onSelect={handleCharacterSelect} />}
+      {!showModeSelect && showCharacterSelect && <CharacterSelect onSelect={handleCharacterSelect} onBack={handleBackToMode} />}
 
       {/* Difficulty Select Modal */}
-      {!showCharacterSelect && showDifficultySelect && <DifficultySelect onSelect={handleDifficultySelect} />}
+      {!showCharacterSelect && showDifficultySelect && <DifficultySelect onSelect={handleDifficultySelect} onBack={handleBackToCharacter} />}
 
       {/* Header */}
       <div style={{

@@ -47,7 +47,7 @@ const DIFFICULTIES = [
   },
 ];
 
-export default function DifficultySelect({ onSelect }) {
+export default function DifficultySelect({ onSelect, onBack }) {
   const [selected, setSelected] = useState("normal");
 
   const handleSelect = () => {
@@ -76,6 +76,28 @@ export default function DifficultySelect({ onSelect }) {
       ))}
 
       <div className="relative max-w-2xl w-full mx-4" style={{ zIndex: 10 }}>
+        {/* Back button */}
+        {onBack && (
+          <button
+            onClick={onBack}
+            style={{
+              position: "absolute",
+              top: -8,
+              left: 0,
+              padding: "8px 14px",
+              borderRadius: 8,
+              background: "rgba(20,10,40,0.7)",
+              border: "1px solid rgba(167,139,250,0.4)",
+              color: "#a78bfa",
+              fontSize: 12,
+              fontFamily: "'Cinzel', serif",
+              letterSpacing: "0.15em",
+              cursor: "pointer",
+              zIndex: 20,
+            }}>
+            ← Back
+          </button>
+        )}
         {/* Title */}
         <div style={{
           textAlign: "center",
